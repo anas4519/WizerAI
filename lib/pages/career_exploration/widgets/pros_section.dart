@@ -1,0 +1,65 @@
+import 'package:career_counsellor/pages/career_exploration/screens/elaborate_detail.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class ProsSection extends StatelessWidget {
+  const ProsSection(
+      {super.key,
+      required this.title,
+      required this.content,
+      required this.career});
+  final String title;
+  final List<String> content;
+  final String career;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (ctx) => ElaborateDetail(title: title, career: career)));
+      },
+      child: Card(
+        elevation: 2,
+        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
+        margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...content.map((point) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(CupertinoIcons.check_mark_circled_solid,
+                            color: Colors.green, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            point,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
