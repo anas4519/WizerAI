@@ -1,6 +1,7 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/career_detail_ai_guide.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/career_pathway.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/cons_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/default_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.dart';
@@ -58,8 +59,6 @@ class _CareerDetailsState extends State<CareerDetails> {
       });
     }
   }
-
-  
 
   Future<void> _fetchYouTubeVideos() async {
     try {
@@ -200,9 +199,17 @@ class _CareerDetailsState extends State<CareerDetails> {
       return ProsSection(title: title, content: content, career: widget.title);
     }
     if (title == 'Cons') {
-      return ConsSection(title: title, content: content, career: widget.title,);
+      return ConsSection(
+        title: title,
+        content: content,
+        career: widget.title,
+      );
     }
-    return DefaultSection(title: title, content: content, career: widget.title,);
+    return DefaultSection(
+      title: title,
+      content: content,
+      career: widget.title,
+    );
   }
 
   @override
@@ -261,6 +268,33 @@ class _CareerDetailsState extends State<CareerDetails> {
                                 careerDetails.containsKey(section))
                             .map((section) => _buildSection(
                                 section, careerDetails[section]!)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) =>
+                                    CareerPathway(career: widget.title)));
+                          },
+                          child: Card(
+                            elevation: 3,
+                            shadowColor:
+                                isDarkTheme ? Colors.grey : Colors.black,
+                            margin: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.01),
+                            child: Padding(
+                                padding: EdgeInsets.all(screenWidth * 0.04),
+                                child: Row(
+                                  children: [
+                                    const Icon(CupertinoIcons.map_fill),
+                                    SizedBox(
+                                      width: screenWidth * 0.04,
+                                    ),
+                                    const Expanded(
+                                        child:
+                                            Text('Tap to view career pathway!'))
+                                  ],
+                                )),
+                          ),
+                        ),
                         if (youtubeVideos.isNotEmpty) _buildYouTubeSection(),
                         GestureDetector(
                           onTap: () {
@@ -278,7 +312,8 @@ class _CareerDetailsState extends State<CareerDetails> {
                                 padding: EdgeInsets.all(screenWidth * 0.04),
                                 child: Row(
                                   children: [
-                                    const Icon(CupertinoIcons.chat_bubble_text_fill),
+                                    const Icon(
+                                        CupertinoIcons.chat_bubble_text_fill),
                                     SizedBox(
                                       width: screenWidth * 0.04,
                                     ),

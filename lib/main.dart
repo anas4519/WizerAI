@@ -1,4 +1,5 @@
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/pages/auth/sign_in_page.dart';
 import 'package:career_counsellor/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
         // )
       ),
       themeMode: ThemeMode.system,
-      home: const MainPage(),
+      home: const SignInPage(),
     );
   }
 }
