@@ -1,32 +1,34 @@
 import 'package:career_counsellor/auth/auth_service.dart';
-import 'package:career_counsellor/pages/auth/sign_up_page.dart';
 import 'package:flutter/material.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   bool isObscure = true;
+  bool isObscure2 = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final authService = AuthService();
 
-  void login() async {
+  void signUp() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
     try {
-      await authService.signInWithEmailPassword(email, password);
+      await authService.signUpWithEmailPassword(email, password);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Check email bro')));
+      // Navigator.of(context).pop();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error $e')));
-      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error : $e')));
     }
   }
 
@@ -38,7 +40,7 @@ class _SignInPageState extends State<SignInPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: const Text('Sign Up'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -99,6 +101,44 @@ class _SignInPageState extends State<SignInPage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
+                    final passwordRegex = RegExp(
+                        r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>]).{8,}$');
+                    if (!passwordRegex.hasMatch(value)) {
+                      return 'Please enter a valid password';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: screenHeight * 0.015,
+                ),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: isObscure2,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm password',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isObscure2 = !isObscure2;
+                        });
+                      },
+                      icon: isObscure2
+                          ? const Icon(Icons.visibility_off_rounded)
+                          : const Icon(Icons.visibility_rounded),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter same password as above';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'Please enter same password as above';
+                    }
                     return null;
                   },
                 ),
@@ -114,7 +154,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        login();
+                        signUp();
                       }
                     },
                     style: ButtonStyle(
@@ -124,27 +164,25 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     ),
                     child:
-                        const Text('Sign In', style: TextStyle(fontSize: 16)),
+                        const Text('Sign Up', style: TextStyle(fontSize: 16)),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.04),
+                // InkWell(
+                //   onTap: () {
+                //     // Forgot password logic
+                //   },
+                //   child: const Text(
+                //     'Forgot your password?',
+                //     style: TextStyle(color: Colors.pink),
+                //   ),
+                // ),
                 InkWell(
                   onTap: () {
-                    // Forgot password logic
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
-                    'Forgot your password?',
-                    style: TextStyle(color: Colors.pink),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const SignUpPage()));
-                  },
-                  child: const Text(
-                    'Don\'t have an account? Sign Up',
+                    'Already have an account? Sign In',
                     style: TextStyle(color: Colors.pink),
                   ),
                 ),
