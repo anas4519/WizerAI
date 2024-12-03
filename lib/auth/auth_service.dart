@@ -13,7 +13,7 @@ class AuthService {
   //sign up
   Future<AuthResponse> signUpWithEmailPassword(
       String email, String password) async {
-    return await _supabase.auth.signUp(email: email, password: password);
+    return await _supabase.auth.signUp(email: email, password: password, emailRedirectTo: 'io.supabase.flutterquickstart://login-callback/');
   }
 
   //sign out
