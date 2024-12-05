@@ -20,10 +20,23 @@ class _AiGuidanceState extends State<AiGuidance> {
     await authService.signOut();
   }
 
+  String name = 'User';
+
+  Future<void> getName() async {
+    final userId = supabase.auth.currentUser!.id;
+    final data = await supabase.from('profiles').select().eq('id', userId).single();
+    name = data['full_name'];
+    print(data);
+  }
+
+  @override
+  void initState() {
+    getName();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currEmail = authService.getCurrentUserEmail();
-    final currId = authService.getCurrentUserId();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -35,7 +48,7 @@ class _AiGuidanceState extends State<AiGuidance> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Hello ${currEmail.toString()}!',
+              'Hello ${name}!',
               style: const TextStyle(fontSize: 20),
             ),
             const Text('Ready to take the survey?'),
@@ -66,7 +79,8 @@ class _AiGuidanceState extends State<AiGuidance> {
                     'gender': _genderController.text,
                     'full_name': _nameController.text
                   }).eq('id', userId);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Saved')));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Saved')));
                 },
                 child: const Text('Submit'))
           ],

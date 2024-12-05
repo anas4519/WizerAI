@@ -2,6 +2,7 @@ import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart'
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecommendationScreen extends StatefulWidget {
   const RecommendationScreen({
@@ -51,11 +52,65 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   bool isLoading = true;
   final Gemini gemini = Gemini.instance;
   List<String> recommendationsList = [];
-
+  final SupabaseClient supabase = Supabase.instance.client;
   @override
   void initState() {
     super.initState();
     _generateInitialRecommendations();
+    _saveDetails();
+  }
+
+  Future<void> _saveDetails() async {
+    final userId = supabase.auth.currentUser!.id;
+    final updateData = {
+      'qualifications': widget.qualifications,
+      'interests': widget.interests,
+      'hobbies': widget.hobbies,
+      'strengths': widget.strengths,
+      'desired_lifestyle': widget.desiredLifestyle,
+      'learning_curve': widget.learningCurve,
+      'mothers_profession': widget.mothersProfession,
+      'fathers_profession': widget.fathersProfession,
+      'financial_status': widget.financialStatus,
+      'salary_expectations': widget.salaryExpectations,
+    };
+
+    if (widget.skills.isNotEmpty) {
+      updateData['skills'] = widget.skills;
+    }
+    if (widget.weaknesses.isNotEmpty) {
+      updateData['weaknesses'] = widget.weaknesses;
+    }
+    if (widget.geographicPref.isNotEmpty) {
+      updateData['geographic_preferences'] = widget.geographicPref;
+    }
+    if (widget.aspirations.isNotEmpty) {
+      updateData['aspirations'] = widget.aspirations;
+    }
+    if (widget.parentsExpectations.isNotEmpty) {
+      updateData['parents_expectations'] = widget.parentsExpectations;
+    }
+    if (widget.interdisciplinaryOptions.isNotEmpty) {
+      updateData['interdisciplinary_options'] = widget.interdisciplinaryOptions;
+    }
+    if (widget.additionalInfo.isNotEmpty) {
+      updateData['additional_info'] = widget.additionalInfo;
+    }
+
+    await supabase.from('profiles').update(updateData).eq('id', userId);
+  }
+
+  Future<void> _updateSuggestions() async {
+    final userId = supabase.auth.currentUser!.id;
+
+    try {
+      await supabase.from('profiles').update({
+        'suggestions': recommendationsList, // Update the suggestions column
+      }).eq('id', userId);
+      print("Suggestions updated successfully.");
+    } catch (e) {
+      print("Error updating suggestions: $e");
+    }
   }
 
   Future<void> _generateInitialRecommendations() async {
@@ -95,10 +150,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
               .where((line) => line.trim().isNotEmpty)
               .map((line) => line.replaceAll(RegExp(r'^\d+\.\s*'), '').trim())
               .toList();
-          print(recommendationsList);
         }
         isLoading = false;
       });
+      await _updateSuggestions();
     } catch (e) {
       setState(() {
         print('Error: $e');
@@ -212,7 +267,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                                             third: recommendationsList[2],
                                             fourth: recommendationsList[3],
                                             fifth: recommendationsList[4],
-                                            additionalInfo: widget.additionalInfo,
+                                            additionalInfo:
+                                                widget.additionalInfo,
                                           )));
                                 },
                                 icon: const Icon(Icons.arrow_forward_ios),
