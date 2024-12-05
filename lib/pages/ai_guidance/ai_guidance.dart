@@ -26,7 +26,7 @@ class _AiGuidanceState extends State<AiGuidance> {
     final userId = supabase.auth.currentUser!.id;
     final data = await supabase.from('profiles').select().eq('id', userId).single();
     name = data['full_name'];
-    print(data);
+    // print(data);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CareerExploration extends StatefulWidget {
   const CareerExploration({super.key});
@@ -14,7 +15,25 @@ class CareerExploration extends StatefulWidget {
 
 class _CareerExplorationState extends State<CareerExploration> {
   int _current = 0;
-  // Added career details for each image
+  List<String> daimonSuggestions = [];
+  final SupabaseClient supabase = Supabase.instance.client;
+
+  @override
+  void initState() {
+    fetchSuggestions();
+    super.initState();
+  }
+
+  Future<void> fetchSuggestions() async {
+    final userId = supabase.auth.currentUser!.id;
+    final data =
+        await supabase.from('profiles').select().eq('id', userId).single();
+
+    daimonSuggestions = (data['suggestions'] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList();
+  }
+
   final List<Map<String, String>> careerDetails = [
     {
       'image': 'assets/career_images/career_1.png',
@@ -44,7 +63,9 @@ class _CareerExplorationState extends State<CareerExploration> {
   ];
 
   void _handleImageTap(int index) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> CareerDetails(title: careerDetails[index]['title']!)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) =>
+            CareerDetails(title: careerDetails[index]['title']!)));
   }
 
   @override
@@ -57,8 +78,9 @@ class _CareerExplorationState extends State<CareerExploration> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(CupertinoIcons.search),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const SearchScreen()));
+            onPressed: () async {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const SearchScreen()));
             },
           ),
           actions: [
@@ -191,7 +213,9 @@ class _CareerExplorationState extends State<CareerExploration> {
                     margin: const EdgeInsets.symmetric(
                         vertical: 8.0, horizontal: 4.0),
                     decoration: BoxDecoration(
-                      border: Border.all(width:1, color: isDarkTheme?Colors.white:Colors.black),
+                      border: Border.all(
+                          width: 1,
+                          color: isDarkTheme ? Colors.white : Colors.black),
                       shape: BoxShape.circle,
                       color: Colors.pink
                           .withOpacity(_current == entry.key ? 0.9 : 0.0),
@@ -214,42 +238,72 @@ class _CareerExplorationState extends State<CareerExploration> {
                   '1. ',
                   style: TextStyle(fontSize: 16),
                 ),
-                title: const Text('Machine Learning Engineer', style: TextStyle(fontSize: 16)),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16,),
+                title: Text(daimonSuggestions[0],
+                    style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const CareerDetails(title: 'Machine Learning Engineer')));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[0])));
                 },
               ),
               ListTile(
                 leading: const Text('2. ', style: TextStyle(fontSize: 16)),
-                title: const Text('Mobile App Development', style: TextStyle(fontSize: 16)),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16,),
+                title: Text(daimonSuggestions[1],
+                    style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const CareerDetails(title: 'Mobile App Development')));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[1])));
                 },
               ),
               ListTile(
                 leading: const Text('3. ', style: TextStyle(fontSize: 16)),
-                title: const Text('Tech Content Creator', style: TextStyle(fontSize: 16)),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16,),
+                title: Text(daimonSuggestions[2],
+                    style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const CareerDetails(title: 'Tech Content Creator')));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[2])));
                 },
               ),
               ListTile(
                 leading: const Text('4. ', style: TextStyle(fontSize: 16)),
-                title: const Text('Financial Analyst', style: TextStyle(fontSize: 16)),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16,),
+                title: Text(daimonSuggestions[3],
+                    style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const CareerDetails(title: 'Financial Analyst')));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[3])));
                 },
               ),
               ListTile(
                 leading: const Text('5. ', style: TextStyle(fontSize: 16)),
-                title: const Text('Real Estate Agent', style: TextStyle(fontSize: 16)),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16,),
+                title: Text(daimonSuggestions[4],
+                    style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const CareerDetails(title: 'Real Estate Agent')));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[4])));
                 },
               )
             ],
