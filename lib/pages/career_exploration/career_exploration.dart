@@ -17,6 +17,7 @@ class _CareerExplorationState extends State<CareerExploration> {
   int _current = 0;
   List<String> daimonSuggestions = [];
   final SupabaseClient supabase = Supabase.instance.client;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -25,13 +26,32 @@ class _CareerExplorationState extends State<CareerExploration> {
   }
 
   Future<void> fetchSuggestions() async {
-    final userId = supabase.auth.currentUser!.id;
-    final data =
-        await supabase.from('profiles').select().eq('id', userId).single();
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      final data = await supabase.from('profiles').select().eq('id', userId).single();
 
-    daimonSuggestions = (data['suggestions'] as List<dynamic>)
-        .map((e) => e.toString())
-        .toList();
+      setState(() {
+        daimonSuggestions = data['suggestions'] != null
+            ? (data['suggestions'] as List<dynamic>).map((e) => e.toString()).toList()
+            : _getDefaultSuggestions();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        daimonSuggestions = _getDefaultSuggestions();
+        _isLoading = false;
+      });
+    }
+  }
+
+  List<String> _getDefaultSuggestions() {
+    return [
+      'Software Engineering',
+      'Data Science',
+      'Digital Marketing',
+      'UX/UI Design',
+      'Product Management'
+    ];
   }
 
   final List<Map<String, String>> careerDetails = [
@@ -73,6 +93,16 @@ class _CareerExplorationState extends State<CareerExploration> {
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final screenwidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -155,7 +185,6 @@ class _CareerExplorationState extends State<CareerExploration> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            // Optional: Add a gradient overlay for better text visibility
                             Positioned(
                               bottom: 0,
                               left: 0,
@@ -233,79 +262,28 @@ class _CareerExplorationState extends State<CareerExploration> {
               SizedBox(
                 height: screenHeight * 0.01,
               ),
-              ListTile(
-                leading: const Text(
-                  '1. ',
-                  style: TextStyle(fontSize: 16),
-                ),
-                title: Text(daimonSuggestions[0],
-                    style: const TextStyle(fontSize: 16)),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) =>
-                          CareerDetails(title: daimonSuggestions[0])));
-                },
-              ),
-              ListTile(
-                leading: const Text('2. ', style: TextStyle(fontSize: 16)),
-                title: Text(daimonSuggestions[1],
-                    style: const TextStyle(fontSize: 16)),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) =>
-                          CareerDetails(title: daimonSuggestions[1])));
-                },
-              ),
-              ListTile(
-                leading: const Text('3. ', style: TextStyle(fontSize: 16)),
-                title: Text(daimonSuggestions[2],
-                    style: const TextStyle(fontSize: 16)),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) =>
-                          CareerDetails(title: daimonSuggestions[2])));
-                },
-              ),
-              ListTile(
-                leading: const Text('4. ', style: TextStyle(fontSize: 16)),
-                title: Text(daimonSuggestions[3],
-                    style: const TextStyle(fontSize: 16)),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) =>
-                          CareerDetails(title: daimonSuggestions[3])));
-                },
-              ),
-              ListTile(
-                leading: const Text('5. ', style: TextStyle(fontSize: 16)),
-                title: Text(daimonSuggestions[4],
-                    style: const TextStyle(fontSize: 16)),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) =>
-                          CareerDetails(title: daimonSuggestions[4])));
-                },
-              )
+              // Generate ListTiles dynamically
+              ...List.generate(5, (index) {
+                return ListTile(
+                  leading: Text(
+                    '${index + 1}. ',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  title: Text(
+                    daimonSuggestions[index],
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 16,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => CareerDetails(title: daimonSuggestions[index]),
+                    ));
+                  },
+                );
+              }),
             ],
           ),
         ));
