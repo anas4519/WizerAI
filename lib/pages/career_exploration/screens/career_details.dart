@@ -10,7 +10,6 @@ import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_gemini/flutter_gemini.dart';
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
@@ -25,7 +24,6 @@ class CareerDetails extends StatefulWidget {
 class _CareerDetailsState extends State<CareerDetails> {
   bool isLoading = true;
   String? errorMessage;
-  final Gemini gemini = Gemini.instance;
   Map<String, List<String>> careerDetails = {};
   List<YouTubeVideo> youtubeVideos = [];
 

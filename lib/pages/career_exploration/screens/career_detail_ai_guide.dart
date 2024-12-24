@@ -1,7 +1,8 @@
-import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
+import 'package:career_counsellor/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as genai;
 
 class CareerDetailAiGuide extends StatefulWidget {
   const CareerDetailAiGuide({super.key, required this.title});
@@ -12,104 +13,55 @@ class CareerDetailAiGuide extends StatefulWidget {
 }
 
 class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
-  List<ChatMessage> messages = [];
-  final ChatUser currentUser = ChatUser(id: '1', firstName: 'User');
-  final ChatUser botUser = ChatUser(id: '2', firstName: 'Daimon AI');
-  bool isTyping = false;
-  final Gemini gemini = Gemini.instance;
-  List<Content> chatHistory = [];
+  late genai.GenerativeModel model;
+  late genai.ChatSession chat;
+  final TextEditingController _messageController = TextEditingController();
+  final List<Message> messages = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      String initialContext = '''
-      You are a career advisor bot and you are here to clear the user's doubts and queries about ${widget.title} as a career''';
-      chatHistory = [
-        Content(parts: [Parts(text: initialContext)], role: 'user'),
-      ];
-      _sendInitialMessage();
-    });
+    _initializeChat();
   }
 
-  @override
-  void dispose() {
-    messages.clear();
-    chatHistory.clear();
-    super.dispose();
-  }
-
-  void _sendInitialMessage() {
-    ChatMessage initialMessage = ChatMessage(
-      user: botUser,
-      createdAt: DateTime.now(),
-      text: 'Hello there! How can I help you today?',
+  Future<void> _initializeChat() async {
+    model = genai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
     );
 
+    final initialContext =
+        '''You are a career advisor bot and you are here to clear the user's doubts and queries about ${widget.title} as a career''';
+
+    chat = model.startChat(history: [
+      genai.Content.text(initialContext),
+    ]);
+
     setState(() {
-      messages = [initialMessage, ...messages];
+      messages.add(
+          Message(text: 'Hello, how can I help you today?', isUser: false));
     });
   }
 
-  void _sendMessage(ChatMessage chatMessage) {
+  Future<void> _sendMessage(String text, {bool isInitial = false}) async {
+    if (text.isEmpty) return;
+
     setState(() {
-      messages = [chatMessage, ...messages];
-      isTyping = true;
+      if (!isInitial) messages.add(Message(text: text, isUser: true));
+      isLoading = true;
     });
 
-    // Add user message to chat history
-    chatHistory.add(
-      Content(parts: [Parts(text: chatMessage.text)], role: 'user'),
-    );
-
-    _processAIResponse();
-  }
-
-  void _processAIResponse() {
     try {
-      gemini.chat(chatHistory).then((value) {
-        if (value?.output != null) {
-          // Add AI response to chat history
-          chatHistory.add(
-            Content(parts: [Parts(text: value!.output!)], role: 'model'),
-          );
-
-          setState(() {
-            messages = [
-              ChatMessage(
-                user: botUser,
-                createdAt: DateTime.now(),
-                text: value.output!,
-              ),
-              ...messages,
-            ];
-            isTyping = false;
-          });
-        }
-      }).catchError((error) {
-        setState(() {
-          isTyping = false;
-          messages = [
-            ChatMessage(
-              user: botUser,
-              createdAt: DateTime.now(),
-              text: 'Sorry, there was an error processing your message: $error',
-            ),
-            ...messages,
-          ];
-        });
+      final response = await chat.sendMessage(genai.Content.text(text));
+      setState(() {
+        messages.add(Message(text: response.text ?? '', isUser: false));
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isTyping = false;
-        messages = [
-          ChatMessage(
-            user: botUser,
-            createdAt: DateTime.now(),
-            text: 'Sorry, there was an error processing your message: $e',
-          ),
-          ...messages,
-        ];
+        isLoading = false;
+        messages.add(Message(text: 'Error: $e', isUser: false));
       });
     }
   }
@@ -144,71 +96,63 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daimon AI'),
+        title: const Text('AI Career Guide'),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          if (isTyping) _buildTypingIndicator(),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: screenHeight * 0.01),
-              child: DashChat(
-                currentUser: currentUser,
-                onSend: _sendMessage,
-                messages: messages,
-                messageOptions: MessageOptions(
-                  messageTextBuilder: (ChatMessage message,
-                      ChatMessage? previousMessage, ChatMessage? nextMessage) {
-                    return Text(
-                      message.text,
-                      style: const TextStyle(fontSize: 16),
-                    );
-                  },
-                  showCurrentUserAvatar: true,
-                  currentUserContainerColor: isDarkTheme?Colors.blue:Colors.blue.shade300,
-                  timeTextColor: Colors.blue,
-                  // currentUserTextColor: Colors.white,
-                  // textColor: Colors.white,
-                  containerColor: isDarkTheme?Colors.pink:Colors.pink.shade200,
-                  onLongPressMessage: (ChatMessage message) {
-                    Clipboard.setData(ClipboardData(text: message.text));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Message copied to clipboard!')),
-                    );
-                  },
-                ),
-                inputOptions: InputOptions(
-                  textCapitalization: TextCapitalization.sentences,
-                  inputDecoration: InputDecoration(
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    hintText: 'Write a Message...',
-                    
-                    labelStyle: const TextStyle(color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.08),
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.08),
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return ChatBubble(message: message);
+              },
+            ),
+          ),
+          if (isLoading) const LinearProgressIndicator(),
+          Padding(
+            padding:
+                const EdgeInsets.only(bottom: 30, left: 16, right: 16, top: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
                     ),
                   ),
-                  sendButtonBuilder: (onSend) => IconButton(
-                    icon:
-                        Icon(Icons.send, color: Theme.of(context).primaryColor),
-                    onPressed: onSend,
-                  ),
                 ),
-              ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    final text = _messageController.text;
+                    _messageController.clear();
+                    _sendMessage(text);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(16),
+                  ),
+                  child: const Icon(Icons.arrow_upward_rounded),
+                )
+              ],
             ),
           ),
         ],
