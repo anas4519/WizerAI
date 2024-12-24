@@ -165,54 +165,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       });
     }
   }
-  // Future<void> _generateInitialRecommendations() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-
-  // String prompt = '''
-  // This student needs help finding a suitable career. Help him find top 5 careers for him/her, based on the following information, along with market trends. I need you to rank the 5 careers. Do not write anything else, just the 5 suggested careers.
-  // Current standard : ${widget.qualifications}
-  // Interests: ${widget.interests}
-  // Hobbies: ${widget.hobbies}
-  // Skills: ${widget.skills}
-  // Strengths: ${widget.strengths}
-  // Weaknesses: ${widget.weaknesses}
-  // Desired Lifestyle: ${widget.desiredLifestyle}
-  // Geographic Preferences: ${widget.geographicPref}
-  // Aspirations: ${widget.aspirations}
-  // Learning Curve: ${widget.learningCurve}
-  // Mother's Profession: ${widget.mothersProfession}
-  // Father's Profession: ${widget.fathersProfession}
-  // Parents' expectations: ${widget.parentsExpectations}
-  // Interdisciplinary Options: ${widget.interdisciplinaryOptions}
-  // Current Financial Status: ${widget.financialStatus}
-  // Salary Expectations: ${widget.salaryExpectations}
-  // Additional Information: ${widget.additionalInfo}
-  // ''';
-
-  //   try {
-  //     final result = await gemini.text(prompt);
-  // setState(() {
-  //   if (result != null && result.content != null) {
-  //     String recommendations =
-  //         result.content!.parts?.firstOrNull?.text ?? '';
-  //     recommendationsList = recommendations
-  //         .split('\n')
-  //         .where((line) => line.trim().isNotEmpty)
-  //         .map((line) => line.replaceAll(RegExp(r'^\d+\.\s*'), '').trim())
-  //         .toList();
-  //   }
-  //   isLoading = false;
-  // });
-  // await _updateSuggestions();
-  //   } catch (e) {
-  // setState(() {
-  //   print('Error: $e');
-  //   isLoading = false;
-  // });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

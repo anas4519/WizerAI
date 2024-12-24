@@ -1,7 +1,13 @@
-import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:career_counsellor/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as genai;
+
+class Message {
+  final String text;
+  final bool isUser;
+  Message({required this.text, required this.isUser});
+}
 
 class AIChatScreen extends StatefulWidget {
   const AIChatScreen({
@@ -62,19 +68,26 @@ class AIChatScreen extends StatefulWidget {
 }
 
 class _AIChatScreenState extends State<AIChatScreen> {
-  List<ChatMessage> messages = [];
-  final ChatUser currentUser = ChatUser(id: '1', firstName: 'User');
-  final ChatUser botUser = ChatUser(id: '2', firstName: 'Daimon AI');
-  bool isTyping = false;
-  final Gemini gemini = Gemini.instance;
-  List<Content> chatHistory = [];
+  late genai.GenerativeModel model;
+  late genai.ChatSession chat;
+  final TextEditingController _messageController = TextEditingController();
+  final List<Message> messages = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      String initialContext = '''
-      You are a career advisor bot. Here's the context about the user:
+    _initializeChat();
+  }
+
+  Future<void> _initializeChat() async {
+    model = genai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
+    );
+
+    final initialContext = '''
+     You are a career advisor bot. Here's the context about the user:
       Current standard: ${widget.qualifications}
       Interests: ${widget.interests}
       Skills: ${widget.skills}
@@ -98,196 +111,107 @@ class _AIChatScreenState extends State<AIChatScreen> {
       3. ${widget.third}
       4, ${widget.fourth}
       5. ${widget.fifth}
-      ''';
+    ''';
 
-      String initialQuestion =
-          'Why did you recommend ${widget.prevRecommendation} at position ${widget.pos}?';
+    chat = model.startChat(history: [
+      genai.Content.text(initialContext),
+    ]);
 
-      // Initialize chat history with system context
-      chatHistory = [
-        Content(parts: [Parts(text: initialContext)], role: 'user'),
-      ];
-
-      _sendInitialMessage(initialQuestion);
-    });
+    _sendMessage(
+        'Why did you recommend ${widget.prevRecommendation} at position ${widget.pos}?',
+        isInitial: true);
   }
 
-  void _sendInitialMessage(String question) {
-    ChatMessage userMessage = ChatMessage(
-      user: currentUser,
-      createdAt: DateTime.now(),
-      text: question,
-    );
+  Future<void> _sendMessage(String text, {bool isInitial = false}) async {
+    if (text.isEmpty) return;
 
     setState(() {
-      messages = [userMessage, ...messages];
-      isTyping = true;
+      if (!isInitial) messages.add(Message(text: text, isUser: true));
+      isLoading = true;
     });
 
-    // Add user message to chat history
-    chatHistory.add(
-      Content(parts: [Parts(text: question)], role: 'user'),
-    );
-
-    _processAIResponse();
-  }
-
-  void _sendMessage(ChatMessage chatMessage) {
-    setState(() {
-      messages = [chatMessage, ...messages];
-      isTyping = true;
-    });
-
-    // Add user message to chat history
-    chatHistory.add(
-      Content(parts: [Parts(text: chatMessage.text)], role: 'user'),
-    );
-
-    _processAIResponse();
-  }
-
-  void _processAIResponse() {
     try {
-      gemini.chat(chatHistory).then((value) {
-        if (value?.output != null) {
-          // Add AI response to chat history
-          chatHistory.add(
-            Content(parts: [Parts(text: value!.output!)], role: 'model'),
-          );
-
-          setState(() {
-            messages = [
-              ChatMessage(
-                user: botUser,
-                createdAt: DateTime.now(),
-                text: value.output!,
-              ),
-              ...messages,
-            ];
-            isTyping = false;
-          });
-        }
-      }).catchError((error) {
-        setState(() {
-          isTyping = false;
-          messages = [
-            ChatMessage(
-              user: botUser,
-              createdAt: DateTime.now(),
-              text: 'Sorry, there was an error processing your message: $error',
-            ),
-            ...messages,
-          ];
-        });
+      final response = await chat.sendMessage(genai.Content.text(text));
+      setState(() {
+        messages.add(Message(text: response.text ?? '', isUser: false));
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isTyping = false;
-        messages = [
-          ChatMessage(
-            user: botUser,
-            createdAt: DateTime.now(),
-            text: 'Sorry, there was an error processing your message: $e',
-          ),
-          ...messages,
-        ];
+        isLoading = false;
+        messages.add(Message(text: 'Error: $e', isUser: false));
       });
     }
   }
 
-  Widget _buildTypingIndicator() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Text(
-            'Daimon AI is typing',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daimon AI'),
+        title: const Text('AI Career Guide'),
         centerTitle: true,
       ),
       body: Column(
         children: [
-          if (isTyping) _buildTypingIndicator(),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: screenHeight * 0.01),
-              child: DashChat(
-                currentUser: currentUser,
-                onSend: _sendMessage,
-                messages: messages,
-                messageOptions: MessageOptions(
-                  messageTextBuilder: (ChatMessage message,
-                      ChatMessage? previousMessage, ChatMessage? nextMessage) {
-                    return Text(
-                      message.text,
-                      style: const TextStyle(fontSize: 16),
-                    );
-                  },
-                  showCurrentUserAvatar: true,
-                  currentUserContainerColor: Colors.blue,
-                  timeTextColor: Colors.blue,
-                  currentUserTextColor: Colors.white,
-                  // textColor: Colors.white,
-                  containerColor: Theme.of(context).primaryColor,
-                  onLongPressMessage: (ChatMessage message) {
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return GestureDetector(
+                  onLongPress: () {
                     Clipboard.setData(ClipboardData(text: message.text));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Message copied to clipboard!')),
+                      const SnackBar(content: Text('Message copied!')),
                     );
                   },
-                ),
-                inputOptions: InputOptions(
-                  inputDecoration: InputDecoration(
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    hintText: 'Write a Message...',
-                    labelStyle: const TextStyle(color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.08),
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.08),
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
+                  child: Align(
+                    alignment: message.isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: message.isUser ? Colors.blue : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        message.text,
+                        style: TextStyle(
+                          color: message.isUser ? Colors.white : Colors.black,
+                        ),
+                      ),
                     ),
                   ),
-                  sendButtonBuilder: (onSend) => IconButton(
-                    icon:
-                        Icon(Icons.send, color: Theme.of(context).primaryColor),
-                    onPressed: onSend,
+                );
+              },
+            ),
+          ),
+          if (isLoading) const LinearProgressIndicator(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
-              ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    final text = _messageController.text;
+                    _messageController.clear();
+                    _sendMessage(text);
+                  },
+                ),
+              ],
             ),
           ),
         ],
