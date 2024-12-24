@@ -1,6 +1,9 @@
+import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class CareerPathway extends StatefulWidget {
   const CareerPathway({
@@ -29,30 +32,59 @@ class _CareerPathwayState extends State<CareerPathway> {
   Future<void> _generateInitialRecommendations() async {
     setState(() {
       isLoading = true;
-      errorMessage = null;
     });
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
+    );
 
-    String prompt =
-        'Point by point career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
+    final prompt = 'Step by step career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
 
+    final content = [google_ai.Content.text(prompt)];
     try {
-      final response = await gemini.text(prompt);
-
-      if (response?.content?.parts?.isNotEmpty == true) {
-        setState(() {
-          body = response!.content!.parts![0].text ?? '';
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Empty response from Gemini');
-      }
+      final result = await model.generateContent(content);
+      setState(() {
+        if (result.text != null) {
+          String recommendations = result.text!;
+          body = recommendations;
+        }
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load career information: ${e.toString()}';
+        showSnackBar(context, 'Error: $e');
         isLoading = false;
       });
     }
   }
+
+  // Future<void> _generateInitialRecommendations() async {
+  //   setState(() {
+  //     isLoading = true;
+  //     errorMessage = null;
+  //   });
+
+  //   String prompt =
+  //       'Point by point career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
+
+  //   try {
+  //     final response = await gemini.text(prompt);
+
+  //     if (response?.content?.parts?.isNotEmpty == true) {
+  //       setState(() {
+  //         body = response!.content!.parts![0].text ?? '';
+  //         isLoading = false;
+  //       });
+  //     } else {
+  //       throw Exception('Empty response from Gemini');
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = 'Failed to load career information: ${e.toString()}';
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
