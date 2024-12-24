@@ -126,6 +126,7 @@ class _CareerDetailsState extends State<CareerDetails> {
       final result = await gemini.text(prompt);
       if (result?.content?.parts?[0].text != null) {
         String responseText = result!.content!.parts![0].text!;
+        print(responseText);
         _parseResponse(responseText);
       } else {
         throw Exception('Empty response from Gemini');

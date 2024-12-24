@@ -1,4 +1,5 @@
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as genai;
@@ -155,43 +156,18 @@ class _AIChatScreenState extends State<AIChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                return GestureDetector(
-                  onLongPress: () {
-                    Clipboard.setData(ClipboardData(text: message.text));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Message copied!')),
-                    );
-                  },
-                  child: Align(
-                    alignment: message.isUser
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: message.isUser ? Colors.blue : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        message.text,
-                        style: TextStyle(
-                          color: message.isUser ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return ChatBubble(message: message);
               },
             ),
           ),
           if (isLoading) const LinearProgressIndicator(),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:
+                const EdgeInsets.only(bottom: 30, left: 16, right: 16, top: 16),
             child: Row(
               children: [
                 Expanded(
@@ -199,18 +175,34 @@ class _AIChatScreenState extends State<AIChatScreen> {
                     controller: _messageController,
                     decoration: const InputDecoration(
                       hintText: 'Type a message...',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.pink),
+                      ),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
+                const SizedBox(width: 12),
+                ElevatedButton(
                   onPressed: () {
                     final text = _messageController.text;
                     _messageController.clear();
                     _sendMessage(text);
                   },
-                ),
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(16),
+                  ),
+                  child: const Icon(Icons.arrow_upward_rounded),
+                )
               ],
             ),
           ),

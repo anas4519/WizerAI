@@ -1,0 +1,39 @@
+import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+
+class ChatBubble extends StatelessWidget {
+  const ChatBubble({super.key, required this.message});
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: message.text));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Message copied!')),
+        );
+      },
+      child: Align(
+        alignment:
+            message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: message.isUser ? Colors.pink : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            message.text,
+            style: TextStyle(
+                color: isDarkMode ? Colors.white : Colors.black, fontSize: 16),
+          ),
+        ),
+      ),
+    );
+  }
+}
