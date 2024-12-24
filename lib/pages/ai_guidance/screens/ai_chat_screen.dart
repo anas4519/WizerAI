@@ -1,7 +1,6 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as genai;
 
 class Message {

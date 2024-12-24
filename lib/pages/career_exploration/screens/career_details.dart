@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'dart:convert';
+import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class CareerDetails extends StatefulWidget {
   const CareerDetails({super.key, required this.title});
@@ -107,85 +108,158 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
+  // Future<void> _generateInitialRecommendations() async {
+  //   String prompt = '''
+  //   You are a career counsellor. Generate the following information about the career '${widget.title}':
+  //   1. Overview
+  //   2. Education Required in India
+  //   3. Best Schools in India
+  //   4. Work Environment
+  //   5. Salaries in India
+  //   6. Pros (list only the advantages)
+  //   7. Cons (list only the disadvantages)
+  //   8. Industry Trends
+
+  //   Format each section with its heading followed by bullet points. Separate sections with double newlines.
+  //   ''';
+
+  //   try {
+  //     final result = await gemini.text(prompt);
+  //     if (result?.content?.parts?[0].text != null) {
+  //       String responseText = result!.content!.parts![0].text!;
+  //       print(responseText);
+  //       _parseResponse(responseText);
+  //     } else {
+  //       throw Exception('Empty response from Gemini');
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = 'Failed to load career information: ${e.toString()}';
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+
   Future<void> _generateInitialRecommendations() async {
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
+    );
+
     String prompt = '''
-    You are a career counsellor. Generate the following information about the career '${widget.title}':
-    1. Overview
-    2. Education Required in India
-    3. Best Schools in India
-    4. Work Environment
-    5. Salaries in India
-    6. Pros (list only the advantages)
-    7. Cons (list only the disadvantages)
-    8. Industry Trends
+  You are a career counsellor. Generate the following information about the career '${widget.title}':
+  1. Overview
+  2. Education Required in India
+  3. Best Schools in India
+  4. Work Environment
+  5. Salaries in India
+  6. Pros (list only the advantages)
+  7. Cons (list only the disadvantages)
+  8. Industry Trends
 
-    Format each section with its heading followed by bullet points. Separate sections with double newlines.
-    ''';
+  Format each section with its heading followed by bullet points. Separate sections with double newlines.
+  ''';
+
+    final content = [google_ai.Content.text(prompt)];
 
     try {
-      final result = await gemini.text(prompt);
-      if (result?.content?.parts?[0].text != null) {
-        String responseText = result!.content!.parts![0].text!;
-        print(responseText);
-        _parseResponse(responseText);
-      } else {
-        throw Exception('Empty response from Gemini');
-      }
-    } catch (e) {
+      final result = await model.generateContent(content);
+      // print(result.text);
       setState(() {
-        errorMessage = 'Failed to load career information: ${e.toString()}';
-        isLoading = false;
-      });
-    }
-  }
+        if (result.text != null) {
+          String response = result.text!;
+          Map<String, dynamic> sections = {};
+          String currentSection = '';
+          List<String> lines = response.split('\n');
+          List<String> currentPoints = [];
+          for (String line in lines) {
+            line = line.trim();
+            if (line.isEmpty) continue;
 
-  void _parseResponse(String response) {
-    try {
-      Map<String, List<String>> parsedData = {};
-      String currentSection = '';
-      List<String> currentPoints = [];
-
-      // Remove star symbols from the entire response
-      response = response.replaceAll('*', '');
-
-      final lines = response.split('\n');
-
-      for (String line in lines) {
-        line = line.trim();
-        if (line.isEmpty) continue;
-
-        bool isHeader = sections.any(
-            (section) => line.toLowerCase().contains(section.toLowerCase()));
-
-        if (isHeader) {
-          if (currentSection.isNotEmpty) {
-            parsedData[currentSection] = List.from(currentPoints);
-            currentPoints.clear();
+            // Check for section headers (numbered or with asterisks)
+            if (line.startsWith(RegExp(r'\d\.')) ||
+                (line.startsWith('**') && line.endsWith('**'))) {
+              if (currentSection.isNotEmpty) {
+                sections[currentSection] = List<String>.from(currentPoints);
+                currentPoints = [];
+              }
+              currentSection = line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
+            }
+            // Check for bullet points
+            else if (line.startsWith('•') ||
+                line.startsWith('-') ||
+                line.startsWith('*')) {
+              String cleanedLine =
+                  line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
+              if (cleanedLine.isNotEmpty) {
+                currentPoints.add(cleanedLine);
+              }
+            }
           }
-          currentSection = sections.firstWhere(
-              (section) => line.toLowerCase().contains(section.toLowerCase()),
-              orElse: () => line);
-        } else if (line.startsWith('-') || line.startsWith('•')) {
-          currentPoints.add(line.replaceFirst(RegExp(r'^[•-]\s*'), ''));
-        } else if (currentSection.isNotEmpty) {
-          currentPoints.add(line);
+
+          if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+            sections[currentSection] = List<String>.from(currentPoints);
+          }
+          careerDetails = sections
+              .map((key, value) => MapEntry(key, List<String>.from(value)));
+          isLoading = false;
         }
-      }
-
-      if (currentSection.isNotEmpty) {
-        parsedData[currentSection] = List.from(currentPoints);
-      }
-
-      setState(() {
-        careerDetails = parsedData;
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Error parsing career information: ${e.toString()}';
+        errorMessage = 'Error generating content: ${e.toString()}';
         isLoading = false;
       });
     }
   }
+
+  // void _parseResponse(String response) {
+  //   try {
+  //     Map<String, List<String>> parsedData = {};
+  //     String currentSection = '';
+  //     List<String> currentPoints = [];
+
+  //     // Remove star symbols from the entire response
+  //     response = response.replaceAll('*', '');
+
+  //     final lines = response.split('\n');
+
+  //     for (String line in lines) {
+  //       line = line.trim();
+  //       if (line.isEmpty) continue;
+
+  //       bool isHeader = sections.any(
+  //           (section) => line.toLowerCase().contains(section.toLowerCase()));
+
+  //       if (isHeader) {
+  //         if (currentSection.isNotEmpty) {
+  //           parsedData[currentSection] = List.from(currentPoints);
+  //           currentPoints.clear();
+  //         }
+  //         currentSection = sections.firstWhere(
+  //             (section) => line.toLowerCase().contains(section.toLowerCase()),
+  //             orElse: () => line);
+  //       } else if (line.startsWith('-') || line.startsWith('•')) {
+  //         currentPoints.add(line.replaceFirst(RegExp(r'^[•-]\s*'), ''));
+  //       } else if (currentSection.isNotEmpty) {
+  //         currentPoints.add(line);
+  //       }
+  //     }
+
+  //     if (currentSection.isNotEmpty) {
+  //       parsedData[currentSection] = List.from(currentPoints);
+  //     }
+
+  //     setState(() {
+  //       careerDetails = parsedData;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = 'Error parsing career information: ${e.toString()}';
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
 
   Widget _buildYouTubeSection() {
     if (youtubeVideos.isEmpty) return const SizedBox.shrink();
