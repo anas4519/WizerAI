@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: Container(
         color: isDarkTheme? Colors.black:Colors.grey[200],
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           child: GNav(
             onTabChange: (index) {
               setState(() {

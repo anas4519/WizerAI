@@ -131,13 +131,13 @@ class _AiGuidanceState extends State<AiGuidance> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
+        spacing: screenHeight * 0.02,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Hi $name, here are your career suggestions:',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
               itemCount: daimonSuggestions.length,
@@ -177,6 +177,14 @@ class _AiGuidanceState extends State<AiGuidance> {
               },
             ),
           ),
+          Center(
+            child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const SelectEducation()),
+                  );
+                }, child: const Text('Take the survey again?')),
+          )
         ],
       ),
     );

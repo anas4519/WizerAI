@@ -1,7 +1,9 @@
+import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecommendationScreen extends StatefulWidget {
@@ -50,7 +52,6 @@ class RecommendationScreen extends StatefulWidget {
 
 class _RecommendationScreenState extends State<RecommendationScreen> {
   bool isLoading = true;
-  final Gemini gemini = Gemini.instance;
   List<String> recommendationsList = [];
   final SupabaseClient supabase = Supabase.instance.client;
   @override
@@ -107,9 +108,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       await supabase.from('profiles').update({
         'suggestions': recommendationsList, // Update the suggestions column
       }).eq('id', userId);
-      print("Suggestions updated successfully.");
     } catch (e) {
-      print("Error updating suggestions: $e");
+      showSnackBar(context, 'Error updating suggestions: $e');
     }
   }
 
@@ -117,8 +117,12 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     setState(() {
       isLoading = true;
     });
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
+    );
 
-    String prompt = '''
+    final prompt = '''
     This student needs help finding a suitable career. Help him find top 5 careers for him/her, based on the following information, along with market trends. I need you to rank the 5 careers. Do not write anything else, just the 5 suggested careers.
     Current standard : ${widget.qualifications}
     Interests: ${widget.interests}
@@ -139,12 +143,12 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     Additional Information: ${widget.additionalInfo}
     ''';
 
+    final content = [google_ai.Content.text(prompt)];
     try {
-      final result = await gemini.text(prompt);
+      final result = await model.generateContent(content);
       setState(() {
-        if (result != null && result.content != null) {
-          String recommendations =
-              result.content!.parts?.firstOrNull?.text ?? '';
+        if (result.text != null) {
+          String recommendations = result.text!;
           recommendationsList = recommendations
               .split('\n')
               .where((line) => line.trim().isNotEmpty)
@@ -156,11 +160,59 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       await _updateSuggestions();
     } catch (e) {
       setState(() {
-        print('Error: $e');
+        showSnackBar(context, 'Error: $e');
         isLoading = false;
       });
     }
   }
+  // Future<void> _generateInitialRecommendations() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+
+  // String prompt = '''
+  // This student needs help finding a suitable career. Help him find top 5 careers for him/her, based on the following information, along with market trends. I need you to rank the 5 careers. Do not write anything else, just the 5 suggested careers.
+  // Current standard : ${widget.qualifications}
+  // Interests: ${widget.interests}
+  // Hobbies: ${widget.hobbies}
+  // Skills: ${widget.skills}
+  // Strengths: ${widget.strengths}
+  // Weaknesses: ${widget.weaknesses}
+  // Desired Lifestyle: ${widget.desiredLifestyle}
+  // Geographic Preferences: ${widget.geographicPref}
+  // Aspirations: ${widget.aspirations}
+  // Learning Curve: ${widget.learningCurve}
+  // Mother's Profession: ${widget.mothersProfession}
+  // Father's Profession: ${widget.fathersProfession}
+  // Parents' expectations: ${widget.parentsExpectations}
+  // Interdisciplinary Options: ${widget.interdisciplinaryOptions}
+  // Current Financial Status: ${widget.financialStatus}
+  // Salary Expectations: ${widget.salaryExpectations}
+  // Additional Information: ${widget.additionalInfo}
+  // ''';
+
+  //   try {
+  //     final result = await gemini.text(prompt);
+  // setState(() {
+  //   if (result != null && result.content != null) {
+  //     String recommendations =
+  //         result.content!.parts?.firstOrNull?.text ?? '';
+  //     recommendationsList = recommendations
+  //         .split('\n')
+  //         .where((line) => line.trim().isNotEmpty)
+  //         .map((line) => line.replaceAll(RegExp(r'^\d+\.\s*'), '').trim())
+  //         .toList();
+  //   }
+  //   isLoading = false;
+  // });
+  // await _updateSuggestions();
+  //   } catch (e) {
+  // setState(() {
+  //   print('Error: $e');
+  //   isLoading = false;
+  // });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
