@@ -1,6 +1,8 @@
+import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class ElaborateDetail extends StatefulWidget {
   const ElaborateDetail({
@@ -17,7 +19,6 @@ class ElaborateDetail extends StatefulWidget {
 }
 
 class _ElaborateDetailState extends State<ElaborateDetail> {
-  final Gemini gemini = Gemini.instance;
   bool isLoading = true;
   String? errorMessage;
   String body = '';
@@ -31,27 +32,28 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
   Future<void> _generateInitialRecommendations() async {
     setState(() {
       isLoading = true;
-      errorMessage = null;
     });
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: Constants.GEMINI_API_KEY,
+    );
 
-    String prompt =
+    final prompt =
         'Elaborate on the ${widget.title} of ${widget.career} as a career.';
 
+    final content = [google_ai.Content.text(prompt)];
     try {
-      final response = await gemini.text(prompt);
-
-      if (response?.content?.parts?.isNotEmpty == true) {
-        setState(() {
-          // Clean the response by removing all '*' symbols
-          body = response!.content!.parts![0].text?.replaceAll('*', '') ?? '';
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Empty response from Gemini');
-      }
+      final result = await model.generateContent(content);
+      setState(() {
+        if (result.text != null) {
+          String recommendations = result.text!;
+          body = recommendations;
+        }
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load career information: ${e.toString()}';
+        showSnackBar(context, 'Error: $e');
         isLoading = false;
       });
     }
@@ -63,7 +65,7 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Career Pathway'),
         centerTitle: true,
       ),
       body: isLoading
