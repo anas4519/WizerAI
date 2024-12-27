@@ -106,38 +106,6 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
-  // Future<void> _generateInitialRecommendations() async {
-  //   String prompt = '''
-  //   You are a career counsellor. Generate the following information about the career '${widget.title}':
-  //   1. Overview
-  //   2. Education Required in India
-  //   3. Best Schools in India
-  //   4. Work Environment
-  //   5. Salaries in India
-  //   6. Pros (list only the advantages)
-  //   7. Cons (list only the disadvantages)
-  //   8. Industry Trends
-
-  //   Format each section with its heading followed by bullet points. Separate sections with double newlines.
-  //   ''';
-
-  //   try {
-  //     final result = await gemini.text(prompt);
-  //     if (result?.content?.parts?[0].text != null) {
-  //       String responseText = result!.content!.parts![0].text!;
-  //       print(responseText);
-  //       _parseResponse(responseText);
-  //     } else {
-  //       throw Exception('Empty response from Gemini');
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = 'Failed to load career information: ${e.toString()}';
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
   Future<void> _generateInitialRecommendations() async {
     final model = google_ai.GenerativeModel(
       model: 'gemini-1.5-flash',
@@ -211,53 +179,6 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
-  // void _parseResponse(String response) {
-  //   try {
-  //     Map<String, List<String>> parsedData = {};
-  //     String currentSection = '';
-  //     List<String> currentPoints = [];
-
-  //     // Remove star symbols from the entire response
-  //     response = response.replaceAll('*', '');
-
-  //     final lines = response.split('\n');
-
-  //     for (String line in lines) {
-  //       line = line.trim();
-  //       if (line.isEmpty) continue;
-
-  //       bool isHeader = sections.any(
-  //           (section) => line.toLowerCase().contains(section.toLowerCase()));
-
-  //       if (isHeader) {
-  //         if (currentSection.isNotEmpty) {
-  //           parsedData[currentSection] = List.from(currentPoints);
-  //           currentPoints.clear();
-  //         }
-  //         currentSection = sections.firstWhere(
-  //             (section) => line.toLowerCase().contains(section.toLowerCase()),
-  //             orElse: () => line);
-  //       } else if (line.startsWith('-') || line.startsWith('•')) {
-  //         currentPoints.add(line.replaceFirst(RegExp(r'^[•-]\s*'), ''));
-  //       } else if (currentSection.isNotEmpty) {
-  //         currentPoints.add(line);
-  //       }
-  //     }
-
-  //     if (currentSection.isNotEmpty) {
-  //       parsedData[currentSection] = List.from(currentPoints);
-  //     }
-
-  //     setState(() {
-  //       careerDetails = parsedData;
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = 'Error parsing career information: ${e.toString()}';
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
 
   Widget _buildYouTubeSection() {
     if (youtubeVideos.isEmpty) return const SizedBox.shrink();

@@ -66,33 +66,33 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
     }
   }
 
-  Widget _buildTypingIndicator() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Text(
-            'Daimon AI is typing',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildTypingIndicator() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //     child: Row(
+  //       children: [
+  //         Text(
+  //           'Daimon AI is typing',
+  //           style: TextStyle(
+  //             color: Theme.of(context).primaryColor,
+  //             fontWeight: FontWeight.w500,
+  //           ),
+  //         ),
+  //         const SizedBox(width: 8),
+  //         SizedBox(
+  //           width: 20,
+  //           height: 20,
+  //           child: CircularProgressIndicator(
+  //             strokeWidth: 2,
+  //             valueColor: AlwaysStoppedAnimation<Color>(
+  //               Theme.of(context).primaryColor,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

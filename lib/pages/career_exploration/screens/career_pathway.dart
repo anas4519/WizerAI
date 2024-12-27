@@ -1,6 +1,5 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/utils/utils.dart';
-import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:career_counsellor/widgets/markdown_formatted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
@@ -25,10 +24,10 @@ class _CareerPathwayState extends State<CareerPathway> {
   @override
   void initState() {
     super.initState();
-    _generateInitialRecommendations();
+    _generateContent();
   }
 
-  Future<void> _generateInitialRecommendations() async {
+  Future<void> _generateContent() async {
     setState(() {
       isLoading = true;
     });
@@ -59,8 +58,6 @@ class _CareerPathwayState extends State<CareerPathway> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Career Pathway'),

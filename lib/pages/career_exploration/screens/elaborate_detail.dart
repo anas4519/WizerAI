@@ -26,10 +26,10 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
   @override
   void initState() {
     super.initState();
-    _generateInitialRecommendations();
+    _generateContent();
   }
 
-  Future<void> _generateInitialRecommendations() async {
+  Future<void> _generateContent() async {
     setState(() {
       isLoading = true;
     });
