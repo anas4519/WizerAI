@@ -35,7 +35,7 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
     });
     final model = google_ai.GenerativeModel(
       model: 'gemini-1.5-flash',
-      apiKey: Constants.GEMINI_API_KEY,
+      apiKey: GEMINI_API_KEY,
     );
 
     final prompt =

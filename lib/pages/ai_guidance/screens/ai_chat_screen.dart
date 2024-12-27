@@ -83,7 +83,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
   Future<void> _initializeChat() async {
     model = genai.GenerativeModel(
       model: 'gemini-1.5-flash',
-      apiKey: Constants.GEMINI_API_KEY,
+      apiKey: GEMINI_API_KEY,
     );
 
     final initialContext = '''

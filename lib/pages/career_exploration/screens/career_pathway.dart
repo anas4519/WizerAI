@@ -33,7 +33,7 @@ class _CareerPathwayState extends State<CareerPathway> {
     });
     final model = google_ai.GenerativeModel(
       model: 'gemini-1.5-flash',
-      apiKey: Constants.GEMINI_API_KEY,
+      apiKey: GEMINI_API_KEY,
     );
 
     final prompt = 'Step by step career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';

@@ -109,7 +109,7 @@ class _CareerDetailsState extends State<CareerDetails> {
   Future<void> _generateInitialRecommendations() async {
     final model = google_ai.GenerativeModel(
       model: 'gemini-1.5-flash',
-      apiKey: Constants.GEMINI_API_KEY,
+      apiKey: GEMINI_API_KEY,
     );
 
     String prompt = '''
