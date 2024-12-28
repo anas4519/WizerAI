@@ -4,6 +4,7 @@ import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
+import 'package:lottie/lottie.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecommendationScreen extends StatefulWidget {
@@ -189,16 +190,24 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         child: Padding(
           padding: EdgeInsets.all(screenWidth * 0.04),
           child: isLoading
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('Generating recommendations...'),
-                    ],
+              ? Center(
+                  child: Lottie.asset(
+                    'assets/animations/ai-loader1.json',
+                    width: screenWidth * 0.25,
+                    height: screenWidth * 0.25,
+                    fit: BoxFit.contain,
                   ),
                 )
+              // const Center(
+              //     child: Column(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         CircularProgressIndicator(),
+              //         SizedBox(height: 16),
+              //         Text('Generating recommendations...'),
+              //       ],
+              //     ),
+              //   )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

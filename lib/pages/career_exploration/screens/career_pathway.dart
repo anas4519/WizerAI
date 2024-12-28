@@ -3,6 +3,7 @@ import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/markdown_formatted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
+import 'package:lottie/lottie.dart';
 
 class CareerPathway extends StatefulWidget {
   const CareerPathway({
@@ -36,7 +37,8 @@ class _CareerPathwayState extends State<CareerPathway> {
       apiKey: GEMINI_API_KEY,
     );
 
-    final prompt = 'Step by step career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
+    final prompt =
+        'Step by step career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
 
     final content = [google_ai.Content.text(prompt)];
     try {
@@ -58,21 +60,28 @@ class _CareerPathwayState extends State<CareerPathway> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Career Pathway'),
-        centerTitle: true,
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(
-                  child: Text(
-                    errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                )
-              : MarkDownFormattedText(markdownString: body)
-    );
+        appBar: AppBar(
+          title: const Text('Career Pathway'),
+          centerTitle: true,
+        ),
+        body: isLoading
+            ? Center(
+                child: Lottie.asset(
+                  'assets/animations/ai-loader1.json',
+                  width: screenWidth * 0.25,
+                  height: screenWidth * 0.25,
+                  fit: BoxFit.contain,
+                ),
+              )
+            : errorMessage != null
+                ? Center(
+                    child: Text(
+                      errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                : MarkDownFormattedText(markdownString: body));
   }
 }

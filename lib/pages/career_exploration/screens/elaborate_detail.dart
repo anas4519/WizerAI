@@ -3,6 +3,7 @@ import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/markdown_formatted_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
+import 'package:lottie/lottie.dart';
 
 class ElaborateDetail extends StatefulWidget {
   const ElaborateDetail({
@@ -61,13 +62,21 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
           centerTitle: true,
         ),
         body: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(
+                child: Lottie.asset(
+                  'assets/animations/ai-loader1.json',
+                  width: screenWidth * 0.25,
+                  height: screenWidth * 0.25,
+                  fit: BoxFit.contain,
+                ),
+              )
             : errorMessage != null
                 ? Center(
                     child: Text(
@@ -75,7 +84,6 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
                       style: const TextStyle(color: Colors.red),
                     ),
                   )
-                : MarkDownFormattedText(markdownString: body)
-        );
+                : MarkDownFormattedText(markdownString: body));
   }
 }

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
+import 'package:lottie/lottie.dart';
 
 class CareerDetails extends StatefulWidget {
   const CareerDetails({super.key, required this.title});
@@ -231,7 +232,16 @@ class _CareerDetailsState extends State<CareerDetails> {
         ],
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? 
+          // const Center(child: CircularProgressIndicator())
+          Center(
+              child: Lottie.asset(
+                'assets/animations/ai-loader1.json',
+                width: screenWidth * 0.25,
+                height: screenWidth * 0.25,
+                fit: BoxFit.contain,
+              ),
+            )
           : errorMessage != null
               ? Center(
                   child: Padding(

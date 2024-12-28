@@ -3,6 +3,7 @@ import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dar
 import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AiGuidance extends StatefulWidget {
@@ -84,8 +85,11 @@ class _AiGuidanceState extends State<AiGuidance> {
       ),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(
-                color: theme.primaryColor,
+              child: Lottie.asset(
+                'assets/animations/ai-loader1.json',
+                width: screenWidth * 0.25,
+                height: screenWidth * 0.25,
+                fit: BoxFit.contain,
               ),
             )
           : daimonSuggestions.isEmpty
@@ -181,9 +185,11 @@ class _AiGuidanceState extends State<AiGuidance> {
             child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const SelectEducation()),
+                    MaterialPageRoute(
+                        builder: (ctx) => const SelectEducation()),
                   );
-                }, child: const Text('Take the survey again?')),
+                },
+                child: const Text('Take the survey again?')),
           )
         ],
       ),
