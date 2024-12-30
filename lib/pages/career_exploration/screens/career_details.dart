@@ -1,7 +1,8 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/career_detail_ai_guide.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/ai_guides/career_detail_ai_guide.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/career_pathway.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/compatibility_check.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/cons_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/default_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.dart';
@@ -180,7 +181,6 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
-
   Widget _buildYouTubeSection() {
     if (youtubeVideos.isEmpty) return const SizedBox.shrink();
     return YoutubeSection(youtubeVideos: youtubeVideos);
@@ -227,12 +227,18 @@ class _CareerDetailsState extends State<CareerDetails> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-                onPressed: () {}, icon: const Icon(Icons.auto_awesome)),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => CompatibilityCheck(
+                            career: widget.title,
+                          )));
+                },
+                icon: const Icon(Icons.auto_awesome)),
           )
         ],
       ),
       body: isLoading
-          ? 
+          ?
           // const Center(child: CircularProgressIndicator())
           Center(
               child: Lottie.asset(
