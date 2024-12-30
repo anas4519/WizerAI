@@ -83,8 +83,7 @@ class _AiGuidanceState extends State<AiGuidance> {
           )
         ],
       ),
-      body:
-      _isLoading
+      body: _isLoading
           ? Center(
               child: Lottie.asset(
                 'assets/animations/ai-loader1.json',
@@ -151,30 +150,27 @@ class _AiGuidanceState extends State<AiGuidance> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
+        spacing: screenHeight * 0.02,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Hi $name, here are your career suggestions:',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
               itemCount: daimonSuggestions.length,
               itemBuilder: (context, index) {
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
+                  elevation: 2,
                   child: ListTile(
                     contentPadding: EdgeInsets.symmetric(
                         vertical: screenHeight * 0.015,
-                        horizontal: screenWidth * 0.04),
+                        horizontal: screenWidth * 0.02),
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).primaryColor,
-                      radius: 25,
+                      radius: 20,
                       child: Text(
                         '${index + 1}',
                         style: const TextStyle(
@@ -185,42 +181,31 @@ class _AiGuidanceState extends State<AiGuidance> {
                     ),
                     title: Text(
                       daimonSuggestions[index],
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     trailing: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => CareerDetails(
-                                  title: daimonSuggestions[index],
-                                )));
-                      },
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                      color: Theme.of(context).primaryColor,
-                    ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => CareerDetails(
+                                    title: daimonSuggestions[index],
+                                  )));
+                        },
+                        icon: const Icon(Icons.arrow_forward_rounded)),
                   ),
                 );
               },
             ),
           ),
-          const SizedBox(height: 16),
           Center(
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (ctx) => const SelectEducation()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 24.0),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              child: const Text('Take the survey again?'),
-            ),
-          ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (ctx) => const SelectEducation()),
+                  );
+                },
+                child: const Text('Take the survey again?')),
+          )
         ],
       ),
     );

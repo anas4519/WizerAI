@@ -30,7 +30,8 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     });
   }
-  
+
+  final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   Expanded(
                     child: TextField(
                       onChanged: (value) => updateList(value),
+                      controller: _searchController,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: const InputDecoration(
@@ -88,19 +90,29 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             SizedBox(height: screenHeight * 0.04),
             Expanded(
-              child: ListView.builder(
-                itemCount: displayList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(displayList[index]),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) =>
-                              CareerDetails(title: displayList[index])));
-                    },
-                  );
-                },
-              ),
+              child: displayList.isEmpty
+                  ? ListTile(
+                      title: const Text(
+                          "Didn't find what you were looking for? Click here after you finish typing the career name."),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) =>
+                                CareerDetails(title: _searchController.text)));
+                      },
+                    )
+                  : ListView.builder(
+                      itemCount: displayList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(displayList[index]),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) =>
+                                    CareerDetails(title: displayList[index])));
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),
