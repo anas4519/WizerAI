@@ -95,16 +95,17 @@ class _CompatibilityCheckState extends State<CompatibilityCheck> {
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CompatibilityCheckAiGuide(
-                      title: widget.career,
-                      prevContext: body,
-                    )));
-          },
-          child: const Icon(Icons.smart_toy_sharp)
-        ),
+            shape: const CircleBorder(),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CompatibilityCheckAiGuide(
+                        title: widget.career,
+                        prevContext: body,
+                      )));
+            },
+            child: Lottie.asset(
+              'assets/animations/bot_animation.json',
+            )),
         body: _isLoading
             ? Center(
                 child: Lottie.asset(
