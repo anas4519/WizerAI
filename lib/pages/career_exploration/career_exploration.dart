@@ -1,6 +1,5 @@
 import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/search_screen.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +13,6 @@ class CareerExploration extends StatefulWidget {
 }
 
 class _CareerExplorationState extends State<CareerExploration> {
-  int _current = 0;
   List<String> daimonSuggestions = [];
   final SupabaseClient supabase = Supabase.instance.client;
   bool _isLoading = true;
@@ -28,11 +26,14 @@ class _CareerExplorationState extends State<CareerExploration> {
   Future<void> fetchSuggestions() async {
     try {
       final userId = supabase.auth.currentUser!.id;
-      final data = await supabase.from('profiles').select().eq('id', userId).single();
+      final data =
+          await supabase.from('profiles').select().eq('id', userId).single();
 
       setState(() {
         daimonSuggestions = data['suggestions'] != null
-            ? (data['suggestions'] as List<dynamic>).map((e) => e.toString()).toList()
+            ? (data['suggestions'] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
             : _getDefaultSuggestions();
         _isLoading = false;
       });
@@ -155,102 +156,44 @@ class _CareerExplorationState extends State<CareerExploration> {
               SizedBox(
                 height: screenHeight * 0.01,
               ),
-              CarouselSlider.builder(
-                itemCount: careerDetails.length,
-                itemBuilder: (context, index, realIndex) {
-                  return Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenwidth * 0.025),
-                    child: GestureDetector(
-                      onTap: () => _handleImageTap(index),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(
-                                careerDetails[index]['image']!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(8),
-                                    bottomRight: Radius.circular(8),
-                                  ),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.7),
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: Text(
-                                  careerDetails[index]['title']!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                options: CarouselOptions(
-                  viewportFraction: 0.9,
-                  height: screenHeight * 0.25,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
+              SizedBox(
+                height: screenHeight * 0.25,
+                child: CarouselView(
+                  onTap: (value) {
+                    _handleImageTap(value);
                   },
+                  itemExtent: screenwidth * 0.9,
+                  // itemSnapping: true,
+                  children: List.generate(5, (int index) {
+                    return Stack(
+                      children: [
+                        // Main image
+                        Image.asset(
+                          careerDetails[index]['image']!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+
+                        // Bottom-left text
+                        Positioned(
+                          bottom: 10.0, // Distance from the bottom edge
+                          left: 10.0, // Distance from the left edge
+                          child: Text(
+                            careerDetails[index]['title']!, // Example text
+                            style: const TextStyle(
+                              color: Colors.white, // Text color
+                              fontSize: 16.0, // Text size
+                              fontWeight: FontWeight.bold,
+                              backgroundColor: Colors
+                                  .black45, // Optional: background for better visibility
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: careerDetails.asMap().entries.map((entry) {
-                  return Container(
-                    width: 12.0,
-                    height: 12.0,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color: isDarkTheme ? Colors.white : Colors.black),
-                      shape: BoxShape.circle,
-                      color: Colors.pink
-                          .withOpacity(_current == entry.key ? 0.9 : 0.0),
-                    ),
-                  );
-                }).toList(),
               ),
               SizedBox(
                 height: screenHeight * 0.02,
@@ -279,7 +222,8 @@ class _CareerExplorationState extends State<CareerExploration> {
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => CareerDetails(title: daimonSuggestions[index]),
+                      builder: (ctx) =>
+                          CareerDetails(title: daimonSuggestions[index]),
                     ));
                   },
                 );
