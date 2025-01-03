@@ -1,4 +1,5 @@
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ResourcePortal extends StatelessWidget {
@@ -8,6 +9,8 @@ class ResourcePortal extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final iconSize = screenWidth * 0.06; // fixed icon size for symmetry
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Resources'),
@@ -19,66 +22,100 @@ class ResourcePortal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Quizes',
+                'Quizzes',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(height: screenHeight * 0.02),
               Column(
-                spacing: screenHeight * 0.02,
-                children: const [
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // First Row
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       QuizIcon(
-                        icon: Icon(Icons.sports_soccer),
-                        title: 'Soccer',
+                        icon: Icon(
+                          CupertinoIcons.chat_bubble_2,
+                          size: iconSize,
+                        ),
+                        title: 'Communication Skills',
                       ),
                       QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
+                        icon: Icon(
+                          CupertinoIcons.question_circle,
+                          size: iconSize,
+                        ),
+                        title: 'Problem Solving',
                       ),
                       QuizIcon(
-                        icon: Icon(Icons.sports_cricket),
-                        title: 'Cricket',
+                        icon: Icon(
+                          Icons.group,
+                          size: iconSize,
+                        ),
+                        title: 'Teamwork',
                       ),
                     ],
                   ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Second Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       QuizIcon(
-                        icon: Icon(Icons.note_alt_outlined),
+                        icon: Icon(
+                          Icons.autorenew,
+                          size: iconSize,
+                        ),
+                        title: 'Flexibility',
+                      ),
+                      QuizIcon(
+                        icon: Icon(
+                          Icons.leaderboard,
+                          size: iconSize,
+                        ),
+                        title: 'Leadership Skills',
+                      ),
+                      QuizIcon(
+                        icon: Icon(
+                          Icons.access_time,
+                          size: iconSize,
+                        ),
+                        title: 'Time Management',
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Third Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      QuizIcon(
+                        icon: Icon(
+                          Icons.search,
+                          size: iconSize,
+                        ),
+                        title: 'Attention to Detail',
+                      ),
+                      QuizIcon(
+                        icon: Icon(
+                          Icons.brush_outlined,
+                          size: iconSize,
+                        ),
+                        title: 'Creativity',
+                      ),
+                      QuizIcon(
+                        icon: Icon(
+                          Icons.note_alt_outlined,
+                          size: iconSize,
+                        ),
                         title: 'Custom',
-                      ),
-                      QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
-                      ),
-                      QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
-                      ),
-                    ],
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
-                      ),
-                      QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
-                      ),
-                      QuizIcon(
-                        icon: Icon(Icons.sports_football),
-                        title: 'Football',
                       ),
                     ],
                   ),
                 ],
-              ),
+              )
             ],
           ),
         ));

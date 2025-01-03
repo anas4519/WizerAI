@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class QuizIcon extends StatelessWidget {
   const QuizIcon({super.key, required this.title, required this.icon});
@@ -7,24 +8,30 @@ class QuizIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: MediaQuery.of(context).size.width * 0.01,
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+    final screenWidth = MediaQuery.of(context).size.width;
+    return SizedBox(
+      width: screenWidth * 0.3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: MediaQuery.of(context).size.width * 0.01,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              HapticFeedback.lightImpact();
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: icon,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: icon,
-          ),
-        ),
-        Text(title, style: Theme.of(context).textTheme.titleSmall),
-      ],
+          Text(title, style: TextStyle(fontSize: screenWidth*0.02), textAlign: TextAlign.center,),
+        ],
+      ),
     );
   }
 }
