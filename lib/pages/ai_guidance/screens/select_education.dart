@@ -101,47 +101,6 @@ class SelectEducation extends StatelessWidget {
               ),
             ),
           ],
-          // children: [
-          //   const Text(
-          //     'Choose Your Current Education Level',
-          //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          //   ),
-          //   SizedBox(height: 20),
-          //   Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       const Text(
-          //         'School',
-          //         style: TextStyle(fontSize: 16),
-          //       ),
-          //       IconButton(
-          // onPressed: () {
-          //   Navigator.of(context).push(
-          //     MaterialPageRoute(builder: (ctx) => const CareerSurvey()),
-          //   );
-          //         },
-          //         icon: const Icon(CupertinoIcons.arrow_right),
-          //       ),
-          //     ],
-          //   ),
-          //   Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       const Text(
-          //         'Higher Education',
-          //         style: TextStyle(fontSize: 16),
-          //       ),
-          //       IconButton(
-          //         onPressed: () {
-          //           Navigator.of(context).push(
-          //             MaterialPageRoute(builder: (ctx) => const CareerSurveyHigher()),
-          //           );
-          //         },
-          //         icon: const Icon(CupertinoIcons.arrow_right),
-          //       ),
-          //     ],
-          //   ),
-          // ],
         ),
       ),
     );

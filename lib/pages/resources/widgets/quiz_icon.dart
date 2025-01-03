@@ -1,3 +1,4 @@
+import 'package:career_counsellor/pages/resources/pages/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +19,15 @@ class QuizIcon extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               HapticFeedback.lightImpact();
+              if (title == 'Custom') {
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuizPage(title: title),
+                  ),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -29,7 +39,11 @@ class QuizIcon extends StatelessWidget {
               child: icon,
             ),
           ),
-          Text(title, style: TextStyle(fontSize: screenWidth*0.02), textAlign: TextAlign.center,),
+          Text(
+            title,
+            style: TextStyle(fontSize: screenWidth * 0.02),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
