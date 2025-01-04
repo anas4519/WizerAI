@@ -1,3 +1,4 @@
+import 'package:career_counsellor/pages/resources/pages/custom_quiz_page.dart';
 import 'package:career_counsellor/pages/resources/pages/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,12 @@ class QuizIcon extends StatelessWidget {
             onPressed: () {
               HapticFeedback.lightImpact();
               if (title == 'Custom') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CustomQuizPage(),
+                  ),
+                );
               } else {
                 Navigator.push(
                   context,
