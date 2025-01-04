@@ -1,6 +1,10 @@
-import 'package:career_counsellor/pages/resources/pages/quiz_page.dart';
+import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/pages/resources/pages/quiz_selection.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as genai;
+import 'package:lottie/lottie.dart';
 
 class CustomQuizPage extends StatefulWidget {
   const CustomQuizPage({super.key});
@@ -12,11 +16,46 @@ class CustomQuizPage extends StatefulWidget {
 class _CustomQuizPageState extends State<CustomQuizPage> {
   final _formKey = GlobalKey<FormState>();
   final _quizController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> _checkValidity() async {
+    final model = genai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: GEMINI_API_KEY,
+    );
+    final prompt =
+        '''Respond in only yes/no: Is ${_quizController.text} a valid topic for a quiz that you could generate?''';
+    final content = [genai.Content.text(prompt)];
+    try {
+      final result = await model.generateContent(content);
+      if (result.text != null) {
+        if (result.text!.toLowerCase().contains('yes')) {
+          isLoading = false;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizSelection(title: _quizController.text),
+            ),
+          );
+        } else {
+          setState(() {
+            showSnackBar(context, 'Please enter a valid quiz topic.');
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        showSnackBar(context, 'Error: $e');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Topic'),
@@ -54,8 +93,8 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         borderSide: const BorderSide(
-                          color: Colors.pink, // Set the border color to pink
-                          width: 2.0, // Set the border width to 2
+                          color: Colors.pink,
+                          width: 2.0,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -76,7 +115,7 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         borderSide: const BorderSide(
                           color: Colors
-                              .red, // Optional: Set a red border for validation errors
+                              .red,
                           width: 2.0,
                         ),
                       ),
@@ -87,7 +126,7 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                           width: 2.0,
                         ),
                       ),
-                      hintText: 'Enter Quiz Topic', // Optional: Add a hint text
+                      hintText: 'Enter Quiz Topic',
                     ),
                   )),
               SizedBox(
@@ -98,15 +137,16 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                   FocusScope.of(context).unfocus();
                   HapticFeedback.lightImpact();
                   if (_formKey.currentState!.validate()) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) =>
-                            QuizPage(title: _quizController.text)));
+                    setState(() {
+                      isLoading = true;
+                    });
+                    _checkValidity();
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
-                        screenWidth * 0.02), // Make the button square
+                        screenWidth * 0.02),
                   ),
                 ),
                 child: Padding(
@@ -119,6 +159,16 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: screenHeight * 0.05,
+              ),
+              if (isLoading)
+                Lottie.asset(
+                  'assets/animations/ai-loader1.json',
+                  width: screenWidth * 0.25,
+                  height: screenWidth * 0.25,
+                  fit: BoxFit.contain,
+                ),
             ],
           ),
         ),

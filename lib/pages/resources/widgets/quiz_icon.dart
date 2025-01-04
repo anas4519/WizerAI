@@ -1,5 +1,5 @@
 import 'package:career_counsellor/pages/resources/pages/custom_quiz_page.dart';
-import 'package:career_counsellor/pages/resources/pages/quiz_page.dart';
+import 'package:career_counsellor/pages/resources/pages/quiz_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,7 +31,7 @@ class QuizIcon extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => QuizPage(title: title),
+                    builder: (context) => QuizSelection(title: title),
                   ),
                 );
               }
