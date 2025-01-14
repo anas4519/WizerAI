@@ -1,4 +1,5 @@
 import 'package:career_counsellor/pages/resources/pages/quiz_page.dart';
+import 'package:career_counsellor/pages/resources/pages/quiz_page_alt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -71,8 +72,15 @@ class McqInstructionsPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (ctx) => QuizPage()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => const QuizPageAlt(
+                            questions: [
+                              'sdjkdskcnsdc',
+                              'dsadsdcsdc',
+                              'sdsdfcscsds'
+                            ],
+                            currIdx: 0,
+                          )));
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
