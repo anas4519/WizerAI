@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 
 class QuestionBox extends StatefulWidget {
   const QuestionBox(
-      {super.key, required this.question, required this.questionNumber});
+      {super.key,
+      required this.question,
+      required this.questionNumber,
+      required this.questions});
   final String question;
   final int questionNumber;
+  final List<String> questions;
 
   @override
   State<QuestionBox> createState() => _QuestionBoxState();
@@ -31,10 +35,14 @@ class _QuestionBoxState extends State<QuestionBox> {
         });
       } else {
         _timer.cancel();
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (ctx) => QuizPageAlt(
-                questions: ['sdjkdskcnsdc', 'dsadsdcsdc', 'sdsdfcscsds'],
-                currIdx: widget.questionNumber)));
+        if (widget.questionNumber == 10) {
+          //result
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (ctx) => QuizPageAlt(
+                  questions: widget.questions,
+                  currIdx: widget.questionNumber)));
+        }
       }
     });
   }

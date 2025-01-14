@@ -12,43 +12,86 @@ class QuizPageAlt extends StatefulWidget {
 }
 
 class _QuizPageAltState extends State<QuizPageAlt> {
+  int? selectedOption; // State variable to track the selected option
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(
+              height: screenHeight * 0.05,
+            ),
             QuestionBox(
+                questions: widget.questions,
                 question: widget.questions[widget.currIdx],
                 questionNumber: widget.currIdx + 1),
             SizedBox(
-              height: screenHeight * 0.15,
+              height: screenHeight * 0.1,
             ),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 4, // Number of options
               itemBuilder: (context, index) {
+                final isSelected = selectedOption == index;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Material(
-                    elevation: 2,
-                    borderRadius: BorderRadius.circular(10),
-                    child: ListTile(
-                      title: Text('Option ${index + 1}'),
-                      onTap: () {
-                        // Handle option selection
-                      },
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedOption = index;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(screenWidth * 0.8, screenHeight * 0.07),
+                      side: const BorderSide(color: Colors.pink),
+                      backgroundColor: isSelected
+                          ? Colors.pinkAccent
+                          : (isDarkMode ? Colors.black : Colors.grey[200]),
+                      foregroundColor: isSelected
+                          ? Colors.white
+                          : (isDarkMode ? Colors.white : Colors.black),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                      ),
                     ),
+                    child: Text('Option ${index + 1}'),
                   ),
                 );
               },
             ),
+            SizedBox(
+              height: screenHeight * 0.02,
+            ),
+            if (selectedOption != null)
+              ElevatedButton(
+                onPressed: () {
+                  if (widget.currIdx == 9) {
+                    //result
+                  } else {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (ctx) => QuizPageAlt(
+                            questions: widget.questions,
+                            currIdx: widget.currIdx + 1)));
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(screenWidth * 0.6, screenHeight * 0.06),
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(screenWidth * 0.03))),
+                child: const Text('Submit'),
+              ),
           ],
         ),
       ),

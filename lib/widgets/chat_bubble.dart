@@ -1,6 +1,7 @@
 import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 
 
 class ChatBubble extends StatelessWidget {
@@ -27,7 +28,7 @@ class ChatBubble extends StatelessWidget {
             color: message.isUser ? Colors.pink : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(
+          child: GptMarkdown(
             message.text,
             style: TextStyle(
                 color: isDarkMode || message.isUser? Colors.white : Colors.black, fontSize: 16),

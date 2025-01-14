@@ -48,15 +48,15 @@ class _QuizPageState extends State<QuizPage> {
                     size: Size(screenWidth, screenHeight * 0.4),
                     painter: SemiCirclePainter(),
                   ),
-                  Positioned(
-                    top: screenHeight * 0.3,
-                    left: screenWidth * 0.1,
-                    right: screenWidth * 0.1,
-                    child: const QuestionBox(
-                      question: 'Name the types of monkeys',
-                      questionNumber: 1,
-                    ),
-                  ),
+                  // Positioned(
+                  //   top: screenHeight * 0.3,
+                  //   left: screenWidth * 0.1,
+                  //   right: screenWidth * 0.1,
+                  //   child: const QuestionBox(
+                  //     question: 'Name the types of monkeys',
+                  //     questionNumber: 1,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
