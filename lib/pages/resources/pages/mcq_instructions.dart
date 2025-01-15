@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/models/question.dart';
 import 'package:career_counsellor/pages/resources/pages/quiz_page_alt.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,7 @@ class McqInstructionsPage extends StatefulWidget {
 
 class _McqInstructionsPageState extends State<McqInstructionsPage> {
   bool isLoading = false;
+  List<MCQ> questions = [];
 
   Future<void> createQuiz() async {
     HapticFeedback.lightImpact();
@@ -25,15 +29,52 @@ class _McqInstructionsPageState extends State<McqInstructionsPage> {
       model: 'gemini-1.5-flash',
       apiKey: GEMINI_API_KEY,
     );
-    final prompt =
-        '''Create an mcq quiz with 4 options on the topic time management. The user has one minute to answer each question, there are 10 questions in total, also provide me with the answers and the explanation of the answer for each of the question. Respond in JSON Format.''';
+    const prompt = '''
+Create an MCQ quiz with 4 options on the topic "time management." The user has one minute to answer each question, there are 10 questions in total. Also provide the answers and the explanation of the answer for each question. Respond in the following JSON format:
+
+{
+  "questions": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "correct_option_index": integer (0-based),
+      "explanation": "string"
+    },
+    ...
+  ]
+}
+Ensure the JSON is properly formatted and all fields are provided for each question.
+''';
+
     final content = [google_ai.Content.text(prompt)];
     try {
       final result = await model.generateContent(content);
       setState(() {
         if (result.text != null) {
-          print(result.text);
+          String text = result.text!.substring(7, result.text!.length - 4);
+          Map<String, dynamic> map = jsonDecode(text);
+
+          questions.clear();
+
+          for (var questionData in map['questions']) {
+            String question = questionData['question'];
+            List<String> options = List<String>.from(questionData['options']);
+            int correctIdx = questionData['correct_option_index'];
+            String exp = questionData['explanation'];
+
+            questions.add(MCQ(
+              question: question,
+              o1: options[0],
+              o2: options[1],
+              o3: options[2],
+              o4: options[3],
+              explanation: exp,
+              correctIdx: correctIdx,
+            ));
+          }
         }
+        print(questions[1].question);
+
         isLoading = false;
       });
     } catch (e) {
@@ -120,14 +161,14 @@ class _McqInstructionsPageState extends State<McqInstructionsPage> {
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: isLoading
                       ? Row(
-                          spacing: screenWidth * 0.02,
+                          spacing: screenWidth * 0.05,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Creating Quiz'),
-                            CircularProgressIndicator()
+                            const Text('Creating Quiz'),
+                            const CircularProgressIndicator()
                           ],
                         )
-                      : Text(
+                      : const Text(
                           'Begin Quiz',
                           style: TextStyle(fontSize: 18),
                         ),
