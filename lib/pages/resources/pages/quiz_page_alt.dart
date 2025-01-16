@@ -1,11 +1,17 @@
+import 'package:career_counsellor/models/question.dart';
+import 'package:career_counsellor/pages/resources/pages/result_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/question_box.dart';
 import 'package:flutter/material.dart';
 
 class QuizPageAlt extends StatefulWidget {
   const QuizPageAlt(
-      {super.key, required this.questions, required this.currIdx});
-  final List<String> questions;
+      {super.key,
+      required this.questions,
+      required this.currIdx,
+      required this.currScore});
+  final List<MCQ> questions;
   final int currIdx;
+  final int currScore;
 
   @override
   State<QuizPageAlt> createState() => _QuizPageAltState();
@@ -30,9 +36,11 @@ class _QuizPageAltState extends State<QuizPageAlt> {
               height: screenHeight * 0.05,
             ),
             QuestionBox(
-                questions: widget.questions,
-                question: widget.questions[widget.currIdx],
-                questionNumber: widget.currIdx + 1),
+              questions: widget.questions,
+              question: widget.questions[widget.currIdx].question,
+              questionNumber: widget.currIdx + 1,
+              currScore: widget.currScore,
+            ),
             SizedBox(
               height: screenHeight * 0.1,
             ),
@@ -63,7 +71,13 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                       ),
                     ),
-                    child: Text('Option ${index + 1}'),
+                    child: Text(index == 0
+                        ? widget.questions[widget.currIdx].o1
+                        : index == 1
+                            ? widget.questions[widget.currIdx].o2
+                            : index == 2
+                                ? widget.questions[widget.currIdx].o3
+                                : widget.questions[widget.currIdx].o4),
                   ),
                 );
               },
@@ -74,13 +88,23 @@ class _QuizPageAltState extends State<QuizPageAlt> {
             if (selectedOption != null)
               ElevatedButton(
                 onPressed: () {
+                  int score = selectedOption ==
+                          widget.questions[widget.currIdx].correctIdx
+                      ? 1
+                      : 0;
                   if (widget.currIdx == 9) {
                     //result
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (ctx) => ResultPage(
+                              currScore: widget.currScore + score,
+                            )));
                   } else {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (ctx) => QuizPageAlt(
-                            questions: widget.questions,
-                            currIdx: widget.currIdx + 1)));
+                              questions: widget.questions,
+                              currIdx: widget.currIdx + 1,
+                              currScore: widget.currScore + score,
+                            )));
                   }
                 },
                 style: ElevatedButton.styleFrom(

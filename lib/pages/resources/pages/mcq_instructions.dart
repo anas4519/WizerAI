@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class McqInstructionsPage extends StatefulWidget {
-  const McqInstructionsPage({super.key});
+  const McqInstructionsPage({super.key, required this.title});
+  final String title;
 
   @override
   State<McqInstructionsPage> createState() => _McqInstructionsPageState();
@@ -29,8 +30,8 @@ class _McqInstructionsPageState extends State<McqInstructionsPage> {
       model: 'gemini-1.5-flash',
       apiKey: GEMINI_API_KEY,
     );
-    const prompt = '''
-Create an MCQ quiz with 4 options on the topic "time management." The user has one minute to answer each question, there are 10 questions in total. Also provide the answers and the explanation of the answer for each question. Respond in the following JSON format:
+    final prompt = '''
+Create an MCQ quiz with 4 options on the topic "${widget.title}" The user has one minute to answer each question, there are 10 questions in total. Also provide the answers and the explanation of the answer for each question. Respond in the following JSON format:
 
 {
   "questions": [
@@ -73,7 +74,12 @@ Ensure the JSON is properly formatted and all fields are provided for each quest
             ));
           }
         }
-        print(questions[1].question);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => QuizPageAlt(
+                  questions: questions,
+                  currIdx: 0,
+                  currScore: 0,
+                )));
 
         isLoading = false;
       });

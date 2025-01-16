@@ -39,7 +39,9 @@ class QuizSelection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const McqInstructionsPage(),
+                      builder: (context) => McqInstructionsPage(
+                        title: title,
+                      ),
                     ),
                   );
                 },

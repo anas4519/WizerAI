@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:career_counsellor/models/question.dart';
 import 'package:career_counsellor/pages/resources/pages/quiz_page_alt.dart';
+import 'package:career_counsellor/pages/resources/pages/result_page.dart';
 import 'package:flutter/material.dart';
 
 class QuestionBox extends StatefulWidget {
@@ -7,10 +9,12 @@ class QuestionBox extends StatefulWidget {
       {super.key,
       required this.question,
       required this.questionNumber,
-      required this.questions});
+      required this.questions,
+      required this.currScore});
   final String question;
   final int questionNumber;
-  final List<String> questions;
+  final List<MCQ> questions;
+  final int currScore;
 
   @override
   State<QuestionBox> createState() => _QuestionBoxState();
@@ -37,11 +41,17 @@ class _QuestionBoxState extends State<QuestionBox> {
         _timer.cancel();
         if (widget.questionNumber == 10) {
           //result
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (ctx) => ResultPage(
+                    currScore: widget.currScore,
+                  )));
         } else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => QuizPageAlt(
-                  questions: widget.questions,
-                  currIdx: widget.questionNumber)));
+                    questions: widget.questions,
+                    currIdx: widget.questionNumber,
+                    currScore: widget.currScore,
+                  )));
         }
       }
     });
