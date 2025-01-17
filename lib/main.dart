@@ -1,5 +1,6 @@
 import 'package:career_counsellor/auth/auth_gate.dart';
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/pages/resources/pages/result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
         // )
       ),
       themeMode: ThemeMode.system,
-      home: const AuthGate(),
+      home: ResultPage(currScore: 8)
+      // const AuthGate(),
     );
   }
 }

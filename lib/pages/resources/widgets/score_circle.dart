@@ -12,24 +12,30 @@ class ScoreCircle extends StatelessWidget {
       height: screenWidth * 0.575,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.7), // Outer circle color
+        color: Theme.of(context).brightness == Brightness.light
+        ? Colors.black.withOpacity(0.7) // Outer circle color for light mode
+        : Colors.white.withOpacity(0.7), // Outer circle color for dark mode
       ),
       child: Center(
         child: Container(
           width: screenWidth * 0.45,
           height: screenWidth * 0.45,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.5), // Middle circle color
+        shape: BoxShape.circle,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.black.withOpacity(0.5) // Middle circle color for light mode
+            : Colors.white.withOpacity(0.5), // Middle circle color for dark mode
           ),
           child: Center(
-            child: Container(
-              width: screenWidth * 0.35,
-              height: screenWidth * 0.35,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white, // Inner circle color
-              ),
+        child: Container(
+          width: screenWidth * 0.35,
+          height: screenWidth * 0.35,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).brightness == Brightness.light
+            ? Colors.black // Inner circle color for light mode
+            : Colors.white, // Inner circle color for dark mode
+          ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
