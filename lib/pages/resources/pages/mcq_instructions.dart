@@ -79,6 +79,7 @@ Ensure the JSON is properly formatted and all fields are provided for each quest
                   questions: questions,
                   currIdx: 0,
                   currScore: 0,
+                  skipped: 0,
                 )));
 
         isLoading = false;

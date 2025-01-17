@@ -10,11 +10,13 @@ class QuestionBox extends StatefulWidget {
       required this.question,
       required this.questionNumber,
       required this.questions,
-      required this.currScore});
+      required this.currScore,
+      required this.skipped});
   final String question;
   final int questionNumber;
   final List<MCQ> questions;
   final int currScore;
+  final int skipped;
 
   @override
   State<QuestionBox> createState() => _QuestionBoxState();
@@ -44,6 +46,7 @@ class _QuestionBoxState extends State<QuestionBox> {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => ResultPage(
                     currScore: widget.currScore,
+                    skipped: widget.skipped + 1,
                   )));
         } else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -51,6 +54,7 @@ class _QuestionBoxState extends State<QuestionBox> {
                     questions: widget.questions,
                     currIdx: widget.questionNumber,
                     currScore: widget.currScore,
+                    skipped: widget.skipped + 1,
                   )));
         }
       }

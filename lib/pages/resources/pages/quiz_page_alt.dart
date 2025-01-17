@@ -8,10 +8,12 @@ class QuizPageAlt extends StatefulWidget {
       {super.key,
       required this.questions,
       required this.currIdx,
-      required this.currScore});
+      required this.currScore,
+      required this.skipped});
   final List<MCQ> questions;
   final int currIdx;
   final int currScore;
+  final int skipped;
 
   @override
   State<QuizPageAlt> createState() => _QuizPageAltState();
@@ -40,6 +42,7 @@ class _QuizPageAltState extends State<QuizPageAlt> {
               question: widget.questions[widget.currIdx].question,
               questionNumber: widget.currIdx + 1,
               currScore: widget.currScore,
+              skipped: widget.skipped,
             ),
             SizedBox(
               height: screenHeight * 0.1,
@@ -97,6 +100,7 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (ctx) => ResultPage(
                               currScore: widget.currScore + score,
+                              skipped: widget.skipped,
                             )));
                   } else {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -104,6 +108,7 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                               questions: widget.questions,
                               currIdx: widget.currIdx + 1,
                               currScore: widget.currScore + score,
+                              skipped: widget.skipped,
                             )));
                   }
                 },
