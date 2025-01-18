@@ -1,18 +1,27 @@
+import 'package:career_counsellor/models/question.dart';
 import 'package:career_counsellor/pages/resources/widgets/results_container.dart';
 import 'package:career_counsellor/pages/resources/widgets/score_circle.dart';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({super.key, required this.currScore, required this.skipped});
+  const ResultPage({
+    super.key,
+    required this.currScore,
+    required this.skipped,
+    required this.questions,
+    required this.wrongIndices,
+  });
+
   final int currScore;
   final int skipped;
+  final List<MCQ> questions;
+  final List<int> wrongIndices;
 
   @override
   State<ResultPage> createState() => _ResultPageState();
 }
 
 class _ResultPageState extends State<ResultPage> {
-  // State variables to manage the visibility of text
   bool isWrongAnswersExpanded = false;
   bool isRightAnswersExpanded = false;
 
@@ -37,14 +46,15 @@ class _ResultPageState extends State<ResultPage> {
             Center(child: ScoreCircle(currScore: widget.currScore)),
             SizedBox(height: screenHeight * 0.04),
             ResultsContainer(
-              completion: 100 - (10*widget.skipped),
-              total: 10,
+              completion: 100 - (10 * widget.skipped),
+              total: widget.questions.length,
               correct: widget.currScore,
-              wrong: 10-widget.currScore-widget.skipped,
+              wrong:
+                  widget.questions.length - widget.currScore - widget.skipped,
             ),
             SizedBox(height: screenHeight * 0.04),
 
-            // First InkWell for wrong answers
+            // Wrong answers section
             InkWell(
               onTap: () {
                 setState(() {
@@ -54,9 +64,10 @@ class _ResultPageState extends State<ResultPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Wrong answers',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Wrong Answers',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   Icon(
                     isWrongAnswersExpanded
                         ? Icons.arrow_drop_up
@@ -69,14 +80,88 @@ class _ResultPageState extends State<ResultPage> {
             if (isWrongAnswersExpanded)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  'Here are the detailed wrong answers...',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                child: Column(
+                  children: [
+                    for (int index in widget.wrongIndices)
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.circle, color: Colors.red[600]),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Q${index + 1}. ${widget.questions[index].question}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(height: screenHeight * 0.005),
+
+                                  // Display the correct answer
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Correct Answer:',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.questions[index].correctIdx == 0
+                                            ? widget.questions[index].o1
+                                            : widget.questions[index]
+                                                        .correctIdx ==
+                                                    1
+                                                ? widget.questions[index].o2
+                                                : widget.questions[index]
+                                                            .correctIdx ==
+                                                        2
+                                                    ? widget.questions[index].o3
+                                                    : widget
+                                                        .questions[index].o4,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: screenHeight * 0.005),
+
+                                  // Display the explanation
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Explanation:',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.questions[index].explanation,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                  ],
                 ),
               ),
             SizedBox(height: screenHeight * 0.04),
 
-            // Second InkWell for right answers
+            // Right answers section
             InkWell(
               onTap: () {
                 setState(() {
@@ -86,9 +171,10 @@ class _ResultPageState extends State<ResultPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Right answers',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Right Answers',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   Icon(
                     isRightAnswersExpanded
                         ? Icons.arrow_drop_up
@@ -98,14 +184,36 @@ class _ResultPageState extends State<ResultPage> {
                 ],
               ),
             ),
-            if (isRightAnswersExpanded)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  'Here are the detailed correct answers...',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-              ),
+            // if (isRightAnswersExpanded)
+            // SizedBox(
+            //   height: screenHeight * 0.3,
+            //   child: ListView.builder(
+            //     itemCount: widget.currScore,
+            //     itemBuilder: (context, index) {
+            //       final correctIndex = widget.questions.indexWhere((question) =>
+            //           question.isCorrect && !widget.wrongIndices.contains(index));
+            //       final question = widget.questions[correctIndex];
+            //       return Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 8.0),
+            //         child: Row(
+            //           children: [
+            //             Icon(Icons.circle, color: Colors.green[600]),
+            //             SizedBox(width: screenWidth * 0.02),
+            //             Expanded(
+            //               child: Text(
+            //                 question.text,
+            //                 style: const TextStyle(
+            //                   fontSize: 16,
+            //                   color: Colors.white,
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

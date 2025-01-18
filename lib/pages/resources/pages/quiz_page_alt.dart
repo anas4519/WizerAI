@@ -9,11 +9,13 @@ class QuizPageAlt extends StatefulWidget {
       required this.questions,
       required this.currIdx,
       required this.currScore,
-      required this.skipped});
+      required this.skipped,
+      required this.wrongIndices});
   final List<MCQ> questions;
   final int currIdx;
   final int currScore;
   final int skipped;
+  final List<int> wrongIndices;
 
   @override
   State<QuizPageAlt> createState() => _QuizPageAltState();
@@ -43,6 +45,7 @@ class _QuizPageAltState extends State<QuizPageAlt> {
               questionNumber: widget.currIdx + 1,
               currScore: widget.currScore,
               skipped: widget.skipped,
+              wrongIndices: widget.wrongIndices
             ),
             SizedBox(
               height: screenHeight * 0.1,
@@ -95,12 +98,19 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                           widget.questions[widget.currIdx].correctIdx
                       ? 1
                       : 0;
+
+                  List<int> updatedWrongIndices = score == 0
+                      ? [...widget.wrongIndices, widget.currIdx]
+                      : widget.wrongIndices;
+
                   if (widget.currIdx == 9) {
-                    //result
+                    // Navigate to ResultPage
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (ctx) => ResultPage(
                               currScore: widget.currScore + score,
                               skipped: widget.skipped,
+                              questions: widget.questions,
+                              wrongIndices: updatedWrongIndices,
                             )));
                   } else {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -109,6 +119,7 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                               currIdx: widget.currIdx + 1,
                               currScore: widget.currScore + score,
                               skipped: widget.skipped,
+                              wrongIndices: updatedWrongIndices,
                             )));
                   }
                 },

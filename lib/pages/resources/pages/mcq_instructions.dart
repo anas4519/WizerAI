@@ -80,6 +80,7 @@ Ensure the JSON is properly formatted and all fields are provided for each quest
                   currIdx: 0,
                   currScore: 0,
                   skipped: 0,
+                  wrongIndices: const [],
                 )));
 
         isLoading = false;

@@ -11,12 +11,13 @@ class QuestionBox extends StatefulWidget {
       required this.questionNumber,
       required this.questions,
       required this.currScore,
-      required this.skipped});
+      required this.skipped, required this.wrongIndices});
   final String question;
   final int questionNumber;
   final List<MCQ> questions;
   final int currScore;
   final int skipped;
+  final List<int> wrongIndices;
 
   @override
   State<QuestionBox> createState() => _QuestionBoxState();
@@ -47,6 +48,8 @@ class _QuestionBoxState extends State<QuestionBox> {
               builder: (ctx) => ResultPage(
                     currScore: widget.currScore,
                     skipped: widget.skipped + 1,
+                    questions: widget.questions,
+                    wrongIndices: widget.wrongIndices,
                   )));
         } else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -55,6 +58,7 @@ class _QuestionBoxState extends State<QuestionBox> {
                     currIdx: widget.questionNumber,
                     currScore: widget.currScore,
                     skipped: widget.skipped + 1,
+                    wrongIndices: widget.wrongIndices,
                   )));
         }
       }
