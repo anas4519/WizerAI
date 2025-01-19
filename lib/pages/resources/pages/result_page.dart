@@ -184,36 +184,87 @@ class _ResultPageState extends State<ResultPage> {
                 ],
               ),
             ),
-            // if (isRightAnswersExpanded)
-            // SizedBox(
-            //   height: screenHeight * 0.3,
-            //   child: ListView.builder(
-            //     itemCount: widget.currScore,
-            //     itemBuilder: (context, index) {
-            //       final correctIndex = widget.questions.indexWhere((question) =>
-            //           question.isCorrect && !widget.wrongIndices.contains(index));
-            //       final question = widget.questions[correctIndex];
-            //       return Padding(
-            //         padding: const EdgeInsets.symmetric(vertical: 8.0),
-            //         child: Row(
-            //           children: [
-            //             Icon(Icons.circle, color: Colors.green[600]),
-            //             SizedBox(width: screenWidth * 0.02),
-            //             Expanded(
-            //               child: Text(
-            //                 question.text,
-            //                 style: const TextStyle(
-            //                   fontSize: 16,
-            //                   color: Colors.white,
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
+            if (isRightAnswersExpanded)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < widget.questions.length; i++)
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.circle, color: Colors.yellow),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Q${i + 1}. ${widget.questions[i].question}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(height: screenHeight * 0.005),
+
+                                  // Display the correct answer
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Correct Answer:',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.questions[i].correctIdx == 0
+                                            ? widget.questions[i].o1
+                                            : widget.questions[i].correctIdx ==
+                                                    1
+                                                ? widget.questions[i].o2
+                                                : widget.questions[i]
+                                                            .correctIdx ==
+                                                        2
+                                                    ? widget.questions[i].o3
+                                                    : widget.questions[i].o4,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: screenHeight * 0.005),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Explanation:',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.questions[i].explanation,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            SizedBox(
+              height: screenHeight * 0.01,
+            )
           ],
         ),
       ),
