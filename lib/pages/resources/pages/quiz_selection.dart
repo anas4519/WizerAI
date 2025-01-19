@@ -1,5 +1,5 @@
-import 'package:career_counsellor/pages/resources/pages/mcq_instructions.dart';
-import 'package:career_counsellor/pages/resources/pages/reasoning_instructions.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/mcq_instructions.dart';
+import 'package:career_counsellor/pages/resources/pages/reasoning_quiz/reasoning_instructions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,7 +75,7 @@ class QuizSelection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ReasoningInstructionsPage(),
+                      builder: (context) => ReasoningInstructionsPage(title: title,),
                     ),
                   );
                 },

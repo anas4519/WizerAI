@@ -1,11 +1,87 @@
+import 'dart:convert';
+
+import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
-class ReasoningInstructionsPage extends StatelessWidget {
-  const ReasoningInstructionsPage({super.key});
+class ReasoningInstructionsPage extends StatefulWidget {
+  const ReasoningInstructionsPage({super.key, required this.title});
+  final String title;
+
+  @override
+  State<ReasoningInstructionsPage> createState() =>
+      _ReasoningInstructionsPageState();
+}
+
+class _ReasoningInstructionsPageState extends State<ReasoningInstructionsPage> {
+  bool isLoading = false;
+  List<String> questions = [];
+
+  Future<void> createQuiz() async {
+    HapticFeedback.lightImpact();
+    setState(() {
+      isLoading = true;
+    });
+
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-1.5-flash',
+      apiKey: GEMINI_API_KEY,
+    );
+    final prompt = '''
+Create a Reasoning type quiz on the topic "${widget.title}" The user has two minutes to type the answer on their phone, there are 5 questions in total. Respond in the following JSON format:
+
+{
+  "questions": [
+    {
+      "question": "string",
+    },
+    ...
+  ]
+}
+Ensure the JSON is properly formatted.
+''';
+
+    final content = [google_ai.Content.text(prompt)];
+    try {
+      final result = await model.generateContent(content);
+      setState(() {
+        if (result.text != null) {
+          String text = result.text!.substring(7, result.text!.length - 4);
+          Map<String, dynamic> map = jsonDecode(text);
+
+          questions.clear();
+
+          for (var questionData in map['questions']) {
+            String question = questionData['question'];
+
+            questions.add(question);
+          }
+        }
+        print(questions);
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => QuizPageAlt(
+        //           questions: questions,
+        //           currIdx: 0,
+        //           currScore: 0,
+        //           skipped: 0,
+        //           wrongIndices: const [],
+        //         )));
+
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        showSnackBar(context, 'Error: $e');
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Instructions'),
@@ -84,23 +160,35 @@ class ReasoningInstructionsPage extends StatelessWidget {
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                  },
+                  onPressed: createQuiz,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                    child: Text(
-                      'Begin Quiz',
-                      style: TextStyle(fontSize: 18),
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    child: isLoading
+                        ? Row(
+                            spacing: screenWidth * 0.05,
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                'Creating Quiz',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              CircularProgressIndicator()
+                            ],
+                          )
+                        : const Text(
+                            'Begin Quiz',
+                            style: TextStyle(fontSize: 18),
+                          ),
                   ),
                 ),
               ),
+              const SizedBox(height: 12,)
             ],
           ),
         ),

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:career_counsellor/models/question.dart';
-import 'package:career_counsellor/pages/resources/pages/quiz_page_alt.dart';
-import 'package:career_counsellor/pages/resources/pages/result_page.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/quiz_page_alt.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/result_page.dart';
 import 'package:flutter/material.dart';
 
 class QuestionBox extends StatefulWidget {

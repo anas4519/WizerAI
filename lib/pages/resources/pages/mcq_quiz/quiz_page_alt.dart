@@ -1,6 +1,6 @@
 import 'package:career_counsellor/models/question.dart';
-import 'package:career_counsellor/pages/resources/pages/result_page.dart';
-import 'package:career_counsellor/pages/resources/widgets/question_box.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/result_page.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/question_box.dart';
 import 'package:flutter/material.dart';
 
 class QuizPageAlt extends StatefulWidget {

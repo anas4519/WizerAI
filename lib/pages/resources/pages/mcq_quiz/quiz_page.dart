@@ -1,4 +1,4 @@
-import 'package:career_counsellor/pages/resources/widgets/question_box.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/question_box.dart';
 import 'package:flutter/material.dart';
 
 class QuizPage extends StatefulWidget {

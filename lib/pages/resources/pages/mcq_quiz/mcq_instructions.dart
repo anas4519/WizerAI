@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/question.dart';
-import 'package:career_counsellor/pages/resources/pages/quiz_page_alt.dart';
+import 'package:career_counsellor/pages/resources/pages/mcq_quiz/quiz_page_alt.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -171,9 +171,12 @@ Ensure the JSON is properly formatted and all fields are provided for each quest
                       ? Row(
                           spacing: screenWidth * 0.05,
                           mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text('Creating Quiz'),
-                            const CircularProgressIndicator()
+                          children: const [
+                            Text(
+                              'Creating Quiz',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            CircularProgressIndicator()
                           ],
                         )
                       : const Text(
