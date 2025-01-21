@@ -19,12 +19,18 @@ class QuizPageR extends StatefulWidget {
 class _QuizPageRState extends State<QuizPageR> {
   final _answerController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  
+  @override
+  void dispose() {
+    _answerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.all(screenWidth * 0.04),
@@ -104,7 +110,7 @@ class _QuizPageRState extends State<QuizPageR> {
                     ...widget.answers,
                     _answerController.text
                   ];
-                  if (widget.currIdx == 9) {
+                  if (widget.currIdx == 4) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (ctx) => ResultPageR(
                               answers: updatedAns,

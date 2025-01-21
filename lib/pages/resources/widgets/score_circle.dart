@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ScoreCircle extends StatelessWidget {
   const ScoreCircle({super.key, required this.currScore});
-  final int currScore;
+  final double currScore;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class ScoreCircle extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      '${currScore * 10}/100', // Replace with your text
+                      '${currScore.toInt() * 10}/100', // Replace with your text
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

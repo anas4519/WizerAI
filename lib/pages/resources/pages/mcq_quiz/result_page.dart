@@ -43,7 +43,7 @@ class _ResultPageState extends State<ResultPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(child: ScoreCircle(currScore: widget.currScore)),
+            Center(child: ScoreCircle(currScore: widget.currScore.toDouble())),
             SizedBox(height: screenHeight * 0.04),
             ResultsContainer(
               completion: 100 - (10 * widget.skipped),

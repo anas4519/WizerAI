@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/pages/resources/pages/reasoning_quiz/quiz_page_r.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,15 +60,9 @@ Ensure the JSON is properly formatted.
             questions.add(question);
           }
         }
-        print(questions);
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => QuizPageAlt(
-        //           questions: questions,
-        //           currIdx: 0,
-        //           currScore: 0,
-        //           skipped: 0,
-        //           wrongIndices: const [],
-        //         )));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (ctx) => QuizPageR(
+                questions: questions, currIdx: 0, answers: const [])));
 
         isLoading = false;
       });
@@ -188,7 +183,9 @@ Ensure the JSON is properly formatted.
                   ),
                 ),
               ),
-              const SizedBox(height: 12,)
+              const SizedBox(
+                height: 12,
+              )
             ],
           ),
         ),

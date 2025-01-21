@@ -40,7 +40,7 @@ class _QuestionBoxStateR extends State<QuestionBoxR> {
       } else {
         _timer.cancel();
         List<String> updatedAns = [...widget.answers, ''];
-        if (widget.questionNumber == 10) {
+        if (widget.questionNumber == 5) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => ResultPageR(
                     questions: widget.questions,
@@ -104,14 +104,14 @@ class _QuestionBoxStateR extends State<QuestionBoxR> {
             height: screenHeight * 0.02,
           ),
           Text(
-            'Question ${widget.questionNumber}/10',
+            'Question ${widget.questionNumber}/5',
             style: const TextStyle(
                 color: Colors.pink, fontWeight: FontWeight.bold, fontSize: 16),
           ),
           SizedBox(
             height: screenHeight * 0.04,
           ),
-          Text(
+          SelectableText(
             widget.question,
             textAlign: TextAlign.center,
             style: const TextStyle(
