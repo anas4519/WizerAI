@@ -85,7 +85,7 @@ class _QuestionBoxState extends State<QuestionBox> {
       padding: EdgeInsets.all(screenWidth * 0.04),
       width: screenWidth * 0.9,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.grey[900],
           border: Border.all(color: Colors.pink, width: 2),
           borderRadius: BorderRadius.circular(screenWidth * 0.04)),
       child: Column(
@@ -122,7 +122,7 @@ class _QuestionBoxState extends State<QuestionBox> {
             widget.question,
             textAlign: TextAlign.center,
             style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18),
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
           )
         ],
       ),

@@ -172,7 +172,7 @@ class _ResultPageState extends State<ResultPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Right Answers',
+                    'Correct Answers',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Icon(
