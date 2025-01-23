@@ -41,6 +41,26 @@ class _CareerSurveyStateHiCareerSurveyHigher extends State<CareerSurveyHigher> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _degreeController.dispose();
+    _streamController.dispose();
+    _interestsController.dispose();
+    _hobbiesController.dispose();
+    _skillsController.dispose();
+    _strengthsController.dispose();
+    _weaknessesController.dispose();
+    _aspirationsController.dispose();
+    _motherCareerController.dispose();
+    _fatherCareerController.dispose();
+    _parentsExpectationsController.dispose();
+    _interdisciplinaryOptionsController.dispose();
+    _geographicPrefController.dispose();
+    _additionalInfoController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;

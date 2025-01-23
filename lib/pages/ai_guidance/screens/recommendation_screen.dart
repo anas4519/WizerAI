@@ -5,6 +5,7 @@ import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RecommendationScreen extends StatefulWidget {
@@ -158,6 +159,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         }
         isLoading = false;
       });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      for (int i = 0; i < recommendationsList.length && i < 5; i++) {
+        await prefs.setString('r_$i', recommendationsList[i]);
+      }
       await _updateSuggestions();
     } catch (e) {
       setState(() {
