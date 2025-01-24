@@ -263,7 +263,7 @@ class _ResultPageState extends State<ResultPage> {
                 ),
               ),
             SizedBox(
-              height: screenHeight * 0.01,
+              height: screenHeight * 0.04,
             )
           ],
         ),

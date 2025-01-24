@@ -212,7 +212,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                 'Recommended Videos',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.01),
               Center(
                 child: isLoading
                     ? const CircularProgressIndicator()
