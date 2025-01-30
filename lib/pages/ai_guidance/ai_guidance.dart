@@ -4,7 +4,6 @@ import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -83,8 +82,6 @@ class _AiGuidanceState extends State<AiGuidance> {
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           final photos = data['photos'] as List<dynamic>;
-          print(photos);
-
           if (photos.isNotEmpty) {
             return photos[0]['src']['landscape'];
           }
@@ -210,7 +207,7 @@ class _AiGuidanceState extends State<AiGuidance> {
               CareerSuggestionCard(
                   title: daimonSuggestions[index],
                   description:
-                      'bitchhhhhssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssh',
+                      'Analyzes data, builds models, extracts insights, solves problems, drives decisions.',
                   image: urls[index],
                   cta: 'jhjbhjb'),
             Center(

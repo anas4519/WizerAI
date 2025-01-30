@@ -1,6 +1,7 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 import 'package:gpt_markdown/gpt_markdown.dart';
@@ -46,6 +47,7 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
     final content = [google_ai.Content.text(prompt)];
     try {
       final result = await model.generateContent(content);
+
       setState(() {
         if (result.text != null) {
           String response = result.text!;

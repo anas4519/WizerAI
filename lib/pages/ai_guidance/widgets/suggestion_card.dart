@@ -1,4 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/elaborate_detail.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,9 @@ class CareerSuggestionCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: screenHeight * 0.01),
       child: InkWell(
         onTap: () {
-          // Handle card tap
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (ctx) =>
+                  ElaborateDetail(title: 'Overview', career: title)));
         },
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
         child: Padding(
@@ -40,6 +43,9 @@ class CareerSuggestionCard extends StatelessWidget {
                 errorWidget: const Icon(Icons.error),
                 width: 150,
                 height: 100,
+                shimmerBackColor: Colors.grey,
+                shimmerBaseColor: Colors.grey,
+                shimmerHighlightColor: Colors.pink[200],
               ),
               // CachedNetworkImage(
               //   imageUrl: icon,
@@ -49,7 +55,7 @@ class CareerSuggestionCard extends StatelessWidget {
               //       const Center(child: CircularProgressIndicator()),
               //   errorWidget: (context, url, error) => const Icon(Icons.error),
               // ),
-              SizedBox(width: screenWidth*0.03),
+              SizedBox(width: screenWidth * 0.03),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +67,7 @@ class CareerSuggestionCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: screenHeight*0.005),
+                    SizedBox(height: screenHeight * 0.005),
                     Text(
                       description,
                       style: TextStyle(
@@ -72,12 +78,13 @@ class CareerSuggestionCard extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: screenWidth*0.01),
+              SizedBox(width: screenWidth * 0.01),
               IconButton(
                 onPressed: () {
-                  // Handle CTA button tap
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => CareerDetails(title: title)));
                 },
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
               ),
             ],
           ),

@@ -8,6 +8,7 @@ import 'package:career_counsellor/pages/career_exploration/widgets/default_secti
 import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/youtube_section.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
+import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +29,7 @@ class _CareerDetailsState extends State<CareerDetails> {
   String? errorMessage;
   Map<String, List<String>> careerDetails = {};
   List<YouTubeVideo> youtubeVideos = [];
+  String imageUrl = '';
 
   String apiKey = Constants.YOUTUBE_aPI_KEY;
 
@@ -51,13 +53,44 @@ class _CareerDetailsState extends State<CareerDetails> {
 
   Future<void> _initializeData() async {
     try {
-      await _generateInitialRecommendations();
+      await _fetchImagesFromPexels();
+      await _generateContent();
       await _fetchYouTubeVideos();
     } catch (e) {
       setState(() {
         errorMessage = 'Error initializing data: ${e.toString()}';
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _fetchImagesFromPexels() async {
+    const apiKey = PEXELS_API_KEY;
+    const perPage = 1;
+    final query = widget.title;
+
+    try {
+      final url = Uri.parse(
+          'https://api.pexels.com/v1/search?query=$query&per_page=$perPage');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': apiKey,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final photos = data['photos'] as List<dynamic>;
+        if (photos.isNotEmpty) {
+          imageUrl = photos[0]['src']['landscape'];
+        }
+      } else {
+        print(
+            'Error for query "$query": ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('Exception: $e');
     }
   }
 
@@ -108,7 +141,7 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
-  Future<void> _generateInitialRecommendations() async {
+  Future<void> _generateContent() async {
     final model = google_ai.GenerativeModel(
       model: 'gemini-1.5-flash',
       apiKey: GEMINI_API_KEY,
@@ -270,8 +303,31 @@ class _CareerDetailsState extends State<CareerDetails> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        if (imageUrl.isNotEmpty)
+                          Center(
+                              child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.02),
+                              border: Border.all(
+                                color: Colors.pink,
+                              ),
+                            ),
+                            child: FancyShimmerImage(
+                              imageUrl: imageUrl,
+                              errorWidget: const Icon(Icons.error),
+                              width: screenWidth,
+                              boxFit: BoxFit.fitWidth,
+                              shimmerBackColor: Colors.grey,
+                              shimmerBaseColor: Colors.grey,
+                              shimmerHighlightColor: Colors.pink[200],
+                            ),
+                          )),
+                        SizedBox(
+                          height: screenHeight * 0.02,
+                        ),
                         ...sections
                             .where((section) =>
                                 section != 'YouTube Resources' &&
