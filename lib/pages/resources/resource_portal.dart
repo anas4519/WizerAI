@@ -22,6 +22,11 @@ class _ResourcePortalState extends State<ResourcePortal> {
   bool isLoading = true;
   List<YouTubeVideo> youtubeVideos = [];
 
+  // This variable keeps track of the currently selected button index.
+  int selectedFilterIndex = 0;
+
+  List<bool> _selectedFilters = [true, false, false]; // Default: "All"
+
   @override
   void initState() {
     initVideos();
@@ -94,6 +99,13 @@ class _ResourcePortalState extends State<ResourcePortal> {
     await _fetchYouTubeVideos();
   }
 
+  void _toggleFilter(int index) {
+    setState(() {
+      selectedFilterIndex = index;
+    });
+    // Implement filtering logic here if needed
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -101,197 +113,146 @@ class _ResourcePortalState extends State<ResourcePortal> {
     final iconSize = screenWidth * 0.06;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Resources'),
-          centerTitle: true,
+      appBar: AppBar(
+        title: const Text('Resources'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(screenWidth * 0.04),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Quizzes',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // First Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    QuizIcon(
+                      icon: Icon(
+                        CupertinoIcons.chat_bubble_2,
+                        size: iconSize,
+                      ),
+                      title: 'Communication Skills',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        CupertinoIcons.question_circle,
+                        size: iconSize,
+                      ),
+                      title: 'Problem Solving',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.group,
+                        size: iconSize,
+                      ),
+                      title: 'Teamwork',
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+
+                // Second Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.autorenew,
+                        size: iconSize,
+                      ),
+                      title: 'Flexibility',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.leaderboard,
+                        size: iconSize,
+                      ),
+                      title: 'Leadership Skills',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.access_time,
+                        size: iconSize,
+                      ),
+                      title: 'Time Management',
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+
+                // Third Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.search,
+                        size: iconSize,
+                      ),
+                      title: 'Attention to Detail',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.brush_outlined,
+                        size: iconSize,
+                      ),
+                      title: 'Creativity',
+                    ),
+                    QuizIcon(
+                      icon: Icon(
+                        Icons.note_alt_outlined,
+                        size: iconSize,
+                      ),
+                      title: 'Custom',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: screenHeight * 0.04),
+            Text(
+              'Recommended Videos',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(height: screenHeight * 0.02),
+
+            // Horizontal List of Buttons with selected styling
+            SizedBox(
+              height: 50, // Fixed height for the horizontal list
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal, // Horizontal scrolling
+                itemCount: savedRecommendations.length, // Number of items
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedFilterIndex == index
+                            ? Colors.pink // Selected button colour
+                            : Colors.grey[100], // Unselected button colour
+                      ),
+                      child: Text(savedRecommendations[index]),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            SizedBox(height: screenHeight * 0.02),
+          ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(screenWidth * 0.04),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Quizzes',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // First Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      QuizIcon(
-                        icon: Icon(
-                          CupertinoIcons.chat_bubble_2,
-                          size: iconSize,
-                        ),
-                        title: 'Communication Skills',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          CupertinoIcons.question_circle,
-                          size: iconSize,
-                        ),
-                        title: 'Problem Solving',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.group,
-                          size: iconSize,
-                        ),
-                        title: 'Teamwork',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // Second Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.autorenew,
-                          size: iconSize,
-                        ),
-                        title: 'Flexibility',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.leaderboard,
-                          size: iconSize,
-                        ),
-                        title: 'Leadership Skills',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.access_time,
-                          size: iconSize,
-                        ),
-                        title: 'Time Management',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // Third Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.search,
-                          size: iconSize,
-                        ),
-                        title: 'Attention to Detail',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.brush_outlined,
-                          size: iconSize,
-                        ),
-                        title: 'Creativity',
-                      ),
-                      QuizIcon(
-                        icon: Icon(
-                          Icons.note_alt_outlined,
-                          size: iconSize,
-                        ),
-                        title: 'Custom',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: screenHeight * 0.04,
-              ),
-              Text(
-                'Recommended Videos',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: screenHeight * 0.01),
-              Center(
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : youtubeVideos.isEmpty
-                        ? const Text(
-                            'No videos to show right now',
-                            style: TextStyle(color: Colors.grey),
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: youtubeVideos
-                                .map((video) => Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: screenHeight * 0.01),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (ctx) =>
-                                                      VideoApp(video: video)));
-                                        },
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      screenWidth * 0.02),
-                                              child: CachedNetworkImage(
-                                                width: screenWidth * 0.3,
-                                                height: screenHeight * 0.08,
-                                                fit: BoxFit.cover,
-                                                imageUrl: video.thumbnailUrl,
-                                                placeholder: (context, url) =>
-                                                    const Icon(Icons
-                                                        .play_arrow_rounded),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    video.title,
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    video.channelTitle,
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
-              )
-            ],
-          ),
-        ));
+      ),
+    );
   }
 }
