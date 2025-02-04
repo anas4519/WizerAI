@@ -221,7 +221,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                   children: [
                     QuizIcon(
                       icon: Icon(
-                        Icons.autorenew,
+                        CupertinoIcons.arrow_2_circlepath,
                         size: iconSize,
                       ),
                       title: 'Flexibility',
@@ -235,7 +235,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                     ),
                     QuizIcon(
                       icon: Icon(
-                        Icons.access_time,
+                        CupertinoIcons.time,
                         size: iconSize,
                       ),
                       title: 'Time Management',
@@ -250,21 +250,21 @@ class _ResourcePortalState extends State<ResourcePortal> {
                   children: [
                     QuizIcon(
                       icon: Icon(
-                        Icons.search,
+                        CupertinoIcons.search,
                         size: iconSize,
                       ),
                       title: 'Attention to Detail',
                     ),
                     QuizIcon(
                       icon: Icon(
-                        Icons.brush_outlined,
+                        CupertinoIcons.paintbrush,
                         size: iconSize,
                       ),
                       title: 'Creativity',
                     ),
                     QuizIcon(
                       icon: Icon(
-                        Icons.note_alt_outlined,
+                        Icons.note_alt_rounded,
                         size: iconSize,
                       ),
                       title: 'Custom',
