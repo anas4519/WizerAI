@@ -30,12 +30,37 @@ class _AiGuidanceState extends State<AiGuidance> {
     await authService.signOut();
   }
 
+  Future<void> fetchUserDataForFirstTime(SharedPreferences prefs) async {
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      final data =
+          await supabase.from('profiles').select().eq('id', userId).single();
+
+      setState(() {
+        name = data['full_name'] ?? 'User';
+        daimonSuggestions = (data['suggestions'] as List<dynamic>)
+            .map((e) => e.toString())
+            .toList();
+      });
+      for (int i = 0; i < 5; i++) {
+        prefs.setString('r_$i', daimonSuggestions[i]);
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   Future<void> fetchUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     name = supabase.auth.currentUser!.email!;
-    for (int i = 0; i < 5; i++) {
-      daimonSuggestions.add(prefs.getString('r_$i') ?? 'Career');
+    if (prefs.getString('r_0') == null) {
+      await fetchUserDataForFirstTime(prefs);
+    } else {
+      for (int i = 0; i < 5; i++) {
+        daimonSuggestions.add(prefs.getString('r_$i') ?? 'Career');
+      }
     }
+
     if (daimonSuggestions.isNotEmpty) await fetchImagesFromPexels();
     setState(() {
       _isLoading = false;

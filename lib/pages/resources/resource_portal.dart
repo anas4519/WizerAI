@@ -25,8 +25,6 @@ class _ResourcePortalState extends State<ResourcePortal> {
   // This variable keeps track of the currently selected button index.
   int selectedFilterIndex = 0;
 
-  List<bool> _selectedFilters = [true, false, false]; // Default: "All"
-
   @override
   void initState() {
     initVideos();
@@ -43,7 +41,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
             '?part=snippet'
             '&q=${Uri.encodeComponent(searchQuery)}'
             '&type=video'
-            '&maxResults=3'
+            '&maxResults=5'
             '&relevanceLanguage=en'
             '&key=${Constants.YOUTUBE_aPI_KEY}');
 
@@ -103,7 +101,6 @@ class _ResourcePortalState extends State<ResourcePortal> {
     setState(() {
       selectedFilterIndex = index;
     });
-    // Implement filtering logic here if needed
   }
 
   @override
@@ -223,33 +220,107 @@ class _ResourcePortalState extends State<ResourcePortal> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             SizedBox(height: screenHeight * 0.02),
-
-            // Horizontal List of Buttons with selected styling
-            SizedBox(
-              height: 50, // Fixed height for the horizontal list
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal, // Horizontal scrolling
-                itemCount: savedRecommendations.length, // Number of items
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedFilterIndex == index
-                            ? Colors.pink // Selected button colour
-                            : Colors.grey[100], // Unselected button colour
+            if (savedRecommendations.isNotEmpty)
+              SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: savedRecommendations.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ElevatedButton(
+                        onPressed: () => _toggleFilter(index),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedFilterIndex == index
+                              ? Colors.pink
+                              : Colors.grey[900],
+                        ),
+                        child: Text(
+                          savedRecommendations[index],
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
-                      child: Text(savedRecommendations[index]),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
+              )
+            else
+              const Center(
+                child: Text(
+                  'Complete career assessment to get recommendations.',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
-            ),
-
             SizedBox(height: screenHeight * 0.02),
+            if (isLoading)
+              const Center(child: CircularProgressIndicator())
+            else
+              Column(
+                children: [
+                  for (int i = 0; i < 5; i++)
+                    if ((selectedFilterIndex * 5 + i) < youtubeVideos.length)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => VideoApp(
+                                    video: youtubeVideos[
+                                        selectedFilterIndex * 5 + i])));
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.02),
+                                child: CachedNetworkImage(
+                                  width: screenWidth * 0.3,
+                                  height: screenHeight * 0.08,
+                                  fit: BoxFit.cover,
+                                  imageUrl:
+                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                          .thumbnailUrl,
+                                  placeholder: (context, url) =>
+                                      const Icon(Icons.play_arrow_rounded),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.play_arrow_rounded),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                          .title,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                          .channelTitle,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                ],
+              ),
           ],
         ),
       ),
