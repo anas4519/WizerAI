@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ResourcePortal extends StatefulWidget {
   const ResourcePortal({super.key});
@@ -21,6 +22,8 @@ class _ResourcePortalState extends State<ResourcePortal> {
   List<String> savedRecommendations = [];
   bool isLoading = true;
   List<YouTubeVideo> youtubeVideos = [];
+  List<YouTubeVideo> weaknesses = [];
+  final SupabaseClient supabase = Supabase.instance.client;
 
   // This variable keeps track of the currently selected button index.
   int selectedFilterIndex = 0;
@@ -31,12 +34,60 @@ class _ResourcePortalState extends State<ResourcePortal> {
     super.initState();
   }
 
+  Future<void> _fetchWeaknesses() async {
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      final data =
+          await supabase.from('profiles').select().eq('id', userId).single();
+      print(data['weaknesses']);
+      List<dynamic> temp =
+          data['weaknesses'].split(',').map((e) => e.toString()).toList();
+
+      for (String weakness in temp) {
+        final String searchQuery = 'How to improve on $weakness';
+        final Uri url = Uri.parse('https://www.googleapis.com/youtube/v3/search'
+            '?part=snippet'
+            '&q=${Uri.encodeComponent(searchQuery)}'
+            '&type=video'
+            '&maxResults=3'
+            '&relevanceLanguage=en'
+            '&key=${Constants.YOUTUBE_aPI_KEY}');
+
+        final response = await http.get(url);
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data = json.decode(response.body);
+          final List<dynamic> items = data['items'];
+
+          if (items.isNotEmpty) {
+            for (var i = 0; i < items.length; i++) {
+              final snippet = items[i]['snippet'];
+              weaknesses.add(
+                YouTubeVideo(
+                  title: snippet['title'],
+                  url:
+                      'https://www.youtube.com/watch?v=${items[0]['id']['videoId']}',
+                  thumbnailUrl: snippet['thumbnails']['medium']['url'],
+                  channelTitle: snippet['channelTitle'],
+                ),
+              );
+            }
+          }
+        } else {
+          throw Exception('Failed to fetch videos for $weakness');
+        }
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   Future<void> _fetchYouTubeVideos() async {
     try {
       List<YouTubeVideo> fetchedVideos = [];
 
       for (String recommendation in savedRecommendations) {
-        final String searchQuery = 'How to become a $recommendation';
+        final String searchQuery = 'How to make a career as a $recommendation';
         final Uri url = Uri.parse('https://www.googleapis.com/youtube/v3/search'
             '?part=snippet'
             '&q=${Uri.encodeComponent(searchQuery)}'
@@ -94,6 +145,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
         savedRecommendations.add(recommendation);
       }
     }
+    await _fetchWeaknesses();
     await _fetchYouTubeVideos();
   }
 
@@ -101,6 +153,12 @@ class _ResourcePortalState extends State<ResourcePortal> {
     setState(() {
       selectedFilterIndex = index;
     });
+  }
+
+  @override
+  void dispose() {
+    youtubeVideos.clear();
+    super.dispose();
   }
 
   @override
@@ -115,6 +173,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,6 +380,78 @@ class _ResourcePortalState extends State<ResourcePortal> {
                       ),
                 ],
               ),
+            SizedBox(height: screenHeight * 0.02),
+            Text(
+              'Work on your Weaknesses',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            weaknesses.isEmpty
+                ? const Center(
+                    child: Text(
+                    'No weaknesses added yet.',
+                    style: TextStyle(color: Colors.grey),
+                  ))
+                : Column(
+                    children: [
+                      for (int i = 0; i < weaknesses.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) =>
+                                      VideoApp(video: weaknesses[i])));
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.circular(screenWidth * 0.02),
+                                  child: CachedNetworkImage(
+                                    width: screenWidth * 0.3,
+                                    height: screenHeight * 0.08,
+                                    fit: BoxFit.cover,
+                                    imageUrl: weaknesses[i].thumbnailUrl,
+                                    placeholder: (context, url) =>
+                                        const Icon(Icons.play_arrow_rounded),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.play_arrow_rounded),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        weaknesses[i].title,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        weaknesses[i].channelTitle,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
           ],
         ),
       ),
