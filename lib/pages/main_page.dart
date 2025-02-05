@@ -1,5 +1,6 @@
 import 'package:career_counsellor/pages/ai_guidance/ai_guidance.dart';
 import 'package:career_counsellor/pages/career_exploration/career_exploration.dart';
+import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/mentorship/mentorship_page.dart';
 import 'package:career_counsellor/pages/resources/resource_portal.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,7 +25,8 @@ class _MainPageState extends State<MainPage> {
       const AiGuidance(),
       const CareerExploration(),
       const ResourcePortal(),
-      const MentorshipPage()
+      const CoursesPage(),
+      const MentorshipPage(),
     ];
   }
 
@@ -38,7 +40,7 @@ class _MainPageState extends State<MainPage> {
         children: pages,
       ),
       bottomNavigationBar: Container(
-        color: isDarkTheme? Colors.black:Colors.grey[200],
+        color: isDarkTheme ? Colors.black : Colors.grey[200],
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           child: GNav(
@@ -47,8 +49,8 @@ class _MainPageState extends State<MainPage> {
                 _currIndex = index;
               });
             },
-            backgroundColor: isDarkTheme? Colors.black:Colors.grey.shade200,
-            color: isDarkTheme? Colors.white:Colors.black,
+            backgroundColor: isDarkTheme ? Colors.black : Colors.grey.shade200,
+            color: isDarkTheme ? Colors.white : Colors.black,
             activeColor: Colors.white,
             tabBackgroundColor: Colors.grey.shade900,
             gap: screenwidth * 0.02,
@@ -62,6 +64,10 @@ class _MainPageState extends State<MainPage> {
               GButton(
                 icon: CupertinoIcons.book_solid,
                 text: 'Resources',
+              ),
+              GButton(
+                icon: CupertinoIcons.device_laptop,
+                text: 'Courses',
               ),
               GButton(
                 icon: Icons.support_agent_rounded,

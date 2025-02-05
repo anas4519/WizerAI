@@ -124,6 +124,7 @@ class _CareerExplorationState extends State<CareerExploration> {
           ],
         ),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.all(screenwidth * 0.02),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

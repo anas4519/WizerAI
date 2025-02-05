@@ -217,6 +217,7 @@ class _AiGuidanceState extends State<AiGuidance> {
   Widget _buildSuggestionsListWidget(
       BuildContext context, double screenWidth, double screenHeight) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
