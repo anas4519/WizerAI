@@ -183,97 +183,177 @@ class _ResourcePortalState extends State<ResourcePortal> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             SizedBox(height: screenHeight * 0.02),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            GridView.count(
+              shrinkWrap: true,
+              mainAxisSpacing: 0,
+              crossAxisCount: 3,
+              physics: const NeverScrollableScrollPhysics(),
               children: [
-                // First Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.chat_bubble_2,
-                        size: iconSize,
-                      ),
-                      title: 'Communication Skills',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.question_circle,
-                        size: iconSize,
-                      ),
-                      title: 'Problem Solving',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        Icons.group,
-                        size: iconSize,
-                      ),
-                      title: 'Teamwork',
-                    ),
-                  ],
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.chat_bubble_2,
+                    size: iconSize,
+                    color: Colors.blue,
+                  ),
+                  title: 'Communication Skills',
                 ),
-                SizedBox(height: screenHeight * 0.02),
-
-                // Second Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.arrow_2_circlepath,
-                        size: iconSize,
-                      ),
-                      title: 'Flexibility',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        Icons.leaderboard,
-                        size: iconSize,
-                      ),
-                      title: 'Leadership Skills',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.time,
-                        size: iconSize,
-                      ),
-                      title: 'Time Management',
-                    ),
-                  ],
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.question_circle,
+                    size: iconSize,
+                    color: Colors.green,
+                  ),
+                  title: 'Problem Solving',
                 ),
-                SizedBox(height: screenHeight * 0.02),
-
-                // Third Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.search,
-                        size: iconSize,
-                      ),
-                      title: 'Attention to Detail',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        CupertinoIcons.paintbrush,
-                        size: iconSize,
-                      ),
-                      title: 'Creativity',
-                    ),
-                    QuizIcon(
-                      icon: Icon(
-                        Icons.note_alt_rounded,
-                        size: iconSize,
-                      ),
-                      title: 'Custom',
-                    ),
-                  ],
+                QuizIcon(
+                  icon: Icon(
+                    Icons.group,
+                    size: iconSize,
+                    color: Colors.orange,
+                  ),
+                  title: 'Teamwork',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.arrow_2_circlepath,
+                    size: iconSize,
+                    color: Colors.purple,
+                  ),
+                  title: 'Flexibility',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    Icons.leaderboard,
+                    size: iconSize,
+                    color: Colors.red,
+                  ),
+                  title: 'Leadership Skills',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.time,
+                    size: iconSize,
+                    color: Colors.teal,
+                  ),
+                  title: 'Time Management',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.search,
+                    size: iconSize,
+                    color: Colors.brown,
+                  ),
+                  title: 'Attention to Detail',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    CupertinoIcons.paintbrush,
+                    size: iconSize,
+                    color: Colors.pink,
+                  ),
+                  title: 'Creativity',
+                ),
+                QuizIcon(
+                  icon: Icon(
+                    Icons.note_alt_rounded,
+                    size: iconSize,
+                    color: Colors.cyan,
+                  ),
+                  title: 'Custom',
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.04),
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.stretch,
+            //   children: [
+            //     // First Row
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.chat_bubble_2,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Communication Skills',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.question_circle,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Problem Solving',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             Icons.group,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Teamwork',
+            //         ),
+            //       ],
+            //     ),
+            //     SizedBox(height: screenHeight * 0.02),
+
+            //     // Second Row
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.arrow_2_circlepath,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Flexibility',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             Icons.leaderboard,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Leadership Skills',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.time,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Time Management',
+            //         ),
+            //       ],
+            //     ),
+            //     SizedBox(height: screenHeight * 0.02),
+
+            //     // Third Row
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.search,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Attention to Detail',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             CupertinoIcons.paintbrush,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Creativity',
+            //         ),
+            //         QuizIcon(
+            //           icon: Icon(
+            //             Icons.note_alt_rounded,
+            //             size: iconSize,
+            //           ),
+            //           title: 'Custom',
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+
             Text(
               'Recommended Videos',
               style: Theme.of(context).textTheme.titleLarge,
