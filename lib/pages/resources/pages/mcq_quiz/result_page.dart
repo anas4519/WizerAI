@@ -1,6 +1,7 @@
 import 'package:career_counsellor/models/question.dart';
 import 'package:career_counsellor/pages/resources/widgets/results_container.dart';
 import 'package:career_counsellor/pages/resources/widgets/score_circle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatefulWidget {
@@ -36,6 +37,19 @@ class _ResultPageState extends State<ResultPage> {
           'Results',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(screenWidth * 0.02),
+            child: IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          )
+        ],
         centerTitle: true,
       ),
       body: SingleChildScrollView(

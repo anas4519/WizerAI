@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_counsellor/constants/constants.dart';
@@ -104,7 +105,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
           final List<dynamic> items = data['items'];
 
           if (items.isNotEmpty) {
-            for (var i = 0; i < items.length; i++) {
+            for (var i = 0; i < min(items.length, 5); i++) {
               final snippet = items[i]['snippet'];
               fetchedVideos.add(
                 YouTubeVideo(
@@ -276,97 +277,6 @@ class _ResourcePortalState extends State<ResourcePortal> {
                 ),
               ],
             ),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.stretch,
-            //   children: [
-            //     // First Row
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.chat_bubble_2,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Communication Skills',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.question_circle,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Problem Solving',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             Icons.group,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Teamwork',
-            //         ),
-            //       ],
-            //     ),
-            //     SizedBox(height: screenHeight * 0.02),
-
-            //     // Second Row
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.arrow_2_circlepath,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Flexibility',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             Icons.leaderboard,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Leadership Skills',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.time,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Time Management',
-            //         ),
-            //       ],
-            //     ),
-            //     SizedBox(height: screenHeight * 0.02),
-
-            //     // Third Row
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.search,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Attention to Detail',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             CupertinoIcons.paintbrush,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Creativity',
-            //         ),
-            //         QuizIcon(
-            //           icon: Icon(
-            //             Icons.note_alt_rounded,
-            //             size: iconSize,
-            //           ),
-            //           title: 'Custom',
-            //         ),
-            //       ],
-            //     ),
-            //   ],
-            // ),
-
             Text(
               'Recommended Videos',
               style: Theme.of(context).textTheme.titleLarge,
@@ -432,7 +342,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                                   height: screenHeight * 0.08,
                                   fit: BoxFit.cover,
                                   imageUrl:
-                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                      youtubeVideos[selectedFilterIndex * 5 + i]
                                           .thumbnailUrl,
                                   placeholder: (context, url) =>
                                       const Icon(Icons.play_arrow_rounded),
@@ -446,7 +356,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                      youtubeVideos[selectedFilterIndex * 5 + i]
                                           .title,
                                       style: const TextStyle(
                                         fontSize: 16,
@@ -457,7 +367,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      youtubeVideos[selectedFilterIndex * 3 + i]
+                                      youtubeVideos[selectedFilterIndex * 5 + i]
                                           .channelTitle,
                                       style: TextStyle(
                                         fontSize: 14,

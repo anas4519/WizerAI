@@ -107,6 +107,19 @@ class _ResultPageRState extends State<ResultPageR> {
         appBar: AppBar(
           title: const Text('Results'),
           centerTitle: true,
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(screenWidth * 0.02),
+              child: IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            )
+          ],
         ),
         body: isLoading
             ? Center(
