@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/video_player.dart';
+import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -171,6 +172,18 @@ class _ResourcePortalState extends State<ResourcePortal> {
       appBar: AppBar(
         title: const Text('Resources'),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(screenWidth * 0.02),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const CoursesPage(),
+                  ));
+                },
+                icon: const Icon(CupertinoIcons.device_laptop)),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
