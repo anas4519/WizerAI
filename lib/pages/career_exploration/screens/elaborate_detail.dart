@@ -88,6 +88,7 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
                     ),
                   )
                 : SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.all(screenWidth * 0.04),
                     child: Column(
                       children: [

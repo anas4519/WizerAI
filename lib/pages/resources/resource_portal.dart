@@ -9,6 +9,7 @@ import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -152,6 +153,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
   }
 
   void _toggleFilter(int index) {
+    HapticFeedback.lightImpact();
     setState(() {
       selectedFilterIndex = index;
     });

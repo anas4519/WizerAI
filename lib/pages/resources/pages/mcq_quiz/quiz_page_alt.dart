@@ -40,13 +40,12 @@ class _QuizPageAltState extends State<QuizPageAlt> {
               height: screenHeight * 0.05,
             ),
             QuestionBox(
-              questions: widget.questions,
-              question: widget.questions[widget.currIdx].question,
-              questionNumber: widget.currIdx + 1,
-              currScore: widget.currScore,
-              skipped: widget.skipped,
-              wrongIndices: widget.wrongIndices
-            ),
+                questions: widget.questions,
+                question: widget.questions[widget.currIdx].question,
+                questionNumber: widget.currIdx + 1,
+                currScore: widget.currScore,
+                skipped: widget.skipped,
+                wrongIndices: widget.wrongIndices),
             SizedBox(
               height: screenHeight * 0.1,
             ),
@@ -77,13 +76,16 @@ class _QuizPageAltState extends State<QuizPageAlt> {
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                       ),
                     ),
-                    child: Text(index == 0
-                        ? widget.questions[widget.currIdx].o1
-                        : index == 1
-                            ? widget.questions[widget.currIdx].o2
-                            : index == 2
-                                ? widget.questions[widget.currIdx].o3
-                                : widget.questions[widget.currIdx].o4),
+                    child: Text(
+                      index == 0
+                          ? widget.questions[widget.currIdx].o1
+                          : index == 1
+                              ? widget.questions[widget.currIdx].o2
+                              : index == 2
+                                  ? widget.questions[widget.currIdx].o3
+                                  : widget.questions[widget.currIdx].o4,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 );
               },
