@@ -50,6 +50,7 @@ dependencies:
   gpt_markdown: ^1.0.6
   flutter_svg: ^2.0.17
   fancy_shimmer_image: ^2.0.3
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,7 @@ flutter:
     - assets/logos/
     - assets/animations/
     - assets/graphics/
+    - assets/onboarding_images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
