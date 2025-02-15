@@ -1,8 +1,10 @@
 import 'package:career_counsellor/auth/auth_gate.dart';
 import 'package:career_counsellor/constants/constants.dart';
+import 'package:career_counsellor/onboarding_screen/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -21,6 +23,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent));
+
+    Future<bool> isFirstLaunch() async {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool('isFirstLaunch') ?? true;
+    }
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -55,7 +62,18 @@ class MyApp extends StatelessWidget {
         // )
       ),
       themeMode: ThemeMode.system,
-      home: const AuthGate(),
+      // home: const AuthGate(),
+      home: FutureBuilder<bool>(
+        future: isFirstLaunch(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+                body: Center(child: CircularProgressIndicator()));
+          } else {
+            return snapshot.data! ? const OnboardingPage() : const AuthGate();
+          }
+        },
+      ),
     );
   }
 }

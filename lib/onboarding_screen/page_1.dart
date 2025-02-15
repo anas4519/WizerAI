@@ -29,7 +29,7 @@ class Page1 extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(
-                height: 112,
+                height: 200,
               ),
               Center(
                 child: SvgPicture.asset(

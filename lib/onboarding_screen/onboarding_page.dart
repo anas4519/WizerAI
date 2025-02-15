@@ -5,6 +5,7 @@ import 'package:career_counsellor/onboarding_screen/page_3.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -15,6 +16,11 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
+  Future<void> completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isFirstLaunch', false);
+  }
+
   PageController _controller = PageController();
   bool onLastPage = false;
 
@@ -70,8 +76,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
             onTap: () {
               HapticFeedback.lightImpact();
               if (onLastPage) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (ctx) => const AuthGate()));
+                completeOnboarding().then((_) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => AuthGate()),
+                  );
+                });
               } else {
                 _controller.nextPage(
                   duration: const Duration(milliseconds: 300),
