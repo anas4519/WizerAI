@@ -143,7 +143,7 @@ class _CareerDetailsState extends State<CareerDetails> {
 
   Future<void> _generateContent() async {
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
@@ -281,125 +281,101 @@ class _CareerDetailsState extends State<CareerDetails> {
                 fit: BoxFit.contain,
               ),
             )
-          : errorMessage != null
-              ? Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(screenWidth * 0.04),
-                    child: Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
+          : RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                await _initializeData();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (imageUrl.isNotEmpty)
+                      Center(
+                          child: FancyShimmerImage(
+                        boxDecoration: BoxDecoration(
+                            border: Border.all(color: Colors.pink, width: 2)),
+                        imageUrl: imageUrl,
+                        errorWidget: const Icon(Icons.error),
+                        width: screenWidth,
+                        boxFit: BoxFit.fitWidth,
+                        shimmerBackColor: Colors.grey,
+                        shimmerBaseColor: Colors.grey,
+                        shimmerHighlightColor: Colors.pink[200],
+                      )),
+                    ...sections
+                        .where((section) =>
+                            section != 'YouTube Resources' &&
+                            careerDetails.containsKey(section))
+                        .map((section) =>
+                            _buildSection(section, careerDetails[section]!)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) =>
+                                CareerPathway(career: widget.title)));
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
+                        margin:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.04),
+                            child: Row(
+                              children: [
+                                const Icon(CupertinoIcons.map_fill),
+                                SizedBox(
+                                  width: screenWidth * 0.04,
+                                ),
+                                const Expanded(
+                                    child: Text('Tap to view career pathway!'))
+                              ],
+                            )),
+                      ),
                     ),
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    await _initializeData();
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (imageUrl.isNotEmpty)
-                          Center(
-                              child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.02),
-                              border: Border.all(
-                                color: Colors.pink,
-                              ),
-                            ),
-                            child: FancyShimmerImage(
-                              imageUrl: imageUrl,
-                              errorWidget: const Icon(Icons.error),
-                              width: screenWidth,
-                              boxFit: BoxFit.fitWidth,
-                              shimmerBackColor: Colors.grey,
-                              shimmerBaseColor: Colors.grey,
-                              shimmerHighlightColor: Colors.pink[200],
-                            ),
-                          )),
-                        SizedBox(
-                          height: screenHeight * 0.02,
-                        ),
-                        ...sections
-                            .where((section) =>
-                                section != 'YouTube Resources' &&
-                                careerDetails.containsKey(section))
-                            .map((section) => _buildSection(
-                                section, careerDetails[section]!)),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) =>
-                                    CareerPathway(career: widget.title)));
-                          },
-                          child: Card(
-                            elevation: 3,
-                            shadowColor:
-                                isDarkTheme ? Colors.grey : Colors.black,
-                            margin: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.01),
-                            child: Padding(
-                                padding: EdgeInsets.all(screenWidth * 0.04),
-                                child: Row(
-                                  children: [
-                                    const Icon(CupertinoIcons.map_fill),
-                                    SizedBox(
-                                      width: screenWidth * 0.04,
-                                    ),
-                                    const Expanded(
-                                        child:
-                                            Text('Tap to view career pathway!'))
-                                  ],
-                                )),
-                          ),
-                        ),
-                        if (youtubeVideos.isNotEmpty) _buildYouTubeSection(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) =>
-                                    CareerDetailAiGuide(title: widget.title)));
-                          },
-                          child: Card(
-                            elevation: 3,
-                            shadowColor:
-                                isDarkTheme ? Colors.grey : Colors.black,
-                            margin: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.01),
-                            child: Padding(
-                                padding: EdgeInsets.all(screenWidth * 0.04),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                        CupertinoIcons.chat_bubble_text_fill),
-                                    SizedBox(
-                                      width: screenWidth * 0.04,
-                                    ),
-                                    const Expanded(
-                                        child: Text(
-                                            'Still confused? Tap here to talk with Daimon!'))
-                                  ],
-                                )),
-                          ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.02,
-                        ),
-                        const InfoContainer(
-                            text:
-                                'This content is generated by AI and may sometimes contain inaccuracies or incomplete information. Please verify independently when necessary.'),
-                      ],
+                    if (youtubeVideos.isNotEmpty) _buildYouTubeSection(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) =>
+                                CareerDetailAiGuide(title: widget.title)));
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
+                        margin:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.04),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                    CupertinoIcons.chat_bubble_text_fill),
+                                SizedBox(
+                                  width: screenWidth * 0.04,
+                                ),
+                                const Expanded(
+                                    child: Text(
+                                        'Still confused? Tap here to talk with Daimon!'))
+                              ],
+                            )),
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
+                    const InfoContainer(
+                        text:
+                            'This content is generated by AI and may sometimes contain inaccuracies or incomplete information. Please verify independently when necessary.'),
+                  ],
                 ),
+              ),
+            ),
     );
   }
 }
