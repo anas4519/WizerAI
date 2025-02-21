@@ -5,7 +5,7 @@ unauthenticated = login page
 authenticated = main page
 */
 
-import 'package:career_counsellor/pages/auth/sign_in_page.dart';
+import 'package:career_counsellor/pages/auth/login_page.dart';
 import 'package:career_counsellor/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,7 +30,7 @@ class AuthGate extends StatelessWidget {
           if (session != null) {
             return const MainPage();
           } else {
-            return const SignInPage();
+            return const LoginPage();
           }
         });
   }

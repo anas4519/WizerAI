@@ -62,7 +62,6 @@ class MyApp extends StatelessWidget {
         // )
       ),
       themeMode: ThemeMode.system,
-      // home: const AuthGate(),
       home: FutureBuilder<bool>(
         future: isFirstLaunch(),
         builder: (context, snapshot) {
@@ -74,6 +73,7 @@ class MyApp extends StatelessWidget {
           }
         },
       ),
+      // home: LoginPage(),
     );
   }
 }

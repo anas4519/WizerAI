@@ -1,8 +1,44 @@
+import 'package:career_counsellor/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final supabase = Supabase.instance.client;
+  final String webClientId = '$WEB_CLIENT_ID.apps.googleusercontent.com';
+  final String iosClientId = '$IOS_CLIENT_ID.apps.googleusercontent.com';
+
+  Future<void> _googleSignIn() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: iosClientId,
+      serverClientId: webClientId,
+    );
+    final googleUser = await googleSignIn.signIn();
+    final googleAuth = await googleUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
+
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +118,7 @@ class LoginPage extends StatelessWidget {
                                     BorderRadius.circular(screenWidth * 0.1),
                               ),
                             ),
-                            onPressed: () {
-                              // Google Sign-In logic goes here
-                            },
+                            onPressed: _googleSignIn,
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
