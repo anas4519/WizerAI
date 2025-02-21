@@ -82,7 +82,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
 
   Future<void> _initializeChat() async {
     model = genai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
@@ -148,7 +148,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Career Guide'),
+        title: const Text('WizerAI'),
         centerTitle: true,
       ),
       body: Column(

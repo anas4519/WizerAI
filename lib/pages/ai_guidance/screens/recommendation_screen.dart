@@ -120,7 +120,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       isLoading = true;
     });
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
@@ -179,7 +179,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DAI Suggestions'),
+        title: const Text('WizerAI Suggestions'),
         centerTitle: true,
         actions: [
           Padding(
@@ -235,8 +235,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                                 child: Text(
                                   '${index + 1}',
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                                 ),
                               ),
                               title: Text(
@@ -245,8 +245,8 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                                     .textTheme
                                     .titleMedium
                                     ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               trailing: IconButton(
                                 onPressed: () {
