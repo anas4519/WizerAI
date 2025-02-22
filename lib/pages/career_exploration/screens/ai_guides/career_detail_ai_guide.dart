@@ -27,7 +27,7 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
 
   Future<void> _initializeChat() async {
     model = genai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
@@ -49,18 +49,22 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
 
     setState(() {
       if (!isInitial) messages.add(Message(text: text, isUser: true));
+
       isLoading = true;
+      messages.add(Message(text: 'Loading', isUser: false));
     });
 
     try {
       final response = await chat.sendMessage(genai.Content.text(text));
       setState(() {
+        messages.removeLast();
         messages.add(Message(text: response.text ?? '', isUser: false));
         isLoading = false;
       });
     } catch (e) {
       setState(() {
         isLoading = false;
+        messages.removeLast();
         messages.add(Message(text: 'Error: $e', isUser: false));
       });
     }
@@ -109,11 +113,12 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                return ChatBubble(message: message);
+                return ChatBubble(
+                  message: message,
+                );
               },
             ),
           ),
-          if (isLoading) const LinearProgressIndicator(),
           Padding(
             padding:
                 const EdgeInsets.only(bottom: 30, left: 16, right: 16, top: 16),
@@ -142,15 +147,19 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
                 const SizedBox(width: 12),
                 ElevatedButton(
                   onPressed: () {
-                    final text = _messageController.text;
-                    _messageController.clear();
-                    _sendMessage(text);
+                    if (!isLoading) {
+                      final text = _messageController.text;
+                      _messageController.clear();
+                      _sendMessage(text);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(16),
                   ),
-                  child: const Icon(Icons.arrow_upward_rounded),
+                  child: isLoading
+                      ? const Icon(Icons.stop)
+                      : const Icon(Icons.arrow_upward_rounded),
                 )
               ],
             ),

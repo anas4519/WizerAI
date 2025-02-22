@@ -127,18 +127,22 @@ class _AIChatScreenState extends State<AIChatScreen> {
 
     setState(() {
       if (!isInitial) messages.add(Message(text: text, isUser: true));
+
       isLoading = true;
+      messages.add(Message(text: 'Loading', isUser: false));
     });
 
     try {
       final response = await chat.sendMessage(genai.Content.text(text));
       setState(() {
+        messages.removeLast();
         messages.add(Message(text: response.text ?? '', isUser: false));
         isLoading = false;
       });
     } catch (e) {
       setState(() {
         isLoading = false;
+        messages.removeLast();
         messages.add(Message(text: 'Error: $e', isUser: false));
       });
     }
@@ -159,11 +163,12 @@ class _AIChatScreenState extends State<AIChatScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                return ChatBubble(message: message);
+                return ChatBubble(
+                  message: message,
+                );
               },
             ),
           ),
-          if (isLoading) const LinearProgressIndicator(),
           Padding(
             padding:
                 const EdgeInsets.only(bottom: 30, left: 16, right: 16, top: 16),
@@ -200,7 +205,9 @@ class _AIChatScreenState extends State<AIChatScreen> {
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(16),
                   ),
-                  child: const Icon(Icons.arrow_upward_rounded),
+                  child: isLoading
+                      ? const Icon(Icons.stop)
+                      : const Icon(Icons.arrow_upward_rounded),
                 )
               ],
             ),
