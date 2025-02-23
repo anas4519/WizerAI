@@ -1,6 +1,7 @@
 import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -35,10 +36,9 @@ class ChatBubble extends StatelessWidget {
           ),
           child: isLoading
               ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
+                  width: 32,
+                  height: 32,
+                  child: SpinKitDoubleBounce(
                     color: Colors.grey,
                   ),
                 )
