@@ -15,7 +15,6 @@ class DefaultSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
@@ -23,7 +22,7 @@ class DefaultSection extends StatelessWidget {
       },
       child: Card(
         elevation: 3,
-        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
+        // color: isDarkTheme ? Colors.black : Colors.grey[200],
         margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
         child: Padding(
           padding: EdgeInsets.all(screenWidth * 0.04),

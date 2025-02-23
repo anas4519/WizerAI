@@ -131,10 +131,8 @@ class _ResourcePortalState extends State<ResourcePortal> {
     } catch (e) {
       setState(() {
         isLoading = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Error fetching YouTube videos: ${e.toString()}')),
-        );
+
+        print('Error fetching YouTube videos: ${e.toString()}');
       });
     }
   }

@@ -249,7 +249,6 @@ class _CareerDetailsState extends State<CareerDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -320,8 +319,6 @@ class _CareerDetailsState extends State<CareerDetails> {
                                 CareerPathway(career: widget.title)));
                       },
                       child: Card(
-                        elevation: 3,
-                        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
                         margin:
                             EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                         child: Padding(
@@ -346,8 +343,6 @@ class _CareerDetailsState extends State<CareerDetails> {
                                 CareerDetailAiGuide(title: widget.title)));
                       },
                       child: Card(
-                        elevation: 3,
-                        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
                         margin:
                             EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                         child: Padding(

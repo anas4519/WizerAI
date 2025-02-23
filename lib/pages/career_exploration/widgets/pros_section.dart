@@ -15,15 +15,12 @@ class ProsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (ctx) => ElaborateDetail(title: title, career: career)));
       },
       child: Card(
-        elevation: 2,
-        shadowColor: isDarkTheme ? Colors.grey : Colors.black,
         margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
