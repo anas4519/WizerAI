@@ -200,7 +200,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                 height: screenHeight * 0.02,
               ),
               const Text(
-                'WisrAI Suggestions',
+                'WizerAI Suggestions',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(

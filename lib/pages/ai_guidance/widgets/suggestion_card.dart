@@ -55,7 +55,7 @@ class CareerSuggestionCard extends StatelessWidget {
               //       const Center(child: CircularProgressIndicator()),
               //   errorWidget: (context, url, error) => const Icon(Icons.error),
               // ),
-              SizedBox(width: screenWidth * 0.03),
+              SizedBox(width: screenWidth * 0.025),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,22 +63,14 @@ class CareerSuggestionCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.005),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: screenWidth * 0.01),
+              SizedBox(width: screenWidth * 0.02),
               IconButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(

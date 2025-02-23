@@ -46,20 +46,9 @@ class _SearchScreenState extends State<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.005),
-            Row(
-              children: [
-                const Text(
-                  'Search for a Profession',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    // Uncomment and implement the showDialog if needed
-                  },
-                  icon: const Icon(Icons.info),
-                ),
-              ],
+            const Text(
+              'Search for a Profession',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
             SizedBox(height: screenHeight * 0.02),
             Container(

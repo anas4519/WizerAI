@@ -4,6 +4,7 @@ import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart';
+import 'package:career_counsellor/pages/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -146,12 +147,24 @@ class _AiGuidanceState extends State<AiGuidance> {
       appBar: AppBar(
         title: Text('Home', style: theme.textTheme.titleLarge),
         centerTitle: true,
+        leading: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.02),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const ProfilePage()));
+            },
+            child: const CircleAvatar(
+              child: Icon(Icons.person),
+            ),
+          ),
+        ),
         actions: [
-          IconButton(
-            onPressed: logout,
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-          )
+          // IconButton(
+          //   onPressed: logout,
+          //   icon: const Icon(Icons.logout),
+          //   tooltip: 'Logout',
+          // )
         ],
       ),
       body: _isLoading
@@ -234,8 +247,7 @@ class _AiGuidanceState extends State<AiGuidance> {
             for (int index = 0; index < daimonSuggestions.length; index++)
               CareerSuggestionCard(
                   title: daimonSuggestions[index],
-                  description:
-                      'Analyzes data, builds models, extracts insights, solves problems, drives decisions.',
+                  description: '',
                   image: urls[index],
                   cta: 'jhjbhjb'),
             Center(

@@ -2,6 +2,7 @@ import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/ai_guides/compatibility_check_ai_guide.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:lottie/lottie.dart';
@@ -103,9 +104,7 @@ class _CompatibilityCheckState extends State<CompatibilityCheck> {
                         prevContext: body,
                       )));
             },
-            child: Lottie.asset(
-              'assets/animations/bot_animation.json',
-            )),
+            child: const Icon(CupertinoIcons.chat_bubble_2_fill)),
         body: _isLoading
             ? Center(
                 child: Lottie.asset(

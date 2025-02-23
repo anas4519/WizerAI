@@ -356,7 +356,7 @@ class _CareerDetailsState extends State<CareerDetails> {
                                 ),
                                 const Expanded(
                                     child: Text(
-                                        'Still confused? Tap here to talk with Daimon!'))
+                                        'Still confused? Tap here to talk with WizeBot!'))
                               ],
                             )),
                       ),

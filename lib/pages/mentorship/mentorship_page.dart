@@ -21,7 +21,7 @@ class MentorshipPage extends StatelessWidget {
                 width: screenWidth * 0.8,
               ),
               const Text(
-                'Unfortunately, we don\'t have any counsellors yet.\n\nIf you are interested to sign up as a counsellor, send your resume at :\nxyz@gmail.com',
+                'Coming Soon...',
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),

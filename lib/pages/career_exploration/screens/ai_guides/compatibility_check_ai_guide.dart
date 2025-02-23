@@ -36,12 +36,12 @@ class _CompatibilityCheckAiGuideState extends State<CompatibilityCheckAiGuide> {
 
   Future<void> _initializeChat() async {
     model = genai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
     final initialContext =
-        '''You are a career advisor bot and you are here to clear the user's doubts and queries about their compatibility with ${widget.title} as a career. Here is your previous conversation: ${widget.prevContext}''';
+        '''You are a career advisor bot whose name is 'WizeBot' and you are here to clear the user's doubts and queries about their compatibility with ${widget.title} as a career. Here is your previous conversation: ${widget.prevContext}''';
 
     chat = model.startChat(history: [
       genai.Content.text(initialContext),
@@ -83,7 +83,7 @@ class _CompatibilityCheckAiGuideState extends State<CompatibilityCheckAiGuide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Career Guide'),
+        title: const Text('WizeBot'),
         centerTitle: true,
       ),
       body: Column(
