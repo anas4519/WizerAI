@@ -148,62 +148,97 @@ class _CareerDetailsState extends State<CareerDetails> {
     );
 
     String prompt = '''
-  You are a career counsellor. Generate the following information about the career '${widget.title}':
-  1. Overview
-  2. Education Required in India
-  3. Best Schools in India
-  4. Work Environment
-  5. Salaries in India
-  6. Pros (list only the advantages)
-  7. Cons (list only the disadvantages)
-  8. Industry Trends
+You are a career counsellor. Generate the following information about the career '${widget.title}' in JSON format:
 
-  Format each section with its heading followed by bullet points. Separate sections with double newlines.
-  ''';
+{
+  "Overview": ["point 1", "point 2", "point 3"],
+  "Education Required in India": ["point 1", "point 2", "point 3"],
+  "Best Schools in India": ["point 1", "point 2", "point 3"],
+  "Work Environment": ["point 1", "point 2", "point 3"],
+  "Salaries in India": ["point 1", "point 2", "point 3"],
+  "Pros": ["advantage 1", "advantage 2", "advantage 3"],
+  "Cons": ["disadvantage 1", "disadvantage 2", "disadvantage 3"],
+  "Industry Trends": ["trend 1", "trend 2", "trend 3"]
+}
+
+Provide only the JSON with no additional text or markdown formatting.
+Ensure each section has at least 3-5 detailed bullet points.
+''';
 
     final content = [google_ai.Content.text(prompt)];
 
     try {
       final result = await model.generateContent(content);
-      // print(result.text);
       setState(() {
         if (result.text != null) {
           String response = result.text!;
-          Map<String, dynamic> sections = {};
-          String currentSection = '';
-          List<String> lines = response.split('\n');
-          List<String> currentPoints = [];
-          for (String line in lines) {
-            line = line.trim();
-            if (line.isEmpty) continue;
-
-            // Check for section headers (numbered or with asterisks)
-            if (line.startsWith(RegExp(r'\d\.')) ||
-                (line.startsWith('**') && line.endsWith('**'))) {
-              if (currentSection.isNotEmpty) {
-                sections[currentSection] = List<String>.from(currentPoints);
-                currentPoints = [];
-              }
-              currentSection = line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
-            }
-            // Check for bullet points
-            else if (line.startsWith('•') ||
-                line.startsWith('-') ||
-                line.startsWith('*')) {
-              String cleanedLine =
-                  line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
-              if (cleanedLine.isNotEmpty) {
-                currentPoints.add(cleanedLine);
-              }
-            }
+          response = response.trim();
+          if (response.startsWith("```json")) {
+            response = response.substring(7);
+          }
+          if (response.startsWith("```")) {
+            response = response.substring(3);
+          }
+          if (response.endsWith("```")) {
+            response = response.substring(0, response.length - 3);
           }
 
-          if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
-            sections[currentSection] = List<String>.from(currentPoints);
+          response = response.trim();
+
+          try {
+            Map<String, dynamic> jsonData = json.decode(response);
+
+            careerDetails = jsonData.map((key, value) {
+              List<String> stringList = [];
+              if (value is List) {
+                stringList = value.map((item) => item.toString()).toList();
+              }
+              return MapEntry(key, stringList);
+            });
+
+            isLoading = false;
+          } catch (jsonError) {
+            print("JSON parsing error: $jsonError");
+            print("Attempted to parse: $response");
+
+            Map<String, dynamic> sections = {};
+            String currentSection = '';
+            List<String> lines = response.split('\n');
+            List<String> currentPoints = [];
+
+            for (String line in lines) {
+              line = line.trim();
+              if (line.isEmpty) continue;
+
+              if (line.startsWith(RegExp(r'\d\.')) ||
+                  (line.startsWith('**') && line.endsWith('**'))) {
+                if (currentSection.isNotEmpty) {
+                  sections[currentSection] = List<String>.from(currentPoints);
+                  currentPoints = [];
+                }
+                currentSection =
+                    line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
+              }
+              // Check for bullet points
+              else if (line.startsWith('•') ||
+                  line.startsWith('-') ||
+                  line.startsWith('*')) {
+                String cleanedLine =
+                    line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
+                if (cleanedLine.isNotEmpty) {
+                  currentPoints.add(cleanedLine);
+                }
+              }
+            }
+
+            if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+              sections[currentSection] = List<String>.from(currentPoints);
+            }
+
+            careerDetails = sections
+                .map((key, value) => MapEntry(key, List<String>.from(value)));
+            isLoading = false;
           }
-          careerDetails = sections
-              .map((key, value) => MapEntry(key, List<String>.from(value)));
-          isLoading = false;
         }
       });
     } catch (e) {
