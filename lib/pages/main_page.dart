@@ -64,8 +64,8 @@ class _MainPageState extends State<MainPage> {
                 text: 'Resources',
               ),
               GButton(
-                icon: Icons.support_agent_rounded,
-                text: 'Mentorship',
+                icon: Icons.school,
+                text: 'Degrees',
               ),
             ],
           ),
