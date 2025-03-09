@@ -171,7 +171,7 @@ class _ResourcePortalState extends State<ResourcePortal> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Resources'),
+        title: const Text('Learning Resources'),
         centerTitle: true,
         actions: [
           Padding(

@@ -1,15 +1,15 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/ai_guides/career_detail_ai_guide.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/career_pathway.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/compatibility_check.dart';
+import 'package:career_counsellor/pages/career_exploration/widgets/career_pathway_card.dart';
+import 'package:career_counsellor/pages/career_exploration/widgets/chat_with_bot.dart';
+import 'package:career_counsellor/pages/career_exploration/widgets/compatibility_check.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/cons_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/default_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/youtube_section.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -347,55 +347,12 @@ Ensure each section has at least 3-5 detailed bullet points.
                             careerDetails.containsKey(section))
                         .map((section) =>
                             _buildSection(section, careerDetails[section]!)),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) =>
-                                CareerPathway(career: widget.title)));
-                      },
-                      child: Card(
-                        margin:
-                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                        child: Padding(
-                            padding: EdgeInsets.all(screenWidth * 0.04),
-                            child: Row(
-                              children: [
-                                const Icon(CupertinoIcons.map_fill),
-                                SizedBox(
-                                  width: screenWidth * 0.04,
-                                ),
-                                const Expanded(
-                                    child: Text('Tap to view career pathway!'))
-                              ],
-                            )),
-                      ),
-                    ),
+                    CareerPathwayCard(title: widget.title),
                     if (youtubeVideos.isNotEmpty) _buildYouTubeSection(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) =>
-                                CareerDetailAiGuide(title: widget.title)));
-                      },
-                      child: Card(
-                        margin:
-                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                        child: Padding(
-                            padding: EdgeInsets.all(screenWidth * 0.04),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                    CupertinoIcons.chat_bubble_text_fill),
-                                SizedBox(
-                                  width: screenWidth * 0.04,
-                                ),
-                                const Expanded(
-                                    child: Text(
-                                        'Still confused? Tap here to talk with WizeBot!'))
-                              ],
-                            )),
-                      ),
+                    CompatibilityCheckCard(
+                      title: widget.title,
                     ),
+                    ChatWithBot(title: widget.title),
                     SizedBox(
                       height: screenHeight * 0.02,
                     ),
