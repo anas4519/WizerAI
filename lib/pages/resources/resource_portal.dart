@@ -29,7 +29,6 @@ class _ResourcePortalState extends State<ResourcePortal>
   List<YouTubeVideo> weaknesses = [];
   final SupabaseClient supabase = Supabase.instance.client;
 
-  // Animation controller for staggered animations
   late AnimationController _animationController;
 
   // This variable keeps track of the currently selected button index.
@@ -37,7 +36,6 @@ class _ResourcePortalState extends State<ResourcePortal>
 
   @override
   void initState() {
-    // Initialize animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -45,8 +43,6 @@ class _ResourcePortalState extends State<ResourcePortal>
 
     initVideos();
     super.initState();
-
-    // Start the animation once loaded
     _animationController.forward();
   }
 
@@ -55,8 +51,6 @@ class _ResourcePortalState extends State<ResourcePortal>
       final userId = supabase.auth.currentUser!.id;
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
-
-      // Handle empty weaknesses
       if (data['weaknesses'] == null || data['weaknesses'].isEmpty) {
         setState(() {
           isLoading = false;
@@ -204,7 +198,6 @@ class _ResourcePortalState extends State<ResourcePortal>
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // Custom app bar with more visual interest
           SliverAppBar(
             expandedHeight: screenHeight * 0.2,
             pinned: true,
@@ -262,9 +255,8 @@ class _ResourcePortalState extends State<ResourcePortal>
               ),
               title: const Text(
                 'Learning Resources',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
               centerTitle: true,
               collapseMode: CollapseMode.parallax,
@@ -291,123 +283,102 @@ class _ResourcePortalState extends State<ResourcePortal>
               ),
             ],
           ),
-
-          // Main content
           SliverPadding(
             padding: EdgeInsets.all(screenWidth * 0.04),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Quiz Section with card container
                 _buildSectionHeader(
                   context,
                   title: 'Skill Assessment Quizzes',
                   icon: Icons.quiz_outlined,
                   color: Colors.indigo,
                 ),
-                const SizedBox(height: 12),
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                // const SizedBox(height: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GridView.count(
+                      shrinkWrap: true,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 10,
+                      crossAxisCount: 3,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        Text(
-                          'Assess and improve your key professional skills',
-                          style: TextStyle(
-                            color: isDarkTheme
-                                ? Colors.grey[300]
-                                : Colors.grey[700],
-                            fontSize: 14,
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.chat_bubble_2,
+                            size: iconSize,
+                            color: Colors.blue,
                           ),
+                          title: 'Communication',
                         ),
-                        GridView.count(
-                          shrinkWrap: true,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          crossAxisCount: 3,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.chat_bubble_2,
-                                size: iconSize,
-                                color: Colors.blue,
-                              ),
-                              title: 'Communication',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.question_circle,
-                                size: iconSize,
-                                color: Colors.green,
-                              ),
-                              title: 'Problem Solving',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                Icons.group,
-                                size: iconSize,
-                                color: Colors.orange,
-                              ),
-                              title: 'Teamwork',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.arrow_2_circlepath,
-                                size: iconSize,
-                                color: Colors.purple,
-                              ),
-                              title: 'Adaptability',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                Icons.leaderboard,
-                                size: iconSize,
-                                color: Colors.red,
-                              ),
-                              title: 'Leadership',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.time,
-                                size: iconSize,
-                                color: Colors.teal,
-                              ),
-                              title: 'Time Management',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.search,
-                                size: iconSize,
-                                color: Colors.brown,
-                              ),
-                              title: 'Attention to Detail',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                CupertinoIcons.paintbrush,
-                                size: iconSize,
-                                color: Colors.pink,
-                              ),
-                              title: 'Creativity',
-                            ),
-                            QuizIcon(
-                              icon: Icon(
-                                Icons.note_alt_rounded,
-                                size: iconSize,
-                                color: Colors.cyan,
-                              ),
-                              title: 'Custom',
-                            ),
-                          ],
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.question_circle,
+                            size: iconSize,
+                            color: Colors.green,
+                          ),
+                          title: 'Problem Solving',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            Icons.group,
+                            size: iconSize,
+                            color: Colors.orange,
+                          ),
+                          title: 'Teamwork',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.arrow_2_circlepath,
+                            size: iconSize,
+                            color: Colors.purple,
+                          ),
+                          title: 'Adaptability',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            Icons.leaderboard,
+                            size: iconSize,
+                            color: Colors.red,
+                          ),
+                          title: 'Leadership',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.time,
+                            size: iconSize,
+                            color: Colors.teal,
+                          ),
+                          title: 'Time Management',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.search,
+                            size: iconSize,
+                            color: Colors.brown,
+                          ),
+                          title: 'Attention to Detail',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            CupertinoIcons.paintbrush,
+                            size: iconSize,
+                            color: Colors.pink,
+                          ),
+                          title: 'Creativity',
+                        ),
+                        QuizIcon(
+                          icon: Icon(
+                            Icons.note_alt_rounded,
+                            size: iconSize,
+                            color: Colors.cyan,
+                          ),
+                          title: 'Custom',
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
 
                 SizedBox(height: screenHeight * 0.03),
@@ -421,8 +392,8 @@ class _ResourcePortalState extends State<ResourcePortal>
                 const SizedBox(height: 12),
 
                 if (savedRecommendations.isNotEmpty)
-                  Container(
-                    height: 50,
+                  SizedBox(
+                    height: 75,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: savedRecommendations.length,

@@ -28,6 +28,11 @@ class ChatBubble extends StatelessWidget {
         alignment:
             message.isUser ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
+          constraints: BoxConstraints(
+            maxWidth: message.isUser
+                ? MediaQuery.of(context).size.width * 0.7
+                : double.infinity,
+          ),
           margin: const EdgeInsets.symmetric(vertical: 4),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(

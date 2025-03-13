@@ -74,21 +74,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       icon: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: isDarkMode ? Colors.grey[800] : Colors.white,
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: isDarkMode
-                                  ? Colors.black.withOpacity(0.3)
-                                  : Colors.grey.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          color: isDarkMode ? Colors.white : Colors.black,
+                          Icons.arrow_back_ios,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
@@ -128,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     duration: const Duration(milliseconds: 200),
                     height: screenHeight * 0.07,
                     decoration: BoxDecoration(
-                      color: isDarkMode ? Colors.grey[900] : Colors.white,
+                      color: isDarkMode ? Colors.grey[800] : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isSearchFocused

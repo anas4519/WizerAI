@@ -147,25 +147,33 @@ class _AiGuidanceState extends State<AiGuidance> {
       appBar: AppBar(
         title: Text('Home', style: theme.textTheme.titleLarge),
         centerTitle: true,
-        leading: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.02),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const ProfilePage()));
-            },
-            child: const CircleAvatar(
-              child: Icon(Icons.person),
-            ),
-          ),
-        ),
+
         actions: [
-          // IconButton(
-          //   onPressed: logout,
-          //   icon: const Icon(Icons.logout),
-          //   tooltip: 'Logout',
-          // )
+          Padding(
+            padding: EdgeInsets.all(screenWidth * 0.02),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const ProfilePage()));
+              },
+              child: CircleAvatar(
+                backgroundColor:
+                    Theme.of(context).primaryColor.withOpacity(0.1),
+                child: Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          )
         ],
+        // actions: [
+        //   // IconButton(
+        //   //   onPressed: logout,
+        //   //   icon: const Icon(Icons.logout),
+        //   //   tooltip: 'Logout',
+        //   // )
+        // ],
       ),
       body: _isLoading
           ? Center(
