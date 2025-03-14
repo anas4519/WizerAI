@@ -1,7 +1,6 @@
 import 'package:career_counsellor/models/question.dart';
 import 'package:career_counsellor/pages/resources/widgets/results_container.dart';
 import 'package:career_counsellor/pages/resources/widgets/score_circle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatefulWidget {

@@ -27,7 +27,7 @@ class _McqInstructionsPageState extends State<McqInstructionsPage> {
     });
 
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
     final prompt = '''

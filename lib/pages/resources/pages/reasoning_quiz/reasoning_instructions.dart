@@ -27,11 +27,11 @@ class _ReasoningInstructionsPageState extends State<ReasoningInstructionsPage> {
     });
 
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
     final prompt = '''
-Create a Reasoning type quiz on the topic "${widget.title}" The user has two minutes to type the answer on their phone, there are 5 questions in total. Respond in the following JSON format:
+Create a Reasoning type quiz on the topic "${widget.title}". The user has two minutes to type the answer on their phone, there are 5 questions in total. Do not provide any options for the answers. Respond in the following JSON format:
 
 {
   "questions": [
