@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
+import 'package:career_counsellor/pages/resources/universal_ai_guide.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/video_player.dart';
 import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
@@ -636,7 +637,9 @@ class _ResourcePortalState extends State<ResourcePortal>
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigate to personalized learning plan or AI assistant
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const UniversalAiGuide(),
+          ));
         },
         icon: const Icon(Icons.assistant),
         label: const Text('Get Guidance'),
