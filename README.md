@@ -1,4 +1,4 @@
-# career_counsellor
+# WizerAI
 
 A new Flutter project.
 

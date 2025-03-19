@@ -4,11 +4,14 @@ import 'package:career_counsellor/onboarding_screen/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox('user_box');
   await Supabase.initialize(
     url: SUPABASE_URL,
     anonKey: SUPABASE_ANON_KEY,

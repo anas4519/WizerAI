@@ -4,9 +4,10 @@ import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart';
-import 'package:career_counsellor/pages/profile/profile_page.dart';
+import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,8 @@ class _AiGuidanceState extends State<AiGuidance> {
   bool _isLoading = true;
   String name = 'User';
 
+  final userBox = Hive.box('user_box');
+
   void logout() async {
     await authService.signOut();
   }
@@ -37,16 +40,28 @@ class _AiGuidanceState extends State<AiGuidance> {
       final userId = supabase.auth.currentUser!.id;
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
-
+      print(data);
       setState(() {
+        // Store all available data from the profile
+        for (var key in data.keys) {
+          if (data[key] != null) {
+            // Store in Hive
+            userBox.put(key, data[key].toString());
+            // Store in SharedPreferences
+            prefs.setString(key, data[key].toString());
+          }
+        }
+
         name = data['full_name'] ?? 'User';
-        prefs.setString('Name', name);
         daimonSuggestions = (data['suggestions'] as List<dynamic>)
             .map((e) => e.toString())
             .toList();
       });
+
+      // Store suggestions separately
       for (int i = 0; i < 5; i++) {
         prefs.setString('r_$i', daimonSuggestions[i]);
+        userBox.put('r_$i', daimonSuggestions[i]);
       }
     } catch (e) {
       print('Error fetching user data: $e');
@@ -154,7 +169,7 @@ class _AiGuidanceState extends State<AiGuidance> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const ProfilePage()));
+                    MaterialPageRoute(builder: (ctx) => const ProfileScreen()));
               },
               child: CircleAvatar(
                 backgroundColor:
