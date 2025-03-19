@@ -4,16 +4,18 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
+import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:career_counsellor/pages/resources/universal_ai_guide.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/video_player.dart';
 import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ResourcePortal extends StatefulWidget {
   const ResourcePortal({super.key});
@@ -28,7 +30,7 @@ class _ResourcePortalState extends State<ResourcePortal>
   bool isLoading = true;
   List<YouTubeVideo> youtubeVideos = [];
   List<YouTubeVideo> weaknesses = [];
-  final SupabaseClient supabase = Supabase.instance.client;
+  final userBox = Hive.box('user_box');
 
   late AnimationController _animationController;
 
@@ -49,17 +51,8 @@ class _ResourcePortalState extends State<ResourcePortal>
 
   Future<void> _fetchWeaknesses() async {
     try {
-      final userId = supabase.auth.currentUser!.id;
-      final data =
-          await supabase.from('profiles').select().eq('id', userId).single();
-      if (data['weaknesses'] == null || data['weaknesses'].isEmpty) {
-        setState(() {
-          isLoading = false;
-        });
-        return;
-      }
-
-      List<dynamic> temp = data['weaknesses']
+      List<dynamic> temp = userBox
+          .get('weaknesses')
           .split(',')
           .map((e) => e.toString().trim())
           .toList();
@@ -106,6 +99,7 @@ class _ResourcePortalState extends State<ResourcePortal>
       setState(() {
         isLoading = false;
       });
+      showSnackBar(context, 'Error fetching user data: $e');
       print('Error fetching user data: $e');
     }
   }
@@ -522,7 +516,8 @@ class _ResourcePortalState extends State<ResourcePortal>
                             'Complete your profile to get personalized skill development resources',
                         actionText: 'Update Profile',
                         onAction: () {
-                          // Navigate to profile page
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => const ProfileScreen()));
                         },
                       )
                     : Card(

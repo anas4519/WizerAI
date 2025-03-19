@@ -4,6 +4,7 @@ import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
+import 'package:hive_ce/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -56,6 +57,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   bool isLoading = true;
   List<String> recommendationsList = [];
   final SupabaseClient supabase = Supabase.instance.client;
+  final userBox = Hive.box('user_box');
   @override
   void initState() {
     super.initState();
@@ -100,6 +102,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       updateData['additional_info'] = widget.additionalInfo;
     }
 
+    // Save to Supabase profiles table
     await supabase.from('profiles').update(updateData).eq('id', userId);
   }
 
@@ -217,15 +220,15 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Based on the details you\'ve provided, the AI suggests the following career options:\n',
+                      'Based on the details you\'ve provided, the WizerAI suggests the following career options:\n',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(
-                      height: screenHeight * 0.6,
-                      child: ListView.builder(
-                        itemCount: recommendationsList.length,
-                        itemBuilder: (context, index) {
-                          return Card(
+                    Column(
+                      children: [
+                        for (int index = 0;
+                            index < recommendationsList.length;
+                            index++)
+                          Card(
                             elevation: 2,
                             margin: EdgeInsets.symmetric(
                                 vertical: screenHeight * 0.01),
@@ -297,9 +300,11 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                                 vertical: screenWidth * 0.03,
                               ),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.04,
                     ),
                     const InfoContainer(
                         text:

@@ -4,6 +4,7 @@ import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 import 'package:gpt_markdown/gpt_markdown.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:lottie/lottie.dart';
 
 class CareerPathway extends StatefulWidget {
@@ -22,6 +23,7 @@ class _CareerPathwayState extends State<CareerPathway> {
   bool isLoading = true;
   String? errorMessage;
   String body = '';
+  final userBox = Hive.box('user_box');
 
   @override
   void initState() {
@@ -34,12 +36,12 @@ class _CareerPathwayState extends State<CareerPathway> {
       isLoading = true;
     });
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
     final prompt =
-        'Step by step career pathway for a student in 12th grade living in India if they want to become a ${widget.career}.';
+        'Step by step career pathway for a student in ${userBox.get('qualifications')} living in India if they want to become a ${widget.career}.';
 
     final content = [google_ai.Content.text(prompt)];
     try {
