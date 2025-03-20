@@ -12,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('user_box');
+  await Hive.openBox('ai_cache');
   await Supabase.initialize(
     url: SUPABASE_URL,
     anonKey: SUPABASE_ANON_KEY,

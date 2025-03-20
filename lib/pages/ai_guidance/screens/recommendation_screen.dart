@@ -80,29 +80,53 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       'salary_expectations': widget.salaryExpectations,
     };
 
+    userBox.put('qualifications', widget.qualifications);
+    userBox.put('interests', widget.interests);
+    userBox.put('hobbies', widget.hobbies);
+    userBox.put('strengths', widget.strengths);
+    userBox.put('desired_lifestyle', widget.desiredLifestyle);
+    userBox.put('learning_curve', widget.learningCurve);
+    userBox.put('mothers_profession', widget.mothersProfession);
+    userBox.put('fathers_profession', widget.fathersProfession);
+    userBox.put('financial_status', widget.financialStatus);
+    userBox.put('salary_expectations', widget.salaryExpectations);
+
     if (widget.skills.isNotEmpty) {
       updateData['skills'] = widget.skills;
+      userBox.put('skills', widget.skills);
     }
     if (widget.weaknesses.isNotEmpty) {
       updateData['weaknesses'] = widget.weaknesses;
+      userBox.put('weaknesses', widget.weaknesses);
     }
     if (widget.geographicPref.isNotEmpty) {
       updateData['geographic_preferences'] = widget.geographicPref;
+      userBox.put('geographic_preferences', widget.geographicPref);
     }
     if (widget.aspirations.isNotEmpty) {
       updateData['aspirations'] = widget.aspirations;
+      userBox.put('aspirations', widget.aspirations);
     }
     if (widget.parentsExpectations.isNotEmpty) {
       updateData['parents_expectations'] = widget.parentsExpectations;
+      userBox.put('parents_expectations', widget.parentsExpectations);
     }
     if (widget.interdisciplinaryOptions.isNotEmpty) {
       updateData['interdisciplinary_options'] = widget.interdisciplinaryOptions;
+      userBox.put('interdisciplinary_options', widget.interdisciplinaryOptions);
     }
     if (widget.additionalInfo.isNotEmpty) {
       updateData['additional_info'] = widget.additionalInfo;
+      userBox.put('additional_info', widget.additionalInfo);
+    }
+    if (userBox.get('qualifications').toString().contains('Grade')) {
+      userBox.put('education_level', 'School');
+      updateData['education_level'] = 'School';
+    } else {
+      userBox.put('education_level', 'College');
+      updateData['education_level'] = 'College';
     }
 
-    // Save to Supabase profiles table
     await supabase.from('profiles').update(updateData).eq('id', userId);
   }
 
@@ -206,16 +230,6 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                     fit: BoxFit.contain,
                   ),
                 )
-              // const Center(
-              //     child: Column(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         CircularProgressIndicator(),
-              //         SizedBox(height: 16),
-              //         Text('Generating recommendations...'),
-              //       ],
-              //     ),
-              //   )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

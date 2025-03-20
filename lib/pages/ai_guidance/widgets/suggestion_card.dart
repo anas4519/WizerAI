@@ -19,66 +19,134 @@ class CareerSuggestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
-      margin: EdgeInsets.only(bottom: screenHeight * 0.01),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) =>
-                  ElaborateDetail(title: 'Overview', career: title)));
-        },
-        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.02),
-          child: Row(
-            children: [
-              FancyShimmerImage(
-                imageUrl: image,
-                errorWidget: const Icon(Icons.error),
-                width: 150,
-                height: 100,
-                shimmerBackColor: Colors.grey,
-                shimmerBaseColor: Colors.grey,
-                shimmerHighlightColor: Colors.pink[200],
-              ),
-              // CachedNetworkImage(
-              //   imageUrl: icon,
-              //   width: 100,
-              //   height: 100,
-              //   placeholder: (context, url) =>
-              //       const Center(child: CircularProgressIndicator()),
-              //   errorWidget: (context, url, error) => const Icon(Icons.error),
-              // ),
-              SizedBox(width: screenWidth * 0.025),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Material(
+          color: theme.cardColor,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) =>
+                      ElaborateDetail(title: 'Overview', career: title)));
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: 140,
+                      width: double.infinity,
+                      child: FancyShimmerImage(
+                        imageUrl: image,
+                        boxFit: BoxFit.cover,
+                        errorWidget: Container(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          child: Icon(
+                            Icons.image_not_supported_rounded,
+                            color: theme.primaryColor,
+                            size: 40,
+                          ),
+                        ),
+                        shimmerBaseColor: theme.primaryColor.withOpacity(0.1),
+                        shimmerHighlightColor:
+                            theme.primaryColor.withOpacity(0.2),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.7),
+                            ],
+                            stops: const [0.5, 1.0],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 12,
+                      left: 16,
+                      right: 16,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 3.0,
+                              color: Colors.black54,
+                              offset: Offset(1.0, 1.0),
+                            ),
+                          ],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(width: screenWidth * 0.02),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => CareerDetails(title: title)));
-                },
-                icon: const Icon(Icons.search),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          'Career Path',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => CareerDetails(title: title)));
+                        },
+                        icon: const Icon(Icons.search, size: 18),
+                        label: const Text('Explore Details'),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 
@@ -17,7 +19,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Custom app bar with profile image
             SliverAppBar(
               expandedHeight: 200,
               floating: false,
@@ -34,9 +35,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      userBox.get('avatar_url'),
+                    CachedNetworkImage(
+                      imageUrl: userBox.get('avatar_url'),
                       fit: BoxFit.cover,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                     // Gradient overlay for better text visibility
                     Container(
@@ -57,11 +63,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () {},
+                  onPressed: () {
+                    showComingSoonSnackBar(
+                        context, 'This feature will be available soon.');
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.settings),
-                  onPressed: () {},
+                  onPressed: () {
+                    showComingSoonSnackBar(
+                        context, 'This feature will be available soon.');
+                  },
                 ),
               ],
             ),
@@ -74,34 +86,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   spacing: 24,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Bio section
-                    // _buildBioSection(context, userData),
-                    // const SizedBox(height: 24),
-
-                    // Contact information
-                    // _buildContactSection(context, userData),
-                    // const SizedBox(height: 24),
-
-                    // Education section
-                    // _buildSectionWithTitle(
-                    //   context,
-                    //   'Education',
-                    //   Icons.school,
-                    //   _buildEducationItems(
-                    //       context),
-                    // ),
-                    // const SizedBox(height: 24),
-
-                    // Work experience
-                    // _buildSectionWithTitle(
-                    //   context,
-                    //   'Experience',
-                    //   Icons.work,
-                    //   _buildExperienceItems(
-                    //       context, userData['experience'] as List),
-                    // ),
-                    // const SizedBox(height: 24),
-                    // Interests section
+                    _buildSectionWithTitle(
+                      context,
+                      'Education',
+                      Icons.school,
+                      Text(userBox.get('qualifications')),
+                    ),
                     _buildSectionWithTitle(
                       context,
                       'Interests',
@@ -266,128 +256,128 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildBioSection(BuildContext context, Map<String, dynamic> userData) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'About',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            userData['bio'] as String,
-            style: TextStyle(
-              fontSize: 16,
-              color: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.color
-                  ?.withOpacity(0.8),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildBioSection(BuildContext context, Map<String, dynamic> userData) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: Theme.of(context).cardColor,
+  //       borderRadius: BorderRadius.circular(12),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.05),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 5),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         const Text(
+  //           'About',
+  //           style: TextStyle(
+  //             fontSize: 18,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           userData['bio'] as String,
+  //           style: TextStyle(
+  //             fontSize: 16,
+  //             color: Theme.of(context)
+  //                 .textTheme
+  //                 .bodyLarge
+  //                 ?.color
+  //                 ?.withOpacity(0.8),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildContactSection(
-      BuildContext context, Map<String, dynamic> userData) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.contact_mail),
-              SizedBox(width: 8),
-              Text(
-                'Contact Information',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildContactItem(
-              context, Icons.email, 'Email', userBox.get('email') ?? 'lol'),
-          const Divider(height: 16),
-          _buildContactItem(
-              context, Icons.phone, 'Phone', userData['phone'] as String),
-          const Divider(height: 16),
-          _buildContactItem(context, Icons.location_on, 'Location',
-              userData['location'] as String),
-        ],
-      ),
-    );
-  }
+  // Widget _buildContactSection(
+  //     BuildContext context, Map<String, dynamic> userData) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: Theme.of(context).cardColor,
+  //       borderRadius: BorderRadius.circular(12),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.05),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 5),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         const Row(
+  //           children: [
+  //             Icon(Icons.contact_mail),
+  //             SizedBox(width: 8),
+  //             Text(
+  //               'Contact Information',
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 16),
+  //         _buildContactItem(
+  //             context, Icons.email, 'Email', userBox.get('email') ?? 'lol'),
+  //         const Divider(height: 16),
+  //         _buildContactItem(
+  //             context, Icons.phone, 'Phone', userData['phone'] as String),
+  //         const Divider(height: 16),
+  //         _buildContactItem(context, Icons.location_on, 'Location',
+  //             userData['location'] as String),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildContactItem(
-      BuildContext context, IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.color
-                    ?.withOpacity(0.6),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget _buildContactItem(
+  //     BuildContext context, IconData icon, String label, String value) {
+  //   return Row(
+  //     children: [
+  //       Icon(
+  //         icon,
+  //         size: 20,
+  //         color: Theme.of(context).colorScheme.primary,
+  //       ),
+  //       const SizedBox(width: 16),
+  //       Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             label,
+  //             style: TextStyle(
+  //               fontSize: 14,
+  //               color: Theme.of(context)
+  //                   .textTheme
+  //                   .bodyMedium
+  //                   ?.color
+  //                   ?.withOpacity(0.6),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 4),
+  //           Text(
+  //             value,
+  //             style: const TextStyle(
+  //               fontSize: 16,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildSectionWithTitle(
       BuildContext context, String title, IconData icon, Widget content) {
@@ -470,49 +460,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //   );
   // }
 
-  Widget _buildExperienceItems(BuildContext context, List experienceList) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: experienceList.map<Widget>((experience) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                experience['position'] as String,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                experience['company'] as String,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                experience['duration'] as String,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.color
-                      ?.withOpacity(0.6),
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-  }
-
   Widget _buildChipList(BuildContext context, String section, Color color) {
     List<String> items = userBox.get(section).split(',');
 
@@ -528,21 +475,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           labelStyle: TextStyle(
             color: color,
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildLanguagesList(BuildContext context, List<String> languages) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: languages.map((language) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            language,
-            style: const TextStyle(fontSize: 16),
           ),
         );
       }).toList(),

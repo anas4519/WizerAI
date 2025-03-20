@@ -1,3 +1,4 @@
+import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/search_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -116,9 +117,10 @@ class _CareerExplorationState extends State<CareerExploration> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(8),
@@ -149,394 +151,410 @@ class _CareerExplorationState extends State<CareerExploration> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.04,
-          vertical: screenWidth * 0.02,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).scaffoldBackgroundColor,
+              Theme.of(context).scaffoldBackgroundColor,
+            ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(screenWidth * 0.05),
-              margin: EdgeInsets.only(bottom: screenHeight * 0.03),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isDarkTheme
-                      ? [
-                          Colors.indigo.shade900,
-                          Colors.purple.shade900,
-                        ]
-                      : [
-                          Colors.indigo.shade100,
-                          Colors.purple.shade100,
-                        ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.04,
+            vertical: screenWidth * 0.02,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: screenHeight * 0.125,
+              ),
+              Container(
+                padding: EdgeInsets.all(screenWidth * 0.05),
+                margin: EdgeInsets.only(bottom: screenHeight * 0.03),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: isDarkTheme
+                        ? [
+                            Colors.indigo.shade900,
+                            Colors.purple.shade900,
+                          ]
+                        : [
+                            Colors.indigo.shade100,
+                            Colors.purple.shade100,
+                          ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Discover Your Path',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.playfairDisplay(
-                      color:
-                          isDarkTheme ? Colors.white : Colors.indigo.shade800,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Text(
-                    'Explore new possibilities and take the first step today!',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
-                      color:
-                          isDarkTheme ? Colors.white70 : Colors.indigo.shade700,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Add assessment or quiz navigation
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (ctx) => const SearchScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.08,
-                        vertical: screenHeight * 0.015,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                child: Column(
+                  children: [
+                    Text(
+                      'Discover Your Path',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.playfairDisplay(
+                        color:
+                            isDarkTheme ? Colors.white : Colors.indigo.shade800,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: const Text('Take Career Assessment'),
-                  ),
-                ],
-              ),
-            ),
-
-            // Trending section with improved header
-            Padding(
-              padding: EdgeInsets.only(left: screenWidth * 0.01),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                    SizedBox(height: screenHeight * 0.01),
+                    Text(
+                      'Explore new possibilities and take the first step today!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.roboto(
+                        color: isDarkTheme
+                            ? Colors.white70
+                            : Colors.indigo.shade700,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.trending_up,
-                      color: Theme.of(context).primaryColor,
-                      size: 18,
-                    ),
-                  ),
-                  SizedBox(width: screenWidth * 0.02),
-                  const Text(
-                    'Trending Careers',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.015),
-
-            // Improved carousel with overlay gradient and better formatting
-            SizedBox(
-              height: screenHeight * 0.25,
-              child: CarouselView(
-                onTap: _handleImageTap,
-                itemExtent: screenWidth * 0.85,
-                children: List.generate(5, (index) {
-                  return Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
+                    SizedBox(height: screenHeight * 0.02),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (ctx) => const SelectEducation()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.08,
+                          vertical: screenHeight * 0.015,
                         ),
-                      ],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text('Take Career Assessment'),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          // Main image with improved quality indication
-                          Image.asset(
-                            careerDetails[index]['image']!,
-                            fit: BoxFit.cover,
-                          ),
+                  ],
+                ),
+              ),
 
-                          // Gradient overlay for better text readability
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
-                                ],
-                                stops: const [0.6, 1.0],
+              // Trending section with improved header
+              Padding(
+                padding: EdgeInsets.only(left: screenWidth * 0.01),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.trending_up,
+                        color: Theme.of(context).primaryColor,
+                        size: 18,
+                      ),
+                    ),
+                    SizedBox(width: screenWidth * 0.02),
+                    const Text(
+                      'Trending Careers',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.015),
+
+              // Improved carousel with overlay gradient and better formatting
+              SizedBox(
+                height: screenHeight * 0.25,
+                child: CarouselView(
+                  onTap: _handleImageTap,
+                  itemExtent: screenWidth * 0.85,
+                  children: List.generate(5, (index) {
+                    return Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            // Main image with improved quality indication
+                            Image.asset(
+                              careerDetails[index]['image']!,
+                              fit: BoxFit.cover,
+                            ),
+
+                            // Gradient overlay for better text readability
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.7),
+                                  ],
+                                  stops: const [0.6, 1.0],
+                                ),
                               ),
                             ),
-                          ),
 
-                          // Bottom content with title and description
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                            // Bottom content with title and description
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      careerDetails[index]['title']!,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.005),
+                                    Text(
+                                      careerDetails[index]['description']!,
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 12.0,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            // Tap indicator
+                            Positioned(
+                              top: 12,
+                              right: 12,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.touch_app,
+                                      color: Colors.white,
+                                      size: 14,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Tap to explore',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.03),
+
+              // WizerAI Suggestions with improved styling
+              Padding(
+                padding: EdgeInsets.only(left: screenWidth * 0.01),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.lightbulb_outline,
+                        color: Theme.of(context).primaryColor,
+                        size: 18,
+                      ),
+                    ),
+                    SizedBox(width: screenWidth * 0.02),
+                    const Text(
+                      'WizerAI Suggestions',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              // Custom suggestions cards instead of ListTiles
+              ...List.generate(5, (index) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: screenHeight * 0.015),
+                  decoration: BoxDecoration(
+                    color: isDarkTheme ? Colors.grey.shade900 : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) =>
+                              CareerDetails(title: daimonSuggestions[index]),
+                        ));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Row(
+                          children: [
+                            // Career Icon
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: careerDetails[index]['color']
+                                    .withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                careerDetails[index]['icon'],
+                                color: careerDetails[index]['color'],
+                                size: 20,
+                              ),
+                            ),
+                            SizedBox(width: screenWidth * 0.03),
+
+                            // Career Name
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    careerDetails[index]['title']!,
+                                    daimonSuggestions[index],
                                     style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   SizedBox(height: screenHeight * 0.005),
                                   Text(
-                                    careerDetails[index]['description']!,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12.0,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          // Tap indicator
-                          Positioned(
-                            top: 12,
-                            right: 12,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.touch_app,
-                                    color: Colors.white,
-                                    size: 14,
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Tap to explore',
+                                    'Recommended based on your profile',
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
+                                      fontSize: 12,
+                                      color: isDarkTheme
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
+
+                            // Arrow indicator
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                }),
-              ),
-            ),
+                  ),
+                );
+              }),
 
-            SizedBox(height: screenHeight * 0.03),
+              SizedBox(height: screenHeight * 0.02),
 
-            // WizerAI Suggestions with improved styling
-            Padding(
-              padding: EdgeInsets.only(left: screenWidth * 0.01),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+              // Additional "Explore More" button
+              Center(
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => const SearchScreen()),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Theme.of(context).primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    child: Icon(
-                      Icons.lightbulb_outline,
-                      color: Theme.of(context).primaryColor,
-                      size: 18,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.08,
+                      vertical: screenHeight * 0.015,
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.02),
-                  const Text(
-                    'WizerAI Suggestions',
+                  child: Text(
+                    'Explore More Careers',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: screenHeight * 0.02),
-
-            // Custom suggestions cards instead of ListTiles
-            ...List.generate(5, (index) {
-              return Container(
-                margin: EdgeInsets.only(bottom: screenHeight * 0.015),
-                decoration: BoxDecoration(
-                  color: isDarkTheme ? Colors.grey.shade900 : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) =>
-                            CareerDetails(title: daimonSuggestions[index]),
-                      ));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Row(
-                        children: [
-                          // Career Icon
-                          Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              color: careerDetails[index]['color']
-                                  .withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              careerDetails[index]['icon'],
-                              color: careerDetails[index]['color'],
-                              size: 20,
-                            ),
-                          ),
-                          SizedBox(width: screenWidth * 0.03),
-
-                          // Career Name
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  daimonSuggestions[index],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.005),
-                                Text(
-                                  'Recommended based on your profile',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: isDarkTheme
-                                        ? Colors.grey[400]
-                                        : Colors.grey[600],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Arrow indicator
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 18,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-
-            SizedBox(height: screenHeight * 0.02),
-
-            // Additional "Explore More" button
-            Center(
-              child: OutlinedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const SearchScreen()),
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Theme.of(context).primaryColor),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.08,
-                    vertical: screenHeight * 0.015,
-                  ),
-                ),
-                child: Text(
-                  'Explore More Careers',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ),
-            ),
 
-            SizedBox(height: screenHeight * 0.03),
-          ],
+              SizedBox(height: screenHeight * 0.03),
+            ],
+          ),
         ),
       ),
     );

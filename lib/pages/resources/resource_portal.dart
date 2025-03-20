@@ -9,7 +9,6 @@ import 'package:career_counsellor/pages/resources/universal_ai_guide.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/video_player.dart';
 import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
-import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,8 +98,7 @@ class _ResourcePortalState extends State<ResourcePortal>
       setState(() {
         isLoading = false;
       });
-      showSnackBar(context, 'Error fetching user data: $e');
-      print('Error fetching user data: $e');
+      debugPrint('Error fetching user data: $e');
     }
   }
 
@@ -190,445 +188,458 @@ class _ResourcePortalState extends State<ResourcePortal>
     final iconSize = screenWidth * 0.06;
 
     return Scaffold(
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverAppBar(
-            expandedHeight: screenHeight * 0.2,
-            pinned: true,
-            stretch: true,
-            backgroundColor: Theme.of(context).primaryColor,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).primaryColor,
-                      isDarkTheme
-                          ? Colors.purple.shade900
-                          : Colors.purple.shade300,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      right: -20,
-                      top: -20,
-                      child: Icon(
-                        Icons.circle,
-                        size: screenWidth * 0.4,
-                        color: Colors.white.withOpacity(0.1),
-                      ),
-                    ),
-                    Positioned(
-                      left: -30,
-                      bottom: -30,
-                      child: Icon(
-                        Icons.circle,
-                        size: screenWidth * 0.3,
-                        color: Colors.white.withOpacity(0.1),
-                      ),
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: screenHeight * 0.04),
-                          Icon(
-                            Icons.auto_awesome,
-                            color: Colors.white,
-                            size: screenWidth * 0.1,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              title: const Text(
-                'Learning Resources',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              centerTitle: true,
-              collapseMode: CollapseMode.parallax,
-            ),
-            actions: [
-              Container(
-                margin: EdgeInsets.all(screenWidth * 0.02),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const CoursesPage(),
-                    ));
-                  },
-                  icon: const Icon(
-                    CupertinoIcons.device_laptop,
-                    color: Colors.white,
-                  ),
-                  tooltip: 'Online Courses',
-                ),
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).scaffoldBackgroundColor,
+              Theme.of(context).scaffoldBackgroundColor,
             ],
           ),
-          SliverPadding(
-            padding: EdgeInsets.all(screenWidth * 0.04),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _buildSectionHeader(
-                  context,
-                  title: 'Skill Assessment Quizzes',
-                  icon: Icons.quiz_outlined,
-                  color: Colors.indigo,
-                ),
-                // const SizedBox(height: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GridView.count(
-                      shrinkWrap: true,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 10,
-                      crossAxisCount: 3,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.chat_bubble_2,
-                            size: iconSize,
-                            color: Colors.blue,
-                          ),
-                          title: 'Communication',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.question_circle,
-                            size: iconSize,
-                            color: Colors.green,
-                          ),
-                          title: 'Problem Solving',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            Icons.group,
-                            size: iconSize,
-                            color: Colors.orange,
-                          ),
-                          title: 'Teamwork',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.arrow_2_circlepath,
-                            size: iconSize,
-                            color: Colors.purple,
-                          ),
-                          title: 'Adaptability',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            Icons.leaderboard,
-                            size: iconSize,
-                            color: Colors.red,
-                          ),
-                          title: 'Leadership',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.time,
-                            size: iconSize,
-                            color: Colors.teal,
-                          ),
-                          title: 'Time Management',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.search,
-                            size: iconSize,
-                            color: Colors.brown,
-                          ),
-                          title: 'Attention to Detail',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            CupertinoIcons.paintbrush,
-                            size: iconSize,
-                            color: Colors.pink,
-                          ),
-                          title: 'Creativity',
-                        ),
-                        QuizIcon(
-                          icon: Icon(
-                            Icons.note_alt_rounded,
-                            size: iconSize,
-                            color: Colors.cyan,
-                          ),
-                          title: 'Custom',
-                        ),
+        ),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: screenHeight * 0.2,
+              pinned: true,
+              stretch: true,
+              backgroundColor: Theme.of(context).primaryColor,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        isDarkTheme
+                            ? Colors.purple.shade900
+                            : Colors.purple.shade300,
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
-                ),
-
-                SizedBox(height: screenHeight * 0.03),
-
-                _buildSectionHeader(
-                  context,
-                  title: 'Recommended Career Videos',
-                  icon: Icons.play_circle_outline,
-                  color: Colors.red,
-                ),
-                const SizedBox(height: 12),
-
-                if (savedRecommendations.isNotEmpty)
-                  SizedBox(
-                    height: 75,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: savedRecommendations.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () => _toggleFilter(index),
-                            style: ElevatedButton.styleFrom(
-                              elevation: selectedFilterIndex == index ? 4 : 0,
-                              backgroundColor: selectedFilterIndex == index
-                                  ? Theme.of(context).primaryColor
-                                  : isDarkTheme
-                                      ? Colors.grey[800]
-                                      : Colors.grey[300],
-                              foregroundColor: selectedFilterIndex == index
-                                  ? Colors.white
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.color,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        right: -20,
+                        top: -20,
+                        child: Icon(
+                          Icons.circle,
+                          size: screenWidth * 0.4,
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                      Positioned(
+                        left: -30,
+                        bottom: -30,
+                        child: Icon(
+                          Icons.circle,
+                          size: screenWidth * 0.3,
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: screenHeight * 0.04),
+                            Icon(
+                              Icons.auto_awesome,
+                              color: Colors.white,
+                              size: screenWidth * 0.1,
                             ),
-                            child: Text(savedRecommendations[index]),
-                          ),
-                        );
-                      },
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                title: const Text(
+                  'Learning Resources',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                centerTitle: true,
+                collapseMode: CollapseMode.parallax,
+              ),
+              actions: [
+                Container(
+                  margin: EdgeInsets.all(screenWidth * 0.02),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const CoursesPage(),
+                      ));
+                    },
+                    icon: const Icon(
+                      CupertinoIcons.device_laptop,
+                      color: Colors.white,
                     ),
-                  )
-                else
-                  Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
+                    tooltip: 'Online Courses',
+                  ),
+                ),
+              ],
+            ),
+            SliverPadding(
+              padding: EdgeInsets.all(screenWidth * 0.04),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _buildSectionHeader(
+                    context,
+                    title: 'Skill Assessment Quizzes',
+                    icon: Icons.quiz_outlined,
+                    color: Colors.indigo,
+                  ),
+                  // const SizedBox(height: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GridView.count(
+                        shrinkWrap: true,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 10,
+                        crossAxisCount: 3,
+                        physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Text(
-                              'Complete career assessment to get personalized recommendations.',
-                              style: TextStyle(fontSize: 14),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.chat_bubble_2,
+                              size: iconSize,
+                              color: Colors.blue,
                             ),
+                            title: 'Communication',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.question_circle,
+                              size: iconSize,
+                              color: Colors.green,
+                            ),
+                            title: 'Problem Solving',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              Icons.group,
+                              size: iconSize,
+                              color: Colors.orange,
+                            ),
+                            title: 'Teamwork',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.arrow_2_circlepath,
+                              size: iconSize,
+                              color: Colors.purple,
+                            ),
+                            title: 'Adaptability',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              Icons.leaderboard,
+                              size: iconSize,
+                              color: Colors.red,
+                            ),
+                            title: 'Leadership',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.time,
+                              size: iconSize,
+                              color: Colors.teal,
+                            ),
+                            title: 'Time Management',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.search,
+                              size: iconSize,
+                              color: Colors.brown,
+                            ),
+                            title: 'Attention to Detail',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              CupertinoIcons.paintbrush,
+                              size: iconSize,
+                              color: Colors.pink,
+                            ),
+                            title: 'Creativity',
+                          ),
+                          QuizIcon(
+                            icon: Icon(
+                              Icons.note_alt_rounded,
+                              size: iconSize,
+                              color: Colors.cyan,
+                            ),
+                            title: 'Custom',
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
 
-                SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.03),
 
-                // Video content with loading indicator
-                if (isLoading)
-                  Center(
-                    child: Column(
-                      children: [
-                        SizedBox(height: screenHeight * 0.05),
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Loading resources...',
-                          style: TextStyle(
-                            color: isDarkTheme
-                                ? Colors.grey[400]
-                                : Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else if (youtubeVideos.isEmpty)
-                  _buildEmptyState(
-                    icon: Icons.movie_creation_outlined,
-                    message: 'No videos available for this category yet',
-                  )
-                else
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            if ((selectedFilterIndex * 5 + i) <
-                                youtubeVideos.length)
-                              _buildVideoItem(
-                                context,
-                                youtubeVideos[selectedFilterIndex * 5 + i],
-                                index: i,
-                              ),
-                        ],
-                      ),
-                    ),
+                  _buildSectionHeader(
+                    context,
+                    title: 'Recommended Career Videos',
+                    icon: Icons.play_circle_outline,
+                    color: Colors.red,
                   ),
+                  const SizedBox(height: 12),
 
-                SizedBox(height: screenHeight * 0.03),
-
-                // Weaknesses Section
-                _buildSectionHeader(
-                  context,
-                  title: 'Skill Development Resources',
-                  icon: Icons.trending_up,
-                  color: Colors.green,
-                ),
-                const SizedBox(height: 12),
-
-                weaknesses.isEmpty
-                    ? _buildEmptyState(
-                        icon: Icons.build_circle_outlined,
-                        message:
-                            'Complete your profile to get personalized skill development resources',
-                        actionText: 'Update Profile',
-                        onAction: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (ctx) => const ProfileScreen()));
-                        },
-                      )
-                    : Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 12.0, left: 4.0),
-                                child: Text(
-                                  'Resources to help you develop essential skills',
-                                  style: TextStyle(
-                                    color: isDarkTheme
-                                        ? Colors.grey[300]
-                                        : Colors.grey[700],
-                                    fontSize: 14,
-                                  ),
+                  if (savedRecommendations.isNotEmpty)
+                    SizedBox(
+                      height: 75,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: savedRecommendations.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () => _toggleFilter(index),
+                              style: ElevatedButton.styleFrom(
+                                elevation: selectedFilterIndex == index ? 4 : 0,
+                                backgroundColor: selectedFilterIndex == index
+                                    ? Theme.of(context).primaryColor
+                                    : isDarkTheme
+                                        ? Colors.grey[800]
+                                        : Colors.grey[300],
+                                foregroundColor: selectedFilterIndex == index
+                                    ? Colors.white
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.color,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
                                 ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
                               ),
-                              for (int i = 0; i < weaknesses.length; i++)
+                              child: Text(savedRecommendations[index]),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  else
+                    Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Complete career assessment to get personalized recommendations.',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Video content with loading indicator
+                  if (isLoading)
+                    Center(
+                      child: Column(
+                        children: [
+                          SizedBox(height: screenHeight * 0.05),
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Loading resources...',
+                            style: TextStyle(
+                              color: isDarkTheme
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (youtubeVideos.isEmpty)
+                    _buildEmptyState(
+                      icon: Icons.movie_creation_outlined,
+                      message: 'No videos available for this category yet',
+                    )
+                  else
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (int i = 0; i < 5; i++)
+                              if ((selectedFilterIndex * 5 + i) <
+                                  youtubeVideos.length)
                                 _buildVideoItem(
                                   context,
-                                  weaknesses[i],
-                                  index: i + 5, // offset the animation
+                                  youtubeVideos[selectedFilterIndex * 5 + i],
+                                  index: i,
                                 ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
-
-                SizedBox(height: screenHeight * 0.03),
-
-                // Additional resources section (new)
-                _buildSectionHeader(
-                  context,
-                  title: 'Additional Resources',
-                  icon: Icons.menu_book_outlined,
-                  color: Colors.amber,
-                ),
-                const SizedBox(height: 12),
-
-                // Resource buttons (new)
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildResourceButton(
-                        context,
-                        icon: Icons.book_outlined,
-                        title: 'Articles',
-                        color: Colors.blue,
-                        onTap: () {
-                          // Navigate to articles section
-                        },
-                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildResourceButton(
-                        context,
-                        icon: Icons.school_outlined,
-                        title: 'Courses',
-                        color: Colors.green,
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const CoursesPage(),
-                          ));
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildResourceButton(
-                        context,
-                        icon: Icons.people_outline,
-                        title: 'Mentors',
-                        color: Colors.purple,
-                        onTap: () {
-                          // Navigate to mentors section
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildResourceButton(
-                        context,
-                        icon: Icons.workspace_premium_outlined,
-                        title: 'Certificates',
-                        color: Colors.orange,
-                        onTap: () {
-                          // Navigate to certificates section
-                        },
-                      ),
-                    ),
-                  ],
-                ),
 
-                SizedBox(height: screenHeight * 0.05),
-              ]),
+                  SizedBox(height: screenHeight * 0.03),
+
+                  // Weaknesses Section
+                  _buildSectionHeader(
+                    context,
+                    title: 'Skill Development Resources',
+                    icon: Icons.trending_up,
+                    color: Colors.green,
+                  ),
+                  const SizedBox(height: 12),
+
+                  weaknesses.isEmpty
+                      ? _buildEmptyState(
+                          icon: Icons.build_circle_outlined,
+                          message:
+                              'Complete your profile to get personalized skill development resources',
+                          actionText: 'Update Profile',
+                          onAction: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => const ProfileScreen()));
+                          },
+                        )
+                      : Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 12.0, left: 4.0),
+                                  child: Text(
+                                    'Resources to help you develop essential skills',
+                                    style: TextStyle(
+                                      color: isDarkTheme
+                                          ? Colors.grey[300]
+                                          : Colors.grey[700],
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                for (int i = 0; i < weaknesses.length; i++)
+                                  _buildVideoItem(
+                                    context,
+                                    weaknesses[i],
+                                    index: i + 5, // offset the animation
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                  SizedBox(height: screenHeight * 0.03),
+
+                  // Additional resources section (new)
+                  _buildSectionHeader(
+                    context,
+                    title: 'Additional Resources',
+                    icon: Icons.menu_book_outlined,
+                    color: Colors.amber,
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Resource buttons (new)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildResourceButton(
+                          context,
+                          icon: Icons.book_outlined,
+                          title: 'Articles',
+                          color: Colors.blue,
+                          onTap: () {
+                            // Navigate to articles section
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildResourceButton(
+                          context,
+                          icon: Icons.school_outlined,
+                          title: 'Courses',
+                          color: Colors.green,
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const CoursesPage(),
+                            ));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildResourceButton(
+                          context,
+                          icon: Icons.people_outline,
+                          title: 'Mentors',
+                          color: Colors.purple,
+                          onTap: () {
+                            // Navigate to mentors section
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildResourceButton(
+                          context,
+                          icon: Icons.workspace_premium_outlined,
+                          title: 'Certificates',
+                          color: Colors.orange,
+                          onTap: () {
+                            // Navigate to certificates section
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.05),
+                ]),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

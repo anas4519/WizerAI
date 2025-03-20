@@ -11,6 +11,7 @@ import 'package:career_counsellor/pages/career_exploration/widgets/youtube_secti
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
@@ -30,6 +31,7 @@ class _CareerDetailsState extends State<CareerDetails> {
   Map<String, List<String>> careerDetails = {};
   List<YouTubeVideo> youtubeVideos = [];
   String imageUrl = '';
+  final aiCache = Hive.box('ai_cache');
 
   String apiKey = Constants.YOUTUBE_aPI_KEY;
 
@@ -141,6 +143,17 @@ class _CareerDetailsState extends State<CareerDetails> {
     }
   }
 
+  bool checkIfOlderThan10Days(DateTime storedDate) {
+    final now = DateTime.now();
+    final difference = now.difference(storedDate);
+
+    if (difference.inDays >= 10) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<void> _generateContent() async {
     final model = google_ai.GenerativeModel(
       model: 'gemini-2.0-flash',
@@ -168,78 +181,83 @@ Ensure each section has at least 3-5 detailed bullet points.
     final content = [google_ai.Content.text(prompt)];
 
     try {
-      final result = await model.generateContent(content);
-      setState(() {
-        if (result.text != null) {
-          String response = result.text!;
-          response = response.trim();
-          if (response.startsWith("```json")) {
-            response = response.substring(7);
-          }
-          if (response.startsWith("```")) {
-            response = response.substring(3);
-          }
-          if (response.endsWith("```")) {
-            response = response.substring(0, response.length - 3);
-          }
+      String? cachedResponse;
 
-          response = response.trim();
+      if (aiCache.get(widget.title) != null &&
+          !checkIfOlderThan10Days(aiCache.get(widget.title)[1])) {
+        cachedResponse = aiCache.get(widget.title)[0];
+      } else {
+        var modelResult = await model.generateContent(content);
 
-          try {
-            Map<String, dynamic> jsonData = json.decode(response);
+        String response = modelResult.text?.trim() ?? '';
 
-            careerDetails = jsonData.map((key, value) {
-              List<String> stringList = [];
-              if (value is List) {
-                stringList = value.map((item) => item.toString()).toList();
-              }
-              return MapEntry(key, stringList);
-            });
-
-            isLoading = false;
-          } catch (jsonError) {
-            print("JSON parsing error: $jsonError");
-            print("Attempted to parse: $response");
-
-            Map<String, dynamic> sections = {};
-            String currentSection = '';
-            List<String> lines = response.split('\n');
-            List<String> currentPoints = [];
-
-            for (String line in lines) {
-              line = line.trim();
-              if (line.isEmpty) continue;
-
-              if (line.startsWith(RegExp(r'\d\.')) ||
-                  (line.startsWith('**') && line.endsWith('**'))) {
-                if (currentSection.isNotEmpty) {
-                  sections[currentSection] = List<String>.from(currentPoints);
-                  currentPoints = [];
-                }
-                currentSection =
-                    line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
-              }
-              // Check for bullet points
-              else if (line.startsWith('•') ||
-                  line.startsWith('-') ||
-                  line.startsWith('*')) {
-                String cleanedLine =
-                    line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
-                if (cleanedLine.isNotEmpty) {
-                  currentPoints.add(cleanedLine);
-                }
-              }
-            }
-
-            if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
-              sections[currentSection] = List<String>.from(currentPoints);
-            }
-
-            careerDetails = sections
-                .map((key, value) => MapEntry(key, List<String>.from(value)));
-            isLoading = false;
-          }
+        if (response.startsWith("```json")) {
+          response = response.substring(7);
         }
+        if (response.startsWith("```")) {
+          response = response.substring(3);
+        }
+        if (response.endsWith("```")) {
+          response = response.substring(0, response.length - 3);
+        }
+
+        response = response.trim();
+
+        aiCache.put(widget.title, [response, DateTime.now()]);
+        cachedResponse = response;
+      }
+
+      setState(() {
+        try {
+          Map<String, dynamic> jsonData = json.decode(cachedResponse!);
+
+          careerDetails = jsonData.map((key, value) {
+            List<String> stringList = [];
+            if (value is List) {
+              stringList = value.map((item) => item.toString()).toList();
+            }
+            return MapEntry(key, stringList);
+          });
+        } catch (jsonError) {
+          print("JSON parsing error: $jsonError");
+          print("Attempted to parse: $cachedResponse");
+
+          Map<String, dynamic> sections = {};
+          String currentSection = '';
+          List<String> lines = cachedResponse!.split('\n');
+          List<String> currentPoints = [];
+
+          for (String line in lines) {
+            line = line.trim();
+            if (line.isEmpty) continue;
+
+            if (line.startsWith(RegExp(r'\d\.')) ||
+                (line.startsWith('**') && line.endsWith('**'))) {
+              if (currentSection.isNotEmpty) {
+                sections[currentSection] = List<String>.from(currentPoints);
+                currentPoints = [];
+              }
+              currentSection = line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
+            } else if (line.startsWith('•') ||
+                line.startsWith('-') ||
+                line.startsWith('*')) {
+              String cleanedLine =
+                  line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
+              if (cleanedLine.isNotEmpty) {
+                currentPoints.add(cleanedLine);
+              }
+            }
+          }
+
+          if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+            sections[currentSection] = List<String>.from(currentPoints);
+          }
+
+          careerDetails = sections
+              .map((key, value) => MapEntry(key, List<String>.from(value)));
+        }
+
+        isLoading = false;
       });
     } catch (e) {
       setState(() {

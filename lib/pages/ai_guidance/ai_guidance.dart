@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/constants/constants.dart';
-import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
+import 'package:career_counsellor/pages/ai_guidance/widgets/empty_state.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart';
+import 'package:career_counsellor/pages/ai_guidance/widgets/survey_again_button.dart';
 import 'package:career_counsellor/pages/profile/profile_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -20,13 +20,15 @@ class AiGuidance extends StatefulWidget {
   State<AiGuidance> createState() => _AiGuidanceState();
 }
 
-class _AiGuidanceState extends State<AiGuidance> {
+class _AiGuidanceState extends State<AiGuidance>
+    with SingleTickerProviderStateMixin {
   final authService = AuthService();
   final SupabaseClient supabase = Supabase.instance.client;
   List<String> daimonSuggestions = [];
   List<String> urls = [];
   bool _isLoading = true;
-  String name = 'User';
+  late AnimationController _animationController;
+  late Animation<double> _fadeInAnimation;
 
   final userBox = Hive.box('user_box');
 
@@ -36,7 +38,6 @@ class _AiGuidanceState extends State<AiGuidance> {
 
   Future<void> fetchUserDataForFirstTime(SharedPreferences prefs) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       final userId = supabase.auth.currentUser!.id;
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
@@ -52,7 +53,6 @@ class _AiGuidanceState extends State<AiGuidance> {
           }
         }
 
-        name = data['full_name'] ?? 'User';
         daimonSuggestions = (data['suggestions'] as List<dynamic>)
             .map((e) => e.toString())
             .toList();
@@ -76,35 +76,13 @@ class _AiGuidanceState extends State<AiGuidance> {
       for (int i = 0; i < 5; i++) {
         daimonSuggestions.add(prefs.getString('r_$i') ?? 'Career');
       }
-      name = prefs.getString('Name') ?? 'User';
     }
 
     if (daimonSuggestions.isNotEmpty) await fetchImagesFromPexels();
     setState(() {
       _isLoading = false;
     });
-    // try {
-    //   final userId = supabase.auth.currentUser!.id;
-    //   final data =
-    //       await supabase.from('profiles').select().eq('id', userId).single();
-
-    //   setState(() {
-    //     name = data['full_name'] ?? 'User';
-    //     daimonSuggestions = data['suggestions'] != null
-    //         ? (data['suggestions'] as List<dynamic>)
-    //             .map((e) => e.toString())
-    //             .toList()
-    //         : _getDefaultSuggestions();
-    //     _isLoading = false;
-    //   });
-    // } catch (e) {
-    //   print('Error fetching user data: $e');
-    //   setState(() {
-    //     name = 'User';
-    //     daimonSuggestions = _getDefaultSuggestions();
-    //     _isLoading = false;
-    //   });
-    // }
+    _animationController.forward();
   }
 
   Future<void> fetchImagesFromPexels() async {
@@ -148,8 +126,24 @@ class _AiGuidanceState extends State<AiGuidance> {
 
   @override
   void initState() {
-    fetchUserData();
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeInAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+    fetchUserData();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -159,132 +153,199 @@ class _AiGuidanceState extends State<AiGuidance> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Home', style: theme.textTheme.titleLarge),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Career Compass',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
         centerTitle: true,
-
         actions: [
           Padding(
             padding: EdgeInsets.all(screenWidth * 0.02),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const ProfileScreen()));
-              },
-              child: CircleAvatar(
-                backgroundColor:
-                    Theme.of(context).primaryColor.withOpacity(0.1),
-                child: Icon(
-                  Icons.person,
-                  color: Theme.of(context).primaryColor,
+            child: Hero(
+              tag: 'profileAvatar',
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (ctx) => const ProfileScreen()),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.shadowColor.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: theme.primaryColor.withOpacity(0.15),
+                      child: Icon(
+                        Icons.person,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           )
         ],
-        // actions: [
-        //   // IconButton(
-        //   //   onPressed: logout,
-        //   //   icon: const Icon(Icons.logout),
-        //   //   tooltip: 'Logout',
-        //   // )
-        // ],
       ),
-      body: _isLoading
-          ? Center(
-              child: Lottie.asset(
-                'assets/animations/ai-loader1.json',
-                width: screenWidth * 0.25,
-                height: screenWidth * 0.25,
-                fit: BoxFit.contain,
-              ),
-            )
-          : daimonSuggestions.isEmpty
-              ? _buildEmptyStateWidget(context)
-              : _buildSuggestionsListWidget(context, screenWidth, screenHeight),
-    );
-  }
-
-  Widget _buildEmptyStateWidget(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/graphics/student-graphic.png',
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: MediaQuery.of(context).size.width * 0.75,
-              fit: BoxFit.contain,
-            ),
-            Text(
-              'Hello $name!',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Discover your ideal career path by taking our survey today!',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const SelectEducation()),
-                );
-              },
-              icon: const Icon(CupertinoIcons.arrow_right),
-              label: const Text('Take Career Survey'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 24.0),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.primaryColor.withOpacity(0.1),
+              theme.scaffoldBackgroundColor,
+              theme.scaffoldBackgroundColor,
+            ],
+          ),
         ),
+        child: _isLoading
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      'assets/animations/ai-loader1.json',
+                      width: screenWidth * 0.4,
+                      height: screenWidth * 0.4,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Loading your career path...',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : daimonSuggestions.isEmpty
+                ? EmptyState(fadeInAnimation: _fadeInAnimation)
+                : _buildSuggestionsListWidget(
+                    context, screenWidth, screenHeight),
       ),
     );
   }
 
   Widget _buildSuggestionsListWidget(
       BuildContext context, double screenWidth, double screenHeight) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.04),
-        child: Column(
-          spacing: screenHeight * 0.0025,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hi $name, here are your career suggestions:',
-              style: Theme.of(context).textTheme.titleLarge,
+    final theme = Theme.of(context);
+
+    return FadeTransition(
+      opacity: _fadeInAnimation,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(child: SizedBox(height: screenHeight * 0.04)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(screenWidth * 0.06,
+                  screenHeight * 0.12, screenWidth * 0.06, screenHeight * 0.02),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Hello, ',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '${userBox.get('full_name')}',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Here are your personalized career suggestions:',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                ],
+              ),
             ),
-            SizedBox(height: screenHeight * 0.02),
-            for (int index = 0; index < daimonSuggestions.length; index++)
-              CareerSuggestionCard(
-                  title: daimonSuggestions[index],
-                  description: '',
-                  image: urls[index],
-                  cta: 'jhjbhjb'),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (ctx) => const SelectEducation()),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                // Show staggered effect for each card
+                return TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 1.0, end: 0.0),
+                  duration: Duration(milliseconds: 500 + (index * 100)),
+                  builder: (context, value, child) {
+                    return Transform.translate(
+                      offset: Offset(0, value * 50),
+                      child: Opacity(
+                        opacity: 1 - value,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            screenWidth * 0.06,
+                            screenHeight * 0.01,
+                            screenWidth * 0.06,
+                            screenHeight * 0.01,
+                          ),
+                          child: CareerSuggestionCard(
+                            title: daimonSuggestions[index],
+                            description: '',
+                            image: urls[index],
+                            cta: 'jhjbhjb',
+                          ),
+                        ),
+                      ),
                     );
                   },
-                  child: const Text('Take the survey again?')),
-            )
-          ],
-        ),
+                );
+              },
+              childCount: daimonSuggestions.length,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+                padding: EdgeInsets.all(screenWidth * 0.06),
+                child: const SurveyAgainButton()),
+          ),
+        ],
       ),
     );
   }
