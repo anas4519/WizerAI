@@ -1,6 +1,6 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/models/youtube.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/compatibility_check.dart';
+import 'package:career_counsellor/pages/career_exploration/widgets/animated_fade_in.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/career_pathway_card.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/chat_with_bot.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/compatibility_check.dart';
@@ -55,9 +55,16 @@ class _CareerDetailsState extends State<CareerDetails> {
 
   Future<void> _initializeData() async {
     try {
-      await _fetchImagesFromPexels();
-      await _generateContent();
-      await _fetchYouTubeVideos();
+      // Run these operations in parallel for faster loading
+      await Future.wait([
+        _fetchImagesFromPexels(),
+        _generateContent(),
+        _fetchYouTubeVideos(),
+      ]);
+
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         errorMessage = 'Error initializing data: ${e.toString()}';
@@ -85,26 +92,30 @@ class _CareerDetailsState extends State<CareerDetails> {
         final data = jsonDecode(response.body);
         final photos = data['photos'] as List<dynamic>;
         if (photos.isNotEmpty) {
-          imageUrl = photos[0]['src']['landscape'];
+          setState(() {
+            imageUrl = photos[0]['src']['landscape'];
+          });
         }
       } else {
         print(
             'Error for query "$query": ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      print('Exception: $e');
+      print('Exception fetching image: $e');
     }
   }
 
   Future<void> _fetchYouTubeVideos() async {
     try {
-      final String searchQuery = 'How to become a ${widget.title}';
+      final String searchQuery =
+          'How to become a ${widget.title} in India'; // Search query for YouTube
       final Uri url = Uri.parse('https://www.googleapis.com/youtube/v3/search'
           '?part=snippet'
           '&q=${Uri.encodeComponent(searchQuery)}'
           '&type=video'
           '&maxResults=4'
           '&relevanceLanguage=en'
+          '&videoEmbeddable=true'
           '&key=$apiKey');
 
       final response = await http.get(url);
@@ -113,168 +124,256 @@ class _CareerDetailsState extends State<CareerDetails> {
         final Map<String, dynamic> data = json.decode(response.body);
         final List<dynamic> items = data['items'];
 
-        setState(() {
-          youtubeVideos = items.map((item) {
-            final snippet = item['snippet'];
-            return YouTubeVideo(
-              title: snippet['title'],
-              url: 'https://www.youtube.com/watch?v=${item['id']['videoId']}',
-              thumbnailUrl: snippet['thumbnails']['medium']['url'],
-              channelTitle: snippet['channelTitle'],
-            );
-          }).toList();
+        youtubeVideos = items.map((item) {
+          final snippet = item['snippet'];
+          return YouTubeVideo(
+            title: snippet['title'],
+            url: 'https://www.youtube.com/watch?v=${item['id']['videoId']}',
+            thumbnailUrl: snippet['thumbnails']['high']
+                ['url'], // Get higher quality thumbnails
+            channelTitle: snippet['channelTitle'],
+          );
+        }).toList();
 
-          if (youtubeVideos.isNotEmpty) {
-            careerDetails['YouTube Resources'] = youtubeVideos
-                .map((video) =>
-                    '${video.title} by ${video.channelTitle} (${video.url})')
-                .toList();
-          }
-          isLoading = false;
-        });
+        if (youtubeVideos.isNotEmpty) {
+          careerDetails['YouTube Resources'] = youtubeVideos
+              .map((video) =>
+                  '${video.title} by ${video.channelTitle} (${video.url})')
+              .toList();
+        }
       } else {
-        throw Exception('Failed to fetch YouTube videos');
+        throw Exception(
+            'Failed to fetch YouTube videos: ${response.statusCode}');
       }
     } catch (e) {
-      setState(() {
-        errorMessage = 'Error fetching YouTube videos: ${e.toString()}';
-        isLoading = false;
-      });
+      print('Error fetching YouTube videos: ${e.toString()}');
     }
   }
 
-  bool checkIfOlderThan10Days(DateTime storedDate) {
+  bool _isDataExpired(DateTime storedDate) {
     final now = DateTime.now();
     final difference = now.difference(storedDate);
-
-    if (difference.inDays >= 10) {
-      return true;
-    } else {
-      return false;
-    }
+    return difference.inDays >= 10;
   }
 
   Future<void> _generateContent() async {
-    final model = google_ai.GenerativeModel(
-      model: 'gemini-2.0-flash',
-      apiKey: GEMINI_API_KEY,
-    );
-
-    String prompt = '''
-You are a career counsellor. Generate the following information about the career '${widget.title}' in JSON format:
-
-{
-  "Overview": ["point 1", "point 2", "point 3"],
-  "Education Required in India": ["point 1", "point 2", "point 3"],
-  "Best Schools in India": ["point 1", "point 2", "point 3"],
-  "Work Environment": ["point 1", "point 2", "point 3"],
-  "Salaries in India": ["point 1", "point 2", "point 3"],
-  "Pros": ["advantage 1", "advantage 2", "advantage 3"],
-  "Cons": ["disadvantage 1", "disadvantage 2", "disadvantage 3"],
-  "Industry Trends": ["trend 1", "trend 2", "trend 3"]
-}
-
-Provide only the JSON with no additional text or markdown formatting.
-Ensure each section has at least 3-5 detailed bullet points.
-''';
-
-    final content = [google_ai.Content.text(prompt)];
+    final cacheKey =
+        'career_${widget.title.toLowerCase().replaceAll(' ', '_')}';
 
     try {
-      String? cachedResponse;
+      if (aiCache.containsKey(cacheKey)) {
+        final cachedData = aiCache.get(cacheKey);
+        final timestamp = cachedData[1] as DateTime;
 
-      if (aiCache.get(widget.title) != null &&
-          !checkIfOlderThan10Days(aiCache.get(widget.title)[1])) {
-        cachedResponse = aiCache.get(widget.title)[0];
-      } else {
-        var modelResult = await model.generateContent(content);
-
-        String response = modelResult.text?.trim() ?? '';
-
-        if (response.startsWith("```json")) {
-          response = response.substring(7);
+        if (!_isDataExpired(timestamp)) {
+          final cachedResponse = cachedData[0] as String;
+          _parseCareerDetails(cachedResponse);
+          return;
         }
-        if (response.startsWith("```")) {
-          response = response.substring(3);
-        }
-        if (response.endsWith("```")) {
-          response = response.substring(0, response.length - 3);
-        }
-
-        response = response.trim();
-
-        aiCache.put(widget.title, [response, DateTime.now()]);
-        cachedResponse = response;
       }
 
-      setState(() {
-        try {
-          Map<String, dynamic> jsonData = json.decode(cachedResponse!);
+      final model = google_ai.GenerativeModel(
+        model: 'gemini-2.0-flash',
+        apiKey: GEMINI_API_KEY,
+      );
 
-          careerDetails = jsonData.map((key, value) {
-            List<String> stringList = [];
-            if (value is List) {
-              stringList = value.map((item) => item.toString()).toList();
-            }
-            return MapEntry(key, stringList);
-          });
-        } catch (jsonError) {
-          print("JSON parsing error: $jsonError");
-          print("Attempted to parse: $cachedResponse");
+      String prompt = '''
+You are a professional career counselor specializing in Indian careers and education. 
+Generate comprehensive, accurate, and up-to-date information about the '${widget.title}' career path in India.
 
-          Map<String, dynamic> sections = {};
-          String currentSection = '';
-          List<String> lines = cachedResponse!.split('\n');
-          List<String> currentPoints = [];
+Focus on providing factual, well-researched information with practical insights relevant to students and job seekers in India.
 
-          for (String line in lines) {
-            line = line.trim();
-            if (line.isEmpty) continue;
+Return ONLY a valid JSON object with the following structure:
+{
+  "Overview": [
+    "Detailed description of what the ${widget.title} profession entails",
+    "Key responsibilities and daily activities",
+    "Types of organizations and industries employing ${widget.title}s",
+    "Required skills and aptitudes"
+  ],
+  "Education Required in India": [
+    "Minimum educational qualifications",
+    "Recommended degrees and specializations",
+    "Professional certifications required or beneficial",
+    "Duration of educational programs",
+    "Alternative educational pathways"
+  ],
+  "Best Schools in India": [
+    "Top institutions offering related programs",
+    "Notable programs with good placement records",
+    "Specialized institutions with industry connections",
+    "Institutions offering scholarships or financial aid",
+    "Colleges with best faculty and infrastructure"
+  ],
+  "Work Environment": [
+    "Typical workplace settings",
+    "Work schedule and work-life balance",
+    "Team dynamics and collaboration patterns",
+    "Physical and mental demands",
+    "Remote work opportunities"
+  ],
+  "Salaries in India": [
+    "Entry-level salary ranges in rupees",
+    "Mid-career salary expectations",
+    "Senior-level compensation packages",
+    "Salary variations by location in India",
+    "Comparison with related roles"
+  ],
+  "Pros": [
+    "Career growth opportunities",
+    "Job security factors",
+    "Work satisfaction aspects",
+    "Financial benefits",
+    "Personal development opportunities"
+  ],
+  "Cons": [
+    "Common challenges faced",
+    "Work-related stress factors",
+    "Industry-specific limitations",
+    "Potential career plateaus",
+    "Competitive aspects"
+  ],
+  "Industry Trends": [
+    "Recent developments affecting this career",
+    "Emerging technologies impacting the role",
+    "Future job prospects in India",
+    "Skills becoming increasingly valuable",
+    "Changes in hiring patterns"
+  ]
+}
 
-            if (line.startsWith(RegExp(r'\d\.')) ||
-                (line.startsWith('**') && line.endsWith('**'))) {
-              if (currentSection.isNotEmpty) {
-                sections[currentSection] = List<String>.from(currentPoints);
-                currentPoints = [];
-              }
-              currentSection = line.replaceAll(RegExp(r'[\d\.\*]'), '').trim();
-            } else if (line.startsWith('•') ||
-                line.startsWith('-') ||
-                line.startsWith('*')) {
-              String cleanedLine =
-                  line.replaceAll(RegExp(r'[•\-\*]'), '').trim();
-              if (cleanedLine.isNotEmpty) {
-                currentPoints.add(cleanedLine);
-              }
-            }
-          }
+Each point should be a complete, informative sentence with specific details about the '${widget.title}' career in India.
+Do not include any explanations, notes, or text outside the JSON structure.
+Ensure the JSON is valid with properly escaped characters.
+''';
 
-          if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
-            sections[currentSection] = List<String>.from(currentPoints);
-          }
+      final content = [google_ai.Content.text(prompt)];
+      var modelResult = await model.generateContent(content);
+      String response = modelResult.text?.trim() ?? '';
 
-          careerDetails = sections
-              .map((key, value) => MapEntry(key, List<String>.from(value)));
-        }
+      // Clean up response to extract valid JSON
+      if (response.contains("```json")) {
+        response = response.substring(response.indexOf("```json") + 7);
+      } else if (response.startsWith("```")) {
+        response = response.substring(3);
+      }
 
-        isLoading = false;
-      });
+      if (response.contains("```")) {
+        response = response.substring(0, response.lastIndexOf("```"));
+      }
+
+      response = response.trim();
+
+      // Cache the response
+      aiCache.put(cacheKey, [response, DateTime.now()]);
+
+      // Parse the response
+      _parseCareerDetails(response);
     } catch (e) {
+      print('Error generating content: ${e.toString()}');
       setState(() {
-        errorMessage = 'Error generating content: ${e.toString()}';
-        isLoading = false;
+        errorMessage = 'Error generating career information: ${e.toString()}';
       });
     }
   }
 
-  Widget _buildYouTubeSection() {
-    if (youtubeVideos.isEmpty) return const SizedBox.shrink();
-    return YoutubeSection(youtubeVideos: youtubeVideos);
+  void _parseCareerDetails(String jsonString) {
+    try {
+      // Attempt to parse as JSON first
+      Map<String, dynamic> jsonData = json.decode(jsonString);
+
+      setState(() {
+        careerDetails = jsonData.map((key, value) {
+          List<String> stringList = [];
+          if (value is List) {
+            stringList = value.map((item) => item.toString()).toList();
+          }
+          return MapEntry(key, stringList);
+        });
+      });
+    } catch (jsonError) {
+      print("JSON parsing error: $jsonError");
+      print("Attempted to parse: $jsonString");
+
+      // Fallback parsing for malformed JSON
+      _parseMalformedResponse(jsonString);
+    }
+  }
+
+  void _parseMalformedResponse(String response) {
+    Map<String, List<String>> parsedSections = {};
+    String currentSection = '';
+    List<String> currentPoints = [];
+
+    // Split by lines and process
+    List<String> lines = response.split('\n');
+
+    for (String line in lines) {
+      line = line.trim();
+      if (line.isEmpty) continue;
+
+      // Check for section headers
+      if (line.startsWith('"') && line.contains('":')) {
+        // JSON format section header
+        if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+          parsedSections[currentSection] = List<String>.from(currentPoints);
+          currentPoints = [];
+        }
+        currentSection = line.split('":')[0].replaceAll('"', '').trim();
+      } else if (line.startsWith(RegExp(r'[A-Z]')) && line.endsWith(':')) {
+        // Text format section header
+        if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+          parsedSections[currentSection] = List<String>.from(currentPoints);
+          currentPoints = [];
+        }
+        currentSection = line.replaceAll(':', '').trim();
+      } else if (line.contains("[") && !line.contains("]")) {
+        // Start of an array in JSON
+        currentSection =
+            line.split("[")[0].replaceAll('"', '').replaceAll(':', '').trim();
+        currentPoints = [];
+      } else if (line.startsWith(RegExp(r'[\-\*\•]')) ||
+          line.startsWith(RegExp(r'\d+\.'))) {
+        // Bullet point
+        String cleanedLine =
+            line.replaceAll(RegExp(r'[\-\*\•\d+\.]'), '').trim();
+        if (cleanedLine.isNotEmpty && currentSection.isNotEmpty) {
+          // Remove quotes if present
+          cleanedLine =
+              cleanedLine.replaceAll(RegExp(r'^"|"$|^"|"$'), '').trim();
+          cleanedLine = cleanedLine.replaceAll(RegExp(r"^'|'$"), '').trim();
+          if (cleanedLine.endsWith(',')) {
+            cleanedLine = cleanedLine.substring(0, cleanedLine.length - 1);
+          }
+          currentPoints.add(cleanedLine);
+        }
+      } else if (line.contains('"') && line.endsWith(',')) {
+        // JSON array item
+        String cleanedLine = line.replaceAll(RegExp(r'^"|"$|^"|"$'), '').trim();
+        cleanedLine = cleanedLine.replaceAll(',', '').trim();
+        if (cleanedLine.isNotEmpty && currentSection.isNotEmpty) {
+          currentPoints.add(cleanedLine);
+        }
+      }
+    }
+
+    // Add the last section if it exists
+    if (currentSection.isNotEmpty && currentPoints.isNotEmpty) {
+      parsedSections[currentSection] = List<String>.from(currentPoints);
+    }
+
+    setState(() {
+      careerDetails = parsedSections;
+    });
   }
 
   Widget _buildSection(String title, List<String> content) {
+    if (content.isEmpty) return const SizedBox.shrink();
+
     if (title == 'YouTube Resources') {
-      return _buildYouTubeSection();
+      return youtubeVideos.isNotEmpty
+          ? YoutubeSection(youtubeVideos: youtubeVideos)
+          : const SizedBox.shrink();
     }
     if (title == 'Pros') {
       return ProsSection(title: title, content: content, career: widget.title);
@@ -304,83 +403,212 @@ Ensure each section has at least 3-5 detailed bullet points.
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final themeData = Theme.of(context);
+    final isDarkTheme = themeData.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isDarkTheme ? Colors.white : Colors.pink,
+          ),
+        ),
         centerTitle: true,
+        elevation: 2,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => CompatibilityCheck(
-                            career: widget.title,
-                          )));
-                },
-                icon: const Icon(Icons.auto_awesome)),
-          )
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () async {
+              setState(() {
+                isLoading = true;
+                errorMessage = null;
+              });
+
+              // Clear cache for this career to force refresh
+              final cacheKey =
+                  'career_${widget.title.toLowerCase().replaceAll(' ', '_')}';
+              if (aiCache.containsKey(cacheKey)) {
+                aiCache.delete(cacheKey);
+              }
+
+              await _initializeData();
+            },
+            tooltip: 'Refresh data',
+          ),
         ],
       ),
       body: isLoading
-          ?
-          // const Center(child: CircularProgressIndicator())
-          Center(
-              child: Lottie.asset(
-                'assets/animations/ai-loader1.json',
-                width: screenWidth * 0.25,
-                height: screenWidth * 0.25,
-                fit: BoxFit.contain,
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset(
+                    'assets/animations/ai-loader1.json',
+                    width: screenWidth * 0.3,
+                    height: screenWidth * 0.3,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      'Analyzing ${widget.title}...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: isDarkTheme ? Colors.white70 : Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
-          : RefreshIndicator(
-              onRefresh: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                await _initializeData();
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (imageUrl.isNotEmpty)
-                      Center(
-                          child: FancyShimmerImage(
-                        boxDecoration: BoxDecoration(
-                            border: Border.all(color: Colors.pink, width: 2)),
-                        imageUrl: imageUrl,
-                        errorWidget: const Icon(Icons.error),
-                        width: screenWidth,
-                        boxFit: BoxFit.fitWidth,
-                        shimmerBackColor: Colors.grey,
-                        shimmerBaseColor: Colors.grey,
-                        shimmerHighlightColor: Colors.pink[200],
-                      )),
-                    ...sections
-                        .where((section) =>
-                            section != 'YouTube Resources' &&
-                            careerDetails.containsKey(section))
-                        .map((section) =>
-                            _buildSection(section, careerDetails[section]!)),
-                    CareerPathwayCard(title: widget.title),
-                    if (youtubeVideos.isNotEmpty) _buildYouTubeSection(),
-                    CompatibilityCheckCard(
-                      title: widget.title,
+          : errorMessage != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Could not load career information',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkTheme ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color:
+                                isDarkTheme ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            setState(() {
+                              isLoading = true;
+                              errorMessage = null;
+                            });
+                            await _initializeData();
+                          },
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Try Again'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                          ),
+                        ),
+                      ],
                     ),
-                    ChatWithBot(title: widget.title),
-                    SizedBox(
-                      height: screenHeight * 0.02,
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await _initializeData();
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (imageUrl.isNotEmpty)
+                          AnimatedFadeIn(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              margin: const EdgeInsets.only(bottom: 24),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: FancyShimmerImage(
+                                  imageUrl: imageUrl,
+                                  errorWidget: Container(
+                                    color: Colors.grey[300],
+                                    child: const Icon(Icons.image_not_supported,
+                                        size: 50),
+                                  ),
+                                  width: screenWidth,
+                                  height: screenHeight * 0.25,
+                                  boxFit: BoxFit.cover,
+                                  shimmerBackColor: Colors.grey[300]!,
+                                  shimmerBaseColor: Colors.grey[200]!,
+                                  shimmerHighlightColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        // Content sections
+                        ...sections
+                            .where((section) =>
+                                section != 'YouTube Resources' &&
+                                careerDetails.containsKey(section) &&
+                                (careerDetails[section]?.isNotEmpty ?? false))
+                            .map((section) => AnimatedFadeIn(
+                                  delay: Duration(
+                                      milliseconds:
+                                          100 * sections.indexOf(section)),
+                                  child: _buildSection(
+                                      section, careerDetails[section]!),
+                                )),
+
+                        // Additional cards
+                        AnimatedFadeIn(
+                          delay: const Duration(milliseconds: 500),
+                          child: CareerPathwayCard(title: widget.title),
+                        ),
+
+                        if (youtubeVideos.isNotEmpty)
+                          AnimatedFadeIn(
+                              delay: const Duration(milliseconds: 600),
+                              child:
+                                  YoutubeSection(youtubeVideos: youtubeVideos)),
+
+                        AnimatedFadeIn(
+                          delay: const Duration(milliseconds: 700),
+                          child: CompatibilityCheckCard(title: widget.title),
+                        ),
+
+                        AnimatedFadeIn(
+                          delay: const Duration(milliseconds: 800),
+                          child: ChatWithBot(title: widget.title),
+                        ),
+
+                        SizedBox(height: screenHeight * 0.02),
+
+                        // Disclaimer
+                        const InfoContainer(
+                          text:
+                              'This content is generated by AI and may sometimes contain inaccuracies or incomplete information. Please verify independently when necessary.',
+                        ),
+                      ],
                     ),
-                    const InfoContainer(
-                        text:
-                            'This content is generated by AI and may sometimes contain inaccuracies or incomplete information. Please verify independently when necessary.'),
-                  ],
+                  ),
                 ),
-              ),
-            ),
     );
   }
 }

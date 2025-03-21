@@ -10,48 +10,58 @@ class QuizIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return SizedBox(
-      width: screenWidth * 0.3,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: MediaQuery.of(context).size.width * 0.01,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              if (title == 'Custom') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CustomQuizPage(),
-                  ),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizSelection(title: title),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          HapticFeedback.lightImpact();
+          if (title == 'Custom') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CustomQuizPage(),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuizSelection(title: title),
+              ),
+            );
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: icon.color?.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
               child: icon,
             ),
-          ),
-          Text(
-            title,
-            style: TextStyle(fontSize: screenWidth * 0.02),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

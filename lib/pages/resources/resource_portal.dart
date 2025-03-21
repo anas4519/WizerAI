@@ -8,7 +8,7 @@ import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:career_counsellor/pages/resources/universal_ai_guide.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/video_player.dart';
 import 'package:career_counsellor/pages/courses/courses_page.dart';
-import 'package:career_counsellor/pages/resources/widgets/quiz_icon.dart';
+import 'package:career_counsellor/pages/resources/widgets/quiz_grid_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -185,7 +185,6 @@ class _ResourcePortalState extends State<ResourcePortal>
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final iconSize = screenWidth * 0.06;
 
     return Scaffold(
       body: Container(
@@ -299,94 +298,9 @@ class _ResourcePortalState extends State<ResourcePortal>
                     color: Colors.indigo,
                   ),
                   // const SizedBox(height: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GridView.count(
-                        shrinkWrap: true,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 10,
-                        crossAxisCount: 3,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.chat_bubble_2,
-                              size: iconSize,
-                              color: Colors.blue,
-                            ),
-                            title: 'Communication',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.question_circle,
-                              size: iconSize,
-                              color: Colors.green,
-                            ),
-                            title: 'Problem Solving',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              Icons.group,
-                              size: iconSize,
-                              color: Colors.orange,
-                            ),
-                            title: 'Teamwork',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.arrow_2_circlepath,
-                              size: iconSize,
-                              color: Colors.purple,
-                            ),
-                            title: 'Adaptability',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              Icons.leaderboard,
-                              size: iconSize,
-                              color: Colors.red,
-                            ),
-                            title: 'Leadership',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.time,
-                              size: iconSize,
-                              color: Colors.teal,
-                            ),
-                            title: 'Time Management',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.search,
-                              size: iconSize,
-                              color: Colors.brown,
-                            ),
-                            title: 'Attention to Detail',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              CupertinoIcons.paintbrush,
-                              size: iconSize,
-                              color: Colors.pink,
-                            ),
-                            title: 'Creativity',
-                          ),
-                          QuizIcon(
-                            icon: Icon(
-                              Icons.note_alt_rounded,
-                              size: iconSize,
-                              color: Colors.cyan,
-                            ),
-                            title: 'Custom',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  const QuizGridView(),
 
-                  SizedBox(height: screenHeight * 0.03),
+                  SizedBox(height: screenHeight * 0.05),
 
                   _buildSectionHeader(
                     context,
