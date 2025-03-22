@@ -51,8 +51,7 @@ class _MainPageState extends State<MainPage> {
         ),
         child: SafeArea(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
             child: GNav(
               onTabChange: (index) {
                 setState(() {

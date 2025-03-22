@@ -46,11 +46,26 @@ class _LoginPageState extends State<LoginPage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final double iconSize = screenWidth * 0.3;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final double curveVertexY = screenHeight * 0.55 - 50 + 5;
 
+    final Color primaryColor = isDarkMode
+        ? const Color(0xFFFF6B99) // Lighter pink for dark mode
+        : const Color(0xFFFF4F79); // Original pink for light mode
+
+    final Color backgroundColor =
+        isDarkMode ? const Color(0xFF121212) : Colors.white;
+
+    final Color cardColor = isDarkMode ? const Color(0xFF1E1E1E) : Colors.white;
+
+    final Color textColor = isDarkMode ? Colors.white : Colors.black;
+
+    final Color buttonColor = isDarkMode ? Colors.grey[800]! : Colors.black;
+    final Color buttonTextColor = isDarkMode ? Colors.white : Colors.grey[200]!;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: SizedBox(
           height: screenHeight,
@@ -59,8 +74,8 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Container(
                 height: screenHeight * 0.55,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFF4F79),
+                decoration: BoxDecoration(
+                  color: primaryColor,
                 ),
               ),
 
@@ -84,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: ClipPath(
                   clipper: DeepCurveClipper(),
                   child: Container(
-                    color: Colors.white,
+                    color: cardColor,
                     padding: EdgeInsets.only(top: screenHeight * 0.07),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -99,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               fontSize: screenWidth * 0.07,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black,
+                              color: textColor,
                             ),
                           ),
                         ),
@@ -111,8 +126,8 @@ class _LoginPageState extends State<LoginPage> {
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
                                   vertical: screenHeight * 0.015),
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.grey[200],
+                              backgroundColor: buttonColor,
+                              foregroundColor: buttonTextColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(screenWidth * 0.1),

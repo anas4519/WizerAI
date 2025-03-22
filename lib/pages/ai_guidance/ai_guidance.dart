@@ -6,6 +6,7 @@ import 'package:career_counsellor/pages/ai_guidance/widgets/empty_state.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart';
 import 'package:career_counsellor/pages/ai_guidance/widgets/survey_again_button.dart';
 import 'package:career_counsellor/pages/profile/profile_screen.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -41,14 +42,10 @@ class _AiGuidanceState extends State<AiGuidance>
       final userId = supabase.auth.currentUser!.id;
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
-      print(data);
       setState(() {
-        // Store all available data from the profile
         for (var key in data.keys) {
           if (data[key] != null) {
-            // Store in Hive
             userBox.put(key, data[key].toString());
-            // Store in SharedPreferences
             prefs.setString(key, data[key].toString());
           }
         }
@@ -174,10 +171,15 @@ class _AiGuidanceState extends State<AiGuidance>
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (ctx) => const ProfileScreen()),
-                    );
+                    if (userBox.get('interests') == null) {
+                      showErrorSnackBar(
+                          context, 'Take the survey to view your profile.');
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (ctx) => const ProfileScreen()),
+                      );
+                    }
                   },
                   borderRadius: BorderRadius.circular(30),
                   child: Container(

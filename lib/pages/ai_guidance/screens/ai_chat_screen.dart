@@ -71,8 +71,10 @@ class _AIChatScreenState extends State<AIChatScreen> {
   late genai.GenerativeModel model;
   late genai.ChatSession chat;
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final List<Message> messages = [];
   bool isLoading = false;
+  bool isSending = false;
 
   @override
   void initState() {
@@ -127,88 +129,222 @@ class _AIChatScreenState extends State<AIChatScreen> {
 
     setState(() {
       if (!isInitial) messages.add(Message(text: text, isUser: true));
-
-      isLoading = true;
+      isSending = true;
       messages.add(Message(text: 'Loading', isUser: false));
     });
+
+    _scrollToBottom();
 
     try {
       final response = await chat.sendMessage(genai.Content.text(text));
       setState(() {
         messages.removeLast();
         messages.add(Message(text: response.text ?? '', isUser: false));
-        isLoading = false;
+        isSending = false;
       });
+      _scrollToBottom();
     } catch (e) {
       setState(() {
-        isLoading = false;
+        isSending = false;
         messages.removeLast();
-        messages.add(Message(text: 'Error: $e', isUser: false));
+        messages.add(Message(
+            text: 'Sorry, I encountered an error. Please try again.',
+            isUser: false));
       });
+      _scrollToBottom();
     }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WizerAI'),
+        title: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.smart_toy_outlined),
+            SizedBox(width: 8),
+            Text('WizeBot', style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
         centerTitle: true,
+        elevation: 2,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh_outlined),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Reset Conversation'),
+                  content: const Text(
+                      'Are you sure you want to start a new conversation?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('CANCEL'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        setState(() {
+                          messages.clear();
+                        });
+                        _initializeChat();
+                      },
+                      child: const Text('RESET'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
+          // Chat history
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                return ChatBubble(
-                  message: message,
-                );
-              },
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey[900] : Colors.grey[100],
+              ),
+              child: isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        return ChatBubble(
+                          message: message,
+                        );
+                      },
+                    ),
             ),
           ),
-          Padding(
+
+          // Input area
+          Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? Colors.grey[850] : Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, -1),
+                ),
+              ],
+            ),
             padding:
-                const EdgeInsets.only(bottom: 30, left: 16, right: 16, top: 16),
+                const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 24),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: 'Type a message...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.pink),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color:
+                            isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.pink),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        borderSide: BorderSide(color: Colors.pink),
+                      color: isDarkMode ? Colors.grey[800] : Colors.grey[50],
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextField(
+                            controller: _messageController,
+                            maxLines: 5,
+                            minLines: 1,
+                            textCapitalization: TextCapitalization.sentences,
+                            decoration: const InputDecoration(
+                              hintText: 'Ask about career advice...',
+                              border: InputBorder.none,
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onSubmitted: (value) {
+                              if (!isSending && value.isNotEmpty) {
+                                final text = _messageController.text;
+                                _messageController.clear();
+                                _sendMessage(text);
+                              }
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.attach_file_outlined),
+                          onPressed: () {
+                            // Implement file attachment functionality
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('File attachments coming soon!'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Material(
+                  elevation: 2,
+                  shape: const CircleBorder(),
+                  color: Theme.of(context).primaryColor,
+                  child: InkWell(
+                    onTap: () {
+                      if (!isSending && _messageController.text.isNotEmpty) {
+                        final text = _messageController.text;
+                        _messageController.clear();
+                        _sendMessage(text);
+                      }
+                    },
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: isSending
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ))
+                            : const Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                              ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: () {
-                    final text = _messageController.text;
-                    _messageController.clear();
-                    _sendMessage(text);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(16),
-                  ),
-                  child: isLoading
-                      ? const Icon(Icons.stop)
-                      : const Icon(Icons.arrow_upward_rounded),
-                )
               ],
             ),
           ),

@@ -1,6 +1,5 @@
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class DegreeExplorationPage extends StatefulWidget {
   const DegreeExplorationPage({super.key});
@@ -41,13 +40,7 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/degree_hat.svg',
-                  height: 150,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 40),
-                Text(
+                const Text(
                   'Coming Soon!',
                   style: TextStyle(
                     fontSize: 32,
@@ -55,14 +48,14 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
+                const Text(
                   'Degree Exploration Page',
                   style: TextStyle(
                     fontSize: 24,
                   ),
                 ),
                 const SizedBox(height: 30),
-                Text(
+                const Text(
                   "We're working hard to bring you an amazing experience "
                   "to explore various degree programs. Stay tuned!",
                   textAlign: TextAlign.center,
@@ -72,10 +65,11 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage> {
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.notifications_active),
-                  label: Text('Notify Me When Ready'),
+                  icon: const Icon(Icons.notifications_active),
+                  label: const Text('Notify Me When Ready'),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

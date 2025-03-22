@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/utils/utils.dart';
+import 'package:career_counsellor/widgets/logout_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final userBox = Hive.box('user_box');
+  final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
                   ),
                 ),
                 background: Stack(
@@ -107,12 +110,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     // Skills section
-                    _buildSectionWithTitle(
-                      context,
-                      'Skills',
-                      Icons.code,
-                      _buildChipList(context, 'skills', Colors.blue),
-                    ),
+                    if (userBox.get('skills') != null)
+                      Column(
+                        children: [
+                          _buildSectionWithTitle(
+                            context,
+                            'Skills',
+                            Icons.star,
+                            _buildChipList(context, 'skills', Colors.blue),
+                          ),
+                        ],
+                      ),
 
                     // Strengths section
                     _buildSectionWithTitle(
@@ -227,6 +235,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
 
+                    LogoutButton(
+                      onLogout: () async {
+                        userBox.clear();
+                        await SharedPreferences.getInstance()
+                            .then((prefs) => prefs.clear());
+                        await authService.signOut();
+                        Navigator.of(context).pop();
+                      },
+                    )
                     // Languages section
                     // _buildSectionWithTitle(
                     //   context,

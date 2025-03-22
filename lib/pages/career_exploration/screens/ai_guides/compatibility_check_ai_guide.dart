@@ -169,13 +169,6 @@ class _CompatibilityCheckAiGuideState extends State<CompatibilityCheckAiGuide> {
             child: Container(
               decoration: BoxDecoration(
                 color: isDarkMode ? Colors.grey[900] : Colors.grey[100],
-                image: DecorationImage(
-                  image: AssetImage(isDarkMode
-                      ? 'assets/images/chat_bg_dark.png'
-                      : 'assets/images/chat_bg_light.png'),
-                  opacity: 0.05,
-                  repeat: ImageRepeat.repeat,
-                ),
               ),
               child: isLoading
                   ? const Center(

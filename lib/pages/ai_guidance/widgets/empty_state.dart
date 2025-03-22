@@ -54,7 +54,7 @@ class _EmptyStateState extends State<EmptyState> {
                         ),
                       ),
                       TextSpan(
-                        text: '${userBox.get('full_name')}!',
+                        text: '${userBox.get('full_name') ?? 'User'}!',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.primaryColor,

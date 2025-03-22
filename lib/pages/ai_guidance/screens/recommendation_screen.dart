@@ -234,7 +234,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Based on the details you\'ve provided, the WizerAI suggests the following career options:\n',
+                      'Based on the details you\'ve provided, WizerAI suggests the following career options:\n',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Column(
