@@ -1,4 +1,4 @@
-import 'package:career_counsellor/pages/ai_guidance/ai_guidance.dart';
+import 'package:career_counsellor/pages/ai_guidance/home_screen.dart';
 import 'package:career_counsellor/pages/career_exploration/career_exploration.dart';
 import 'package:career_counsellor/pages/mentorship/degree_exploration.dart';
 import 'package:career_counsellor/pages/resources/resource_portal.dart';

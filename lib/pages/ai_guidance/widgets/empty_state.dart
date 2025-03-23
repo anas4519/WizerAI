@@ -1,11 +1,16 @@
+import 'package:career_counsellor/auth/auth_service.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
+import 'package:career_counsellor/widgets/logout_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmptyState extends StatefulWidget {
-  const EmptyState({super.key, required this.fadeInAnimation});
+  const EmptyState(
+      {super.key, required this.fadeInAnimation, required this.authService});
   final Animation<double> fadeInAnimation;
+  final AuthService authService;
 
   @override
   State<EmptyState> createState() => _EmptyStateState();
@@ -28,6 +33,9 @@ class _EmptyStateState extends State<EmptyState> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 24,
+                ),
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -115,6 +123,15 @@ class _EmptyStateState extends State<EmptyState> {
                           elevation: 4,
                         ),
                       ),
+                      const SizedBox(height: 48),
+                      LogoutButton(
+                        onLogout: () async {
+                          userBox.clear();
+                          await SharedPreferences.getInstance()
+                              .then((prefs) => prefs.clear());
+                          await widget.authService.signOut();
+                        },
+                      )
                     ],
                   ),
                 ),

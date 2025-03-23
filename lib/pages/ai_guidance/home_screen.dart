@@ -240,8 +240,11 @@ class _AiGuidanceState extends State<AiGuidance>
                   ],
                 ),
               )
-            : daimonSuggestions.isEmpty
-                ? EmptyState(fadeInAnimation: _fadeInAnimation)
+            : daimonSuggestions.isNotEmpty
+                ? EmptyState(
+                    fadeInAnimation: _fadeInAnimation,
+                    authService: authService,
+                  )
                 : _buildSuggestionsListWidget(
                     context, screenWidth, screenHeight),
       ),
