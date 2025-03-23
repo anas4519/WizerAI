@@ -1,6 +1,8 @@
 import 'package:career_counsellor/pages/career_exploration/screens/career_pathway.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce/hive.dart';
 
 class CareerPathwayCard extends StatelessWidget {
   const CareerPathwayCard({super.key, required this.title});
@@ -10,15 +12,22 @@ class CareerPathwayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userBox = Hive.box('user_box');
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (ctx) => CareerPathway(career: title),
-            ),
-          );
+          if (userBox.get('interests') == null) {
+            showErrorSnackBar(context,
+                'You need to take the survey in order to see the career pathway.');
+            return;
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => CareerPathway(career: title),
+              ),
+            );
+          }
         },
         child: Container(
           decoration: BoxDecoration(

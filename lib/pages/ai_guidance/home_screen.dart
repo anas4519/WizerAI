@@ -7,6 +7,7 @@ import 'package:career_counsellor/pages/ai_guidance/widgets/suggestion_card.dart
 import 'package:career_counsellor/pages/ai_guidance/widgets/survey_again_button.dart';
 import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:career_counsellor/utils/utils.dart';
+import 'package:career_counsellor/widgets/logout_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -349,6 +350,18 @@ class _AiGuidanceState extends State<AiGuidance>
             child: Padding(
                 padding: EdgeInsets.all(screenWidth * 0.06),
                 child: const SurveyAgainButton()),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+                padding: EdgeInsets.all(screenWidth * 0.06),
+                child: LogoutButton(
+                  onLogout: () async {
+                    userBox.clear();
+                    await SharedPreferences.getInstance()
+                        .then((prefs) => prefs.clear());
+                    await authService.signOut();
+                  },
+                )),
           ),
         ],
       ),

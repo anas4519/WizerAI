@@ -1,5 +1,6 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/ai_guidance/screens/ai_chat_screen.dart';
+import 'package:career_counsellor/pages/main_page.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/material.dart';
@@ -332,8 +333,10 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                     Center(
                       child: ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context)
-                              .popUntil((route) => route.isFirst);
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => const MainPage()),
+                              (Route<dynamic> route) => false);
                         },
                         icon: const Icon(Icons.home_filled),
                         label: const Text('Go back to Home'),

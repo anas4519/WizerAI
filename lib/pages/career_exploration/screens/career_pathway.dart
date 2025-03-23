@@ -41,7 +41,7 @@ class _CareerPathwayState extends State<CareerPathway> {
     );
 
     final prompt =
-        'Step by step career pathway for a student in ${userBox.get('qualifications')} living in India if they want to become a ${widget.career}.';
+        'Step by step career pathway for a student with the following qualifiacations : "${userBox.get('qualifications')}", living in India if they want to become a ${widget.career}.';
 
     final content = [google_ai.Content.text(prompt)];
     try {
