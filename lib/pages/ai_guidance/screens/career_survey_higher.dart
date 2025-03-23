@@ -42,7 +42,6 @@ class _CareerSurveyStateHiCareerSurveyHigher extends State<CareerSurveyHigher> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _degreeController.dispose();
     _streamController.dispose();
     _interestsController.dispose();
@@ -71,20 +70,6 @@ class _CareerSurveyStateHiCareerSurveyHigher extends State<CareerSurveyHigher> {
             'Career Survey',
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    _interestsController.text = 'Stem, gadgets, smartphones';
-                    _hobbiesController.text =
-                        'Cricket, Football, Watching gadget yt videos';
-                    _strengthsController.text = 'Hardworking';
-                    _fatherCareerController.text = 'Accountant';
-                    _motherCareerController.text = 'Chef';
-                  });
-                },
-                icon: const Icon(Icons.auto_awesome))
-          ],
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(screenWidth * 0.04),
@@ -529,7 +514,8 @@ class _CareerSurveyStateHiCareerSurveyHigher extends State<CareerSurveyHigher> {
                                             .text,
                                     financialStatus: _financialStatus!,
                                     salaryExpectations: _salaryExpectation!,
-                                    additionalInfo: _additionalInfoController.text,
+                                    additionalInfo:
+                                        _additionalInfoController.text,
                                   )));
                         }
                       },

@@ -5,8 +5,8 @@ import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:lottie/lottie.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class CompatibilityCheck extends StatefulWidget {
@@ -18,56 +18,42 @@ class CompatibilityCheck extends StatefulWidget {
 }
 
 class _CompatibilityCheckState extends State<CompatibilityCheck> {
-  final SupabaseClient supabase = Supabase.instance.client;
   bool _isLoading = true;
   String? errorMessage;
   String body = '';
+  final userBox = Hive.box('user_box');
 
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    checkCompatibility();
   }
 
-  Future<void> fetchUserData() async {
-    try {
-      final userId = supabase.auth.currentUser!.id;
-      final data =
-          await supabase.from('profiles').select().eq('id', userId).single();
-      await checkCompatibility(data);
-    } catch (e) {
-      print('Error fetching user data: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> checkCompatibility(Map<String, dynamic> data) async {
+  Future<void> checkCompatibility() async {
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       apiKey: GEMINI_API_KEY,
     );
 
     final prompt = '''
     You are a career advisor bot. Given below are the details of a student. Check the compatibility of the student with the career ${widget.career} and suggest the student if the career is suitable for them. Respond in first person.
-    Current standard: '${data['qualifications']}', year of study: ${data['Current Year']}
-    Interests: ${data['interests']}
-    Hobbies: ${data['hobbies']}
-    Skills: ${data['skills']}
-    Strengths: ${data['strengths']}
-    Weaknesses: ${data['weaknesses']}
-    Desired Lifestyle: ${data['desired_ifestyle']}
-    Geographic Preferences: ${data['geographic_preferences']}
-    Aspirations: ${data['aspirations']}
-    Learning Curve: ${data['learning_curve']}
-    Mother's Profession: ${data['mothers_profession']}
-    Father's Profession: ${data['fathers_profession']}
-    Parents' expectations: ${data['parents_expectations']}
-    Interdisciplinary Options: ${data['interdisciplinary_options']}
-    Current Financial Status: ${data['financial_status']}
-    Salary Expectations: ${data['salary_expectations']}
-    Additional Information: ${data['additional_info']}
+    Qualifications: ${userBox.get('qualifications') ?? ' '}
+    Interests: ${userBox.get('interests') ?? ' '}
+    Hobbies: ${userBox.get('hobbies') ?? ' '}
+    Skills: ${userBox.get('skills') ?? ' '}
+    Strengths: ${userBox.get('strengths') ?? ' '}
+    Weaknesses: ${userBox.get('weaknesses') ?? ' '}
+    Desired Lifestyle: ${userBox.get('desired_lifestyle') ?? ' '}
+    Geographic Preferences: ${userBox.get('geographic_preferences') ?? ' '}
+    Aspirations: ${userBox.get('aspirations') ?? ' '}
+    Learning Curve: ${userBox.get('learning_curve') ?? ' '}
+    Mother's Profession: ${userBox.get('mothers_profession') ?? ' '}
+    Father's Profession: ${userBox.get('fathers_profession') ?? ' '}
+    Parents' expectations: ${userBox.get('parents_expectations') ?? ' '}
+    Interdisciplinary Options: ${userBox.get('interdisciplinary_options') ?? ' '}
+    Current Financial Status: ${userBox.get('financial_status') ?? ' '}
+    Salary Expectations: ${userBox.get('salary_expectations') ?? ' '}
+    Additional Information: ${userBox.get('additional_info') ?? ' '}
     ''';
     final content = [google_ai.Content.text(prompt)];
     try {

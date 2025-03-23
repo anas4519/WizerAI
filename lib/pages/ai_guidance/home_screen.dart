@@ -240,7 +240,7 @@ class _AiGuidanceState extends State<AiGuidance>
                   ],
                 ),
               )
-            : daimonSuggestions.isNotEmpty
+            : daimonSuggestions.isEmpty
                 ? EmptyState(
                     fadeInAnimation: _fadeInAnimation,
                     authService: authService,

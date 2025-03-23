@@ -3,7 +3,7 @@ import 'package:career_counsellor/models/youtube.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/animated_fade_in.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/career_pathway_card.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/chat_with_bot.dart';
-import 'package:career_counsellor/pages/career_exploration/widgets/compatibility_check.dart';
+import 'package:career_counsellor/pages/career_exploration/widgets/compatibility_check_button.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/cons_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/default_section.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.dart';

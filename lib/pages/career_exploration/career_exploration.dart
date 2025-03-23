@@ -1,9 +1,12 @@
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/search_screen.dart';
+import 'package:career_counsellor/pages/profile/profile_screen.dart';
+import 'package:career_counsellor/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CareerExploration extends StatefulWidget {
@@ -100,6 +103,8 @@ class _CareerExplorationState extends State<CareerExploration> {
             CareerDetails(title: careerDetails[index]['title']!)));
   }
 
+  final userBox = Hive.box('user_box');
+
   @override
   Widget build(BuildContext context) {
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
@@ -141,11 +146,24 @@ class _CareerExplorationState extends State<CareerExploration> {
         actions: [
           Padding(
             padding: EdgeInsets.all(screenWidth * 0.02),
-            child: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-              child: Icon(
-                Icons.person,
-                color: Theme.of(context).primaryColor,
+            child: GestureDetector(
+              onTap: () {
+                if (userBox.get('interests') == null) {
+                  showErrorSnackBar(
+                      context, 'Take the survey to view your profile.');
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const ProfileScreen()),
+                  );
+                }
+              },
+              child: CircleAvatar(
+                backgroundColor:
+                    Theme.of(context).primaryColor.withOpacity(0.1),
+                child: Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           )

@@ -26,9 +26,25 @@ class _CareerSurveyState extends State<CareerSurvey> {
       TextEditingController();
   final TextEditingController _geographicPrefController =
       TextEditingController();
-
   final TextEditingController _additionalInfoController =
       TextEditingController();
+
+  @override
+  void dispose() {
+    _interestsController.dispose();
+    _hobbiesController.dispose();
+    _skillsController.dispose();
+    _strengthsController.dispose();
+    _weaknessesController.dispose();
+    _aspirationsController.dispose();
+    _motherCareerController.dispose();
+    _fatherCareerController.dispose();
+    _parentsExpectationsController.dispose();
+    _interdisciplinaryOptionsController.dispose();
+    _geographicPrefController.dispose();
+    _additionalInfoController.dispose();
+    super.dispose();
+  }
 
   String? _selectedStandard;
   String? _preferredLifestyle;
@@ -49,20 +65,6 @@ class _CareerSurveyState extends State<CareerSurvey> {
             'Career Survey',
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    _interestsController.text = 'Stem, gadgets, smartphones';
-                    _hobbiesController.text =
-                        'Cricket, Football, Watching gadget yt videos';
-                    _strengthsController.text = 'Hardworking';
-                    _fatherCareerController.text = 'Accountant';
-                    _motherCareerController.text = 'Chef';
-                  });
-                },
-                icon: const Icon(Icons.auto_awesome))
-          ],
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(screenWidth * 0.04),
