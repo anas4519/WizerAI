@@ -7,7 +7,7 @@
 
 WizerAI is an intelligent career counseling application designed to guide users towards the right career paths based on their interests, skills, and personality. Using advanced AI models, it offers personalized recommendations, career resources, and interactive guidance to help users make informed career decisions.
 
-🔗 **Intro Video**: [Watch Here]([https://youtube.com/shorts/RbVHbEclNJg])
+🔗 **Intro Video**: [Watch Here](https://youtube.com/shorts/RbVHbEclNJg)
 
 ---
 
