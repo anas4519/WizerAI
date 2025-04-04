@@ -31,27 +31,27 @@ WizerAI is an intelligent career counseling application designed to guide users 
 
 ---
 
-## 🖼️ Screenshots
+## 📱 Screenshots
 
-### 📱 Home Page – Career Recommendations
+### 🏠 Home Page – Career Recommendations
 ![Home Page](assets/screenshots/page1.png)
 
-### 💬 Explore Page – Explore Suggested and other Careers
+### 🧭 Explore Page – Explore Suggested and other Careers
 ![Explore Page](assets/screenshots/page2.png)
 
-### 💬 Resources Page – Learning Resources
+### 📖 Resources Page – Learning Resources
 ![Resources Page](assets/screenshots/page3.png)
 
-### 💬 Career Details Page – Details about a specific Career
+### 👨🏻‍💼 Career Details Page – Details about a specific Career
 ![Resources Page](assets/screenshots/page4.png)
 
-### 💬 AI Chatbot – Clear Doubts and Queries
+### 🤖 AI Chatbot – Clear Doubts and Queries
 ![AI Chatbot](assets/screenshots/page5.png)
 
-### 💬 MCQ Quiz – Assess your skills
+### ❓ MCQ Quiz – Assess your skills
 ![MCQ Quiz](assets/screenshots/page6.png)
 
-### 💬 Profile Page – View and Edit your Personal Details
+### 👨🏻 Profile Page – View and Edit your Personal Details
 ![Profile Page](assets/screenshots/page7.png)
 
 ---
