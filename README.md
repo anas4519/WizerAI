@@ -49,25 +49,3 @@ WizerAI is an intelligent career counseling application designed to guide users 
 | Supabase     | Auth + Secure user management    |
 | Hive DB      | Caching                          |
 | Google Gemini| Career insights and text AI      |
-
----
-
-## 🚀 Getting Started
-
-To run the project locally:
-
-### 📦 Prerequisites
-
-- Flutter SDK
-- Node.js
-- MongoDB (local or Atlas)
-- Supabase account
-- OpenAI API key
-
-### ⚙️ Steps
-
-1. **Clone the repo**
-
-```bash
-git clone https://github.com/your-username/wizerai.git
-cd wizerai
