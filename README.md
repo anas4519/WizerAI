@@ -9,7 +9,7 @@ WizerAI is an intelligent career counseling application designed to guide users 
 
 🔗 **Intro Video**: [Watch Here](https://youtube.com/shorts/RbVHbEclNJg)
 
-🔗 **Playstore Link**: [Watch Here](https://play.google.com/store/apps/details?id=com.wizer.career_counsellor)
+🔗 **Playstore Link**: [Download](https://play.google.com/store/apps/details?id=com.wizer.career_counsellor)
 
 ---
 
