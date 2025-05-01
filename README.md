@@ -66,3 +66,13 @@ WizerAI is an intelligent career counseling application designed to guide users 
 | Supabase     | Auth + Secure user management    |
 | Hive DB      | Caching                          |
 | Google Gemini| Career insights and text AI      |
+
+---
+
+## 🚀 Coming Soon
+
+- 🎓 **Degree Exploration** — description.
+- 📚 **More Resources** — A curated library of tools, guides, and tips to support your academic and career journey.
+- 🧠 **Advanced Career Compatibility Check** — Dive deeper into personalized career matching through interactive tasks and assessments.
+- 📊 **Course Integrations** — Browse and connect with top-rated courses from trusted providers to upskill for your chosen path.
+
