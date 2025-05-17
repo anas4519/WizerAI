@@ -1,6 +1,6 @@
 import 'package:career_counsellor/pages/ai_guidance/home_screen.dart';
 import 'package:career_counsellor/pages/career_exploration/career_exploration.dart';
-import 'package:career_counsellor/pages/mentorship/degree_exploration.dart';
+import 'package:career_counsellor/pages/degree_exploration/degree_exploration.dart';
 import 'package:career_counsellor/pages/resources/resource_portal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ class _MainPageState extends State<MainPage> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
             child: GNav(
               onTabChange: (index) {
                 setState(() {
