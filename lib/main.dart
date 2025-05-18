@@ -1,6 +1,7 @@
 import 'package:career_counsellor/auth/auth_gate.dart';
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/onboarding_screen/onboarding_page.dart';
+import 'package:career_counsellor/utils/screen_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent));
 
