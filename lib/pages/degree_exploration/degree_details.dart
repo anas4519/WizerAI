@@ -1,5 +1,6 @@
-import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/degree_exploration/utils/lists.dart';
+import 'package:career_counsellor/pages/degree_exploration/widgets/course_list.dart';
+import 'package:career_counsellor/pages/degree_exploration/widgets/toggle_button.dart';
 import 'package:flutter/material.dart';
 
 class DegreeDetails extends StatefulWidget {
@@ -18,79 +19,103 @@ class _DegreeDetailsState extends State<DegreeDetails> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+          ),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.04),
-          child: Column(
-            children: [
-              Row(
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isDarkMode ? Colors.grey[800] : Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              size: 18,
+              color: isDarkMode ? Colors.white : Colors.black87,
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(screenWidth * 0.05),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Enhanced Toggle Buttons
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: isDarkMode ? Colors.grey[900] : Colors.grey[100],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  GestureDetector(
+                  ToggleButton(
+                    isSelected: isBachelorsSelected,
+                    text: 'Bachelor\'s',
+                    isDarkMode: isDarkMode,
                     onTap: () {
                       setState(() {
                         isMastersSelected = false;
                         isBachelorsSelected = true;
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: isBachelorsSelected
-                              ? Colors.pink
-                              : Colors.transparent),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Bachelors'),
-                      ),
-                    ),
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  GestureDetector(
+                  const SizedBox(width: 4),
+                  ToggleButton(
+                    isSelected: isMastersSelected,
+                    text: 'Master\'s',
+                    isDarkMode: isDarkMode,
                     onTap: () {
                       setState(() {
-                        isMastersSelected = true;
-                        isBachelorsSelected = false;
+                        setState(() {
+                          isMastersSelected = true;
+                          isBachelorsSelected = false;
+                        });
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: isMastersSelected
-                              ? Colors.pink
-                              : Colors.transparent),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Masters'),
-                      ),
-                    ),
-                  )
+                  ),
                 ],
               ),
-              const SizedBox(
-                height: 16,
+            ),
+
+            SizedBox(height: screenHeight * 0.04),
+
+            // Count indicator
+            Text(
+              '${isBachelorsSelected ? mainList[widget.idx][0].length : mainList[widget.idx][1].length} programs available',
+              style: TextStyle(
+                color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount:
-                      isBachelorsSelected ? design[0].length : design[1].length,
-                  itemBuilder: (context, index) {
-                    final courseName = isBachelorsSelected
-                        ? design[0][index]
-                        : design[1][index];
-                    return ListTile(
-                      title: Text(courseName),
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        ));
+            ),
+
+            const SizedBox(height: 16),
+
+            // Enhanced List
+            CourseList(
+                idx: widget.idx, isBachelorsSelected: isBachelorsSelected)
+          ],
+        ),
+      ),
+    );
   }
 }

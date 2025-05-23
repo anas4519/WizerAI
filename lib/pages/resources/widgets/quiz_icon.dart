@@ -46,14 +46,14 @@ class QuizIcon extends StatelessWidget {
               ),
               child: icon,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
                 title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                  fontSize: 10,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

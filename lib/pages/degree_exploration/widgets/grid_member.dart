@@ -34,7 +34,7 @@ class GridMember extends StatelessWidget {
           Icon(
             category["icon"],
             size: 36,
-            color: isDarkMode ? Colors.white : Colors.black87,
+            color: Colors.pink,
           ),
           const SizedBox(height: 12),
           Text(

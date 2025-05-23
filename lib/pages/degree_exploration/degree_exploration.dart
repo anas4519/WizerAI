@@ -9,7 +9,8 @@ class DegreeExplorationPage extends StatefulWidget {
   State<DegreeExplorationPage> createState() => _DegreeExplorationPageState();
 }
 
-class _DegreeExplorationPageState extends State<DegreeExplorationPage> {
+class _DegreeExplorationPageState extends State<DegreeExplorationPage>
+    with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   bool isSearchFocused = false;
 
@@ -33,108 +34,153 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.primaryColor.withOpacity(0.1),
-              theme.scaffoldBackgroundColor,
+              theme.primaryColor.withOpacity(0.08),
+              theme.scaffoldBackgroundColor.withOpacity(0.95),
               theme.scaffoldBackgroundColor,
             ],
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: screenWidth * 0.04,
-            right: screenWidth * 0.04,
-            bottom: screenHeight * 0.02,
-            top: screenHeight * 0.1,
-          ),
-          child: Column(
-            children: [
-              Focus(
-                onFocusChange: (focused) {
-                  setState(() => isSearchFocused = focused);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: screenHeight * 0.07,
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? Colors.grey[800] : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSearchFocused
-                          ? Colors.pink
-                          : (isDarkMode
-                              ? Colors.grey[700]!
-                              : Colors.grey[200]!),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: isSearchFocused
-                            ? (isDarkMode
-                                ? Colors.pink.withOpacity(0.2)
-                                : Colors.pink.withOpacity(0.1))
-                            : (isDarkMode
-                                ? Colors.black.withOpacity(0.3)
-                                : Colors.grey.withOpacity(0.1)),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.02,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: screenHeight * 0.02),
+
+                // Title Section
+                Text(
+                  'Explore Degrees',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                    letterSpacing: -0.5,
                   ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 16),
-                      Icon(
-                        Icons.search_rounded,
+                ),
+                SizedBox(height: screenHeight * 0.008),
+                Text(
+                  'Discover your perfect academic path',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+
+                SizedBox(height: screenHeight * 0.04),
+
+                // Enhanced Search Bar
+                Focus(
+                  onFocusChange: (focused) {
+                    setState(() => isSearchFocused = focused);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutCubic,
+                    height: screenHeight * 0.065,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.grey[850] : Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
                         color: isSearchFocused
-                            ? (isDarkMode ? Colors.pink[300] : Colors.pink)
-                            : (isDarkMode ? Colors.grey[400] : Colors.grey),
+                            ? Colors.pink.withOpacity(0.8)
+                            : (isDarkMode
+                                ? Colors.grey[700]!.withOpacity(0.5)
+                                : Colors.grey[200]!),
+                        width: isSearchFocused ? 2.5 : 1.5,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.sentences,
-                          style: TextStyle(
-                            color: isDarkMode ? Colors.white : Colors.black,
+                      boxShadow: [
+                        BoxShadow(
+                          color: isSearchFocused
+                              ? Colors.pink.withOpacity(0.15)
+                              : (isDarkMode
+                                  ? Colors.black.withOpacity(0.2)
+                                  : Colors.grey.withOpacity(0.08)),
+                          blurRadius: isSearchFocused ? 20 : 8,
+                          offset: const Offset(0, 6),
+                          spreadRadius: isSearchFocused ? 2 : 0,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        AnimatedScale(
+                          scale: isSearchFocused ? 1.1 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.search_rounded,
+                            size: 22,
+                            color: isSearchFocused
+                                ? Colors.pink
+                                : (isDarkMode
+                                    ? Colors.grey[400]
+                                    : Colors.grey[500]),
                           ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search a degree...',
-                            hintStyle: TextStyle(
-                              color: isDarkMode
-                                  ? Colors.grey[500]
-                                  : Colors.grey[400],
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black87,
                               fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Search degrees and programs...',
+                              hintStyle: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey[500]
+                                    : Colors.grey[400],
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: GridView.builder(
-                  itemCount: degree_categories.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 14,
-                    childAspectRatio: 1.1,
+
+                SizedBox(height: screenHeight * 0.035),
+
+                // Grid Section
+                Expanded(
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: degree_categories.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: screenWidth > 600 ? 3 : 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 1.05,
+                    ),
+                    itemBuilder: (context, index) {
+                      final category = degree_categories[index];
+                      return AnimatedScale(
+                        scale: 1.0,
+                        duration: Duration(milliseconds: 100 + (index * 50)),
+                        child: GridMember(
+                          isDarkMode: isDarkMode,
+                          category: category,
+                          idx: index,
+                        ),
+                      );
+                    },
                   ),
-                  itemBuilder: (context, index) {
-                    final category = degree_categories[index];
-                    return GridMember(
-                      isDarkMode: isDarkMode,
-                      category: category,
-                      idx: index,
-                    );
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
