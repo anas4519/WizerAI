@@ -156,7 +156,7 @@ class _QuizPageRState extends State<QuizPageR>
                       borderRadius: BorderRadius.circular(screenWidth * 0.04),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -182,7 +182,7 @@ class _QuizPageRState extends State<QuizPageR>
                       borderRadius: BorderRadius.circular(screenWidth * 0.03),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 6,
                           offset: const Offset(0, 3),
                         ),
@@ -323,7 +323,7 @@ class _QuizPageRState extends State<QuizPageR>
                       borderRadius: BorderRadius.circular(screenWidth * 0.05),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.green.withOpacity(0.4),
+                          color: Colors.green.withValues(alpha: 0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -357,7 +357,7 @@ class _QuizPageRState extends State<QuizPageR>
                           }
                         },
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
-                        splashColor: Colors.white.withOpacity(0.2),
+                        splashColor: Colors.white.withValues(alpha: 0.2),
                         child: Center(
                           child: Row(
                             mainAxisSize: MainAxisSize.min,

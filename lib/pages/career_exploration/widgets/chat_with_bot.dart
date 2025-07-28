@@ -33,7 +33,7 @@ class ChatWithBot extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.pink.withOpacity(0.3),
+                color: Colors.pink.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -52,7 +52,7 @@ class ChatWithBot extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -78,7 +78,7 @@ class ChatWithBot extends StatelessWidget {
                         Text(
                           'Chat with WizeBot for personalized guidance',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 14,
                           ),
                         ),
@@ -87,7 +87,7 @@ class ChatWithBot extends StatelessWidget {
                   ),
                   Icon(
                     Icons.arrow_forward_ios,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     size: 20,
                   ),
                 ],

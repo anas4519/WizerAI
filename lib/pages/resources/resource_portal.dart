@@ -10,6 +10,7 @@ import 'package:career_counsellor/pages/career_exploration/screens/video_player.
 import 'package:career_counsellor/pages/courses/courses_page.dart';
 import 'package:career_counsellor/pages/resources/widgets/quiz_grid_view.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -149,7 +150,9 @@ class _ResourcePortalState extends State<ResourcePortal>
       setState(() {
         isLoading = false;
       });
-      print('Error fetching YouTube videos: ${e.toString()}');
+      if (kDebugMode) {
+        print('Error fetching YouTube videos: ${e.toString()}');
+      }
     }
   }
 
@@ -193,7 +196,7 @@ class _ResourcePortalState extends State<ResourcePortal>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).primaryColor.withValues(alpha: 0.1),
               Theme.of(context).scaffoldBackgroundColor,
               Theme.of(context).scaffoldBackgroundColor,
             ],
@@ -229,7 +232,7 @@ class _ResourcePortalState extends State<ResourcePortal>
                         child: Icon(
                           Icons.circle,
                           size: screenWidth * 0.4,
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                         ),
                       ),
                       Positioned(
@@ -238,7 +241,7 @@ class _ResourcePortalState extends State<ResourcePortal>
                         child: Icon(
                           Icons.circle,
                           size: screenWidth * 0.3,
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                         ),
                       ),
                       Center(
@@ -269,7 +272,7 @@ class _ResourcePortalState extends State<ResourcePortal>
                 Container(
                   margin: EdgeInsets.all(screenWidth * 0.02),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -580,7 +583,7 @@ class _ResourcePortalState extends State<ResourcePortal>
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -731,7 +734,7 @@ class _ResourcePortalState extends State<ResourcePortal>
                       Container(
                         width: 28,
                         height: 28,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
@@ -811,10 +814,12 @@ class _ResourcePortalState extends State<ResourcePortal>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isDarkTheme ? color.withOpacity(0.2) : color.withOpacity(0.1),
+          color: isDarkTheme
+              ? color.withValues(alpha: 0.2)
+              : color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             width: 1,
           ),
         ),

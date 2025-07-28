@@ -8,6 +8,7 @@ import 'package:career_counsellor/pages/ai_guidance/widgets/survey_again_button.
 import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:career_counsellor/utils/utils.dart';
 import 'package:career_counsellor/widgets/logout_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -62,7 +63,9 @@ class _AiGuidanceState extends State<AiGuidance>
         userBox.put('r_$i', daimonSuggestions[i]);
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      if (kDebugMode) {
+        print('Error fetching user data: $e');
+      }
     }
   }
 
@@ -105,8 +108,10 @@ class _AiGuidanceState extends State<AiGuidance>
             return photos[0]['src']['landscape'];
           }
         } else {
-          print(
-              'Error for query "$query": ${response.statusCode} - ${response.body}');
+          if (kDebugMode) {
+            print(
+                'Error for query "$query": ${response.statusCode} - ${response.body}');
+          }
         }
         return null;
       }).toList();
@@ -118,7 +123,9 @@ class _AiGuidanceState extends State<AiGuidance>
         urls.add(url ?? 'XYZ');
       }
     } catch (e) {
-      print('Exception: $e');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
     }
   }
 
@@ -188,14 +195,15 @@ class _AiGuidanceState extends State<AiGuidance>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: theme.shadowColor.withOpacity(0.2),
+                          color: theme.shadowColor.withValues(alpha: 0.2),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: CircleAvatar(
-                      backgroundColor: theme.primaryColor.withOpacity(0.15),
+                      backgroundColor:
+                          theme.primaryColor.withValues(alpha: 0.15),
                       child: Icon(
                         Icons.person,
                         color: theme.primaryColor,
@@ -214,7 +222,7 @@ class _AiGuidanceState extends State<AiGuidance>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.primaryColor.withOpacity(0.1),
+              theme.primaryColor.withValues(alpha: 0.1),
               theme.scaffoldBackgroundColor,
               theme.scaffoldBackgroundColor,
             ],
@@ -272,7 +280,7 @@ class _AiGuidanceState extends State<AiGuidance>
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: theme.primaryColor.withOpacity(0.1),
+                      color: theme.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -301,7 +309,8 @@ class _AiGuidanceState extends State<AiGuidance>
                         Text(
                           'Here are your personalized career suggestions:',
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.7),
                           ),
                         ),
                       ],

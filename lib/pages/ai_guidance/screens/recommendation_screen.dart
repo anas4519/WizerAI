@@ -139,7 +139,9 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         'suggestions': recommendationsList, // Update the suggestions column
       }).eq('id', userId);
     } catch (e) {
-      showSnackBar(context, 'Error updating suggestions: $e');
+      if (mounted) {
+        showSnackBar(context, 'Error updating suggestions: $e');
+      }
     }
   }
 

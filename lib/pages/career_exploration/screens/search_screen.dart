@@ -1,6 +1,5 @@
 import 'package:career_counsellor/constants/constants.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -74,8 +73,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       icon: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).primaryColor.withOpacity(0.1),
+                          color: Theme.of(context)
+                              .primaryColor
+                              .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
@@ -134,11 +134,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         BoxShadow(
                           color: isSearchFocused
                               ? (isDarkMode
-                                  ? Colors.pink.withOpacity(0.2)
-                                  : Colors.pink.withOpacity(0.1))
+                                  ? Colors.pink.withValues(alpha: 0.2)
+                                  : Colors.pink.withValues(alpha: 0.1))
                               : (isDarkMode
-                                  ? Colors.black.withOpacity(0.3)
-                                  : Colors.grey.withOpacity(0.1)),
+                                  ? Colors.black.withValues(alpha: 0.3)
+                                  : Colors.grey.withValues(alpha: 0.1)),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -253,8 +253,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: isDarkMode
-                                        ? Colors.black.withOpacity(0.3)
-                                        : Colors.grey.withOpacity(0.1),
+                                        ? Colors.black.withValues(alpha: 0.3)
+                                        : Colors.grey.withValues(alpha: 0.1),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),

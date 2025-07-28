@@ -9,12 +9,12 @@ class SectionHeader extends StatelessWidget {
   final VoidCallback? onTap;
 
   const SectionHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.icon,
     this.description,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,8 @@ class SectionHeader extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isDarkTheme
-                  ? Colors.black.withOpacity(0.3)
-                  : Colors.pink.withOpacity(0.3),
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : Colors.pink.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -74,7 +74,7 @@ class SectionHeader extends StatelessWidget {
                       description!,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],

@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                         ),
                       ),
@@ -238,12 +238,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     LogoutButton(
                       onLogout: () async {
                         userBox.clear();
-                        await SharedPreferences.getInstance()
-                            .then((prefs) => prefs.clear());
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.clear();
                         await authService.signOut();
+
+                        if (!context.mounted) {
+                          return;
+                        }
                         Navigator.of(context).pop();
                       },
                     )
+
                     // Languages section
                     // _buildSectionWithTitle(
                     //   context,
@@ -281,7 +286,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //       borderRadius: BorderRadius.circular(12),
   //       boxShadow: [
   //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.05),
+  //           color: Colors.black.withValues(alpha: 0.05),
   //           blurRadius: 10,
   //           offset: const Offset(0, 5),
   //         ),
@@ -306,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //                 .textTheme
   //                 .bodyLarge
   //                 ?.color
-  //                 ?.withOpacity(0.8),
+  //                 ?.withValues(alpha: 0.8),
   //           ),
   //         ),
   //       ],
@@ -323,7 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //       borderRadius: BorderRadius.circular(12),
   //       boxShadow: [
   //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.05),
+  //           color: Colors.black.withValues(alpha: 0.05),
   //           blurRadius: 10,
   //           offset: const Offset(0, 5),
   //         ),
@@ -380,7 +385,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //                   .textTheme
   //                   .bodyMedium
   //                   ?.color
-  //                   ?.withOpacity(0.6),
+  //                   ?.withValues(alpha: 0.6),
   //             ),
   //           ),
   //           const SizedBox(height: 4),
@@ -405,7 +410,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -467,7 +472,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //                     .textTheme
   //                     .bodyMedium
   //                     ?.color
-  //                     ?.withOpacity(0.6),
+  //                     ?.withValues(alpha: 0.6),
   //               ),
   //             ),
   //           ],
@@ -486,9 +491,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: items.map((item) {
         return Chip(
           label: Text(item),
-          backgroundColor: color.withOpacity(0.1),
+          backgroundColor: color.withValues(alpha: 0.1),
           side: BorderSide(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
           ),
           labelStyle: TextStyle(
             color: color,

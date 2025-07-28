@@ -163,14 +163,15 @@ class _QuizPageAltState extends State<QuizPageAlt>
                             boxShadow: isSelected
                                 ? [
                                     BoxShadow(
-                                      color: Colors.pink.withOpacity(0.5),
+                                      color: Colors.pink.withValues(alpha: 0.5),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
                                     )
                                   ]
                                 : [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.1),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     )
@@ -186,8 +187,9 @@ class _QuizPageAltState extends State<QuizPageAlt>
                               },
                               borderRadius:
                                   BorderRadius.circular(screenWidth * 0.03),
-                              splashColor: Colors.pink.withOpacity(0.2),
-                              highlightColor: Colors.pink.withOpacity(0.1),
+                              splashColor: Colors.pink.withValues(alpha: 0.2),
+                              highlightColor:
+                                  Colors.pink.withValues(alpha: 0.1),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                   vertical: screenHeight * 0.022,
@@ -277,7 +279,7 @@ class _QuizPageAltState extends State<QuizPageAlt>
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.green.withOpacity(0.4),
+                            color: Colors.green.withValues(alpha: 0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -320,7 +322,7 @@ class _QuizPageAltState extends State<QuizPageAlt>
                           },
                           borderRadius:
                               BorderRadius.circular(screenWidth * 0.05),
-                          splashColor: Colors.white.withOpacity(0.2),
+                          splashColor: Colors.white.withValues(alpha: 0.2),
                           child: Center(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,

@@ -23,12 +23,17 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       await authService.signUpWithEmailPassword(email, password);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Check email bro')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Check email bro')));
+      }
+
       // Navigator.of(context).pop();
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error : $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error : $e')));
+      }
     }
   }
 

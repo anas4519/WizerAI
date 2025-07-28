@@ -10,7 +10,7 @@ class InfoContainer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(screenWidth * 0.03),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
       ),
       child: Row(

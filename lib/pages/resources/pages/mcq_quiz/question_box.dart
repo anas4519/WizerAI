@@ -122,7 +122,7 @@ class _QuestionBoxState extends State<QuestionBox>
         borderRadius: BorderRadius.circular(screenWidth * 0.06),
         boxShadow: [
           BoxShadow(
-            color: Colors.pink.withOpacity(isDarkMode ? 0.3 : 0.4),
+            color: Colors.pink.withValues(alpha: isDarkMode ? 0.3 : 0.4),
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 6),
@@ -142,7 +142,7 @@ class _QuestionBoxState extends State<QuestionBox>
                 height: screenWidth * 0.3,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             ),
@@ -154,7 +154,7 @@ class _QuestionBoxState extends State<QuestionBox>
                 height: screenWidth * 0.25,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             ),
@@ -175,8 +175,8 @@ class _QuestionBoxState extends State<QuestionBox>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isDarkMode
-                              ? Colors.black.withOpacity(0.3)
-                              : Colors.white.withOpacity(0.3),
+                              ? Colors.black.withValues(alpha: 0.3)
+                              : Colors.white.withValues(alpha: 0.3),
                         ),
                       ),
 
@@ -190,7 +190,8 @@ class _QuestionBoxState extends State<QuestionBox>
                             child: CircularProgressIndicator(
                               value: _progressAnimation.value,
                               strokeWidth: 6,
-                              backgroundColor: Colors.white.withOpacity(0.2),
+                              backgroundColor:
+                                  Colors.white.withValues(alpha: 0.2),
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   _getTimerColor()),
                             ),
@@ -207,7 +208,7 @@ class _QuestionBoxState extends State<QuestionBox>
                           fontSize: 18,
                           shadows: [
                             Shadow(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Colors.black.withValues(alpha: 0.5),
                               blurRadius: 2,
                               offset: const Offset(1, 1),
                             ),
@@ -225,7 +226,7 @@ class _QuestionBoxState extends State<QuestionBox>
                       vertical: screenWidth * 0.02,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(screenWidth * 0.05),
                     ),
                     child: Text(
@@ -237,7 +238,7 @@ class _QuestionBoxState extends State<QuestionBox>
                         letterSpacing: 0.5,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             blurRadius: 2,
                             offset: const Offset(1, 1),
                           ),
@@ -252,11 +253,11 @@ class _QuestionBoxState extends State<QuestionBox>
                     padding: EdgeInsets.all(screenWidth * 0.04),
                     decoration: BoxDecoration(
                       color: isDarkMode
-                          ? Colors.black.withOpacity(0.2)
-                          : Colors.white.withOpacity(0.2),
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(screenWidth * 0.04),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -270,7 +271,7 @@ class _QuestionBoxState extends State<QuestionBox>
                         height: 1.4,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             blurRadius: 2,
                             offset: const Offset(1, 1),
                           ),

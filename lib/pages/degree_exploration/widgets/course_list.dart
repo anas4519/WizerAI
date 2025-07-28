@@ -40,15 +40,15 @@ class CourseList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isDarkMode
-                          ? Colors.grey[700]!.withOpacity(0.5)
+                          ? Colors.grey[700]!.withValues(alpha: 0.5)
                           : Colors.grey[200]!,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: isDarkMode
-                            ? Colors.black.withOpacity(0.1)
-                            : Colors.grey.withOpacity(0.05),
+                            ? Colors.black.withValues(alpha: 0.1)
+                            : Colors.grey.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -60,7 +60,7 @@ class CourseList extends StatelessWidget {
                         width: 8,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: Colors.pink.withOpacity(0.8),
+                          color: Colors.pink.withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -80,7 +80,7 @@ class CourseList extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.pink.withOpacity(0.1),
+                          color: Colors.pink.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(

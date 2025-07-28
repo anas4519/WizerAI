@@ -50,7 +50,7 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-  static LinearGradient accentGradient = LinearGradient(
+  static LinearGradient accentGradient = const LinearGradient(
     colors: [accentColorLight, accentColor, accentColorDark],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -65,6 +65,6 @@ class AppColors {
 
   // Helper method to get a primary color with specific opacity
   static Color getPrimaryWithOpacity(double opacity) {
-    return primaryColor.withOpacity(opacity);
+    return primaryColor.withValues(alpha: opacity);
   }
 }

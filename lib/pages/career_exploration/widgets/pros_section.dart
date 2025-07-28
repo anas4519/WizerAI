@@ -34,13 +34,13 @@ class ProsSection extends StatelessWidget {
       },
       child: Card(
         elevation: 4,
-        shadowColor: AppColors.successColor.withOpacity(0.3),
+        shadowColor: AppColors.successColor.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color: isDarkTheme
-                ? AppColors.successColor.withOpacity(0.3)
-                : AppColors.successColor.withOpacity(0.2),
+                ? AppColors.successColor.withValues(alpha: 0.3)
+                : AppColors.successColor.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -60,7 +60,7 @@ class ProsSection extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Advantages of Being a ${career}',
+                      'Advantages of Being a $career',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -81,9 +81,9 @@ class ProsSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.successColor.withOpacity(0.1),
+                      AppColors.successColor.withValues(alpha: 0.1),
                       AppColors.successColor,
-                      AppColors.successColor.withOpacity(0.1),
+                      AppColors.successColor.withValues(alpha: 0.1),
                     ],
                   ),
                 ),
@@ -93,11 +93,11 @@ class ProsSection extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: isDarkTheme
-                          ? AppColors.successColor.withOpacity(0.1)
-                          : AppColors.successColor.withOpacity(0.05),
+                          ? AppColors.successColor.withValues(alpha: 0.1)
+                          : AppColors.successColor.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: AppColors.successColor.withOpacity(0.2),
+                        color: AppColors.successColor.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),

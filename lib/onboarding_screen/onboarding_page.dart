@@ -1,8 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:career_counsellor/auth/auth_gate.dart';
 import 'package:career_counsellor/onboarding_screen/page_1.dart';
 import 'package:career_counsellor/onboarding_screen/page_2.dart';
 import 'package:career_counsellor/onboarding_screen/page_3.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     await prefs.setBool('isFirstLaunch', false);
   }
 
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
   bool onLastPage = false;
 
   @override
@@ -79,7 +80,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 completeOnboarding().then((_) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => AuthGate()),
+                    MaterialPageRoute(builder: (context) => const AuthGate()),
                   );
                 });
               } else {

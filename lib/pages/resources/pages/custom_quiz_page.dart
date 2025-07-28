@@ -29,7 +29,7 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
     try {
       final result = await model.generateContent(content);
       if (result.text != null) {
-        if (result.text!.toLowerCase().contains('yes')) {
+        if (result.text!.toLowerCase().contains('yes') && mounted) {
           isLoading = false;
           Navigator.push(
             context,
@@ -114,8 +114,7 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         borderSide: const BorderSide(
-                          color: Colors
-                              .red,
+                          color: Colors.red,
                           width: 2.0,
                         ),
                       ),
@@ -145,8 +144,7 @@ class _CustomQuizPageState extends State<CustomQuizPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        screenWidth * 0.02),
+                    borderRadius: BorderRadius.circular(screenWidth * 0.02),
                   ),
                 ),
                 child: Padding(

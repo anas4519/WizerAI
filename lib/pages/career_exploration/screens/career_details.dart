@@ -10,6 +10,7 @@ import 'package:career_counsellor/pages/career_exploration/widgets/pros_section.
 import 'package:career_counsellor/pages/career_exploration/widgets/youtube_section.dart';
 import 'package:career_counsellor/widgets/info_container.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:http/http.dart' as http;
@@ -97,11 +98,15 @@ class _CareerDetailsState extends State<CareerDetails> {
           });
         }
       } else {
-        print(
-            'Error for query "$query": ${response.statusCode} - ${response.body}');
+        if (kDebugMode) {
+          print(
+              'Error for query "$query": ${response.statusCode} - ${response.body}');
+        }
       }
     } catch (e) {
-      print('Exception fetching image: $e');
+      if (kDebugMode) {
+        print('Exception fetching image: $e');
+      }
     }
   }
 
@@ -146,7 +151,9 @@ class _CareerDetailsState extends State<CareerDetails> {
             'Failed to fetch YouTube videos: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching YouTube videos: ${e.toString()}');
+      if (kDebugMode) {
+        print('Error fetching YouTube videos: ${e.toString()}');
+      }
     }
   }
 
@@ -270,7 +277,9 @@ Ensure the JSON is valid with properly escaped characters.
       // Parse the response
       _parseCareerDetails(response);
     } catch (e) {
-      print('Error generating content: ${e.toString()}');
+      if (kDebugMode) {
+        print('Error generating content: ${e.toString()}');
+      }
       setState(() {
         errorMessage = 'Error generating career information: ${e.toString()}';
       });
@@ -292,8 +301,12 @@ Ensure the JSON is valid with properly escaped characters.
         });
       });
     } catch (jsonError) {
-      print("JSON parsing error: $jsonError");
-      print("Attempted to parse: $jsonString");
+      if (kDebugMode) {
+        print("JSON parsing error: $jsonError");
+      }
+      if (kDebugMode) {
+        print("Attempted to parse: $jsonString");
+      }
 
       // Fallback parsing for malformed JSON
       _parseMalformedResponse(jsonString);
@@ -535,7 +548,7 @@ Ensure the JSON is valid with properly escaped characters.
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
+                                    color: Colors.black.withValues(alpha: 0.2),
                                     blurRadius: 10,
                                     offset: const Offset(0, 5),
                                   ),

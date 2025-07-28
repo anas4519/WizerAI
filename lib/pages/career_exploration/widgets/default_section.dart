@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 class DefaultSection extends StatelessWidget {
   const DefaultSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.career,
-  }) : super(key: key);
+  });
 
   final String title;
   final List<String> content;
@@ -75,7 +75,7 @@ class DefaultSection extends StatelessWidget {
       },
       child: Card(
         elevation: 4,
-        shadowColor: sectionColor.withOpacity(0.3),
+        shadowColor: sectionColor.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
@@ -125,7 +125,7 @@ class DefaultSection extends StatelessWidget {
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: sectionColor.withOpacity(0.7),
+                            color: sectionColor.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                           ),
                         ),

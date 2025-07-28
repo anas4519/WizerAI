@@ -13,29 +13,33 @@ class ScoreCircle extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Theme.of(context).brightness == Brightness.light
-        ? Colors.black.withOpacity(0.7) // Outer circle color for light mode
-        : Colors.white.withOpacity(0.7), // Outer circle color for dark mode
+            ? Colors.black
+                .withValues(alpha: 0.7) // Outer circle color for light mode
+            : Colors.white
+                .withValues(alpha: 0.7), // Outer circle color for dark mode
       ),
       child: Center(
         child: Container(
           width: screenWidth * 0.45,
           height: screenWidth * 0.45,
           decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Theme.of(context).brightness == Brightness.light
-            ? Colors.black.withOpacity(0.5) // Middle circle color for light mode
-            : Colors.white.withOpacity(0.5), // Middle circle color for dark mode
-          ),
-          child: Center(
-        child: Container(
-          width: screenWidth * 0.35,
-          height: screenWidth * 0.35,
-          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Theme.of(context).brightness == Brightness.light
-            ? Colors.black // Inner circle color for light mode
-            : Colors.white, // Inner circle color for dark mode
+                ? Colors.black.withValues(
+                    alpha: 0.5) // Middle circle color for light mode
+                : Colors.white.withValues(
+                    alpha: 0.5), // Middle circle color for dark mode
           ),
+          child: Center(
+            child: Container(
+              width: screenWidth * 0.35,
+              height: screenWidth * 0.35,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black // Inner circle color for light mode
+                    : Colors.white, // Inner circle color for dark mode
+              ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

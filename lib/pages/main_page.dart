@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
           color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.15),
+              color: theme.shadowColor.withValues(alpha: 0.15),
               blurRadius: 15,
               offset: const Offset(0, -3),
             ),
@@ -59,9 +59,9 @@ class _MainPageState extends State<MainPage> {
                 });
               },
               backgroundColor: Colors.transparent,
-              color: theme.colorScheme.onSurface.withOpacity(0.65),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
               activeColor: isDarkTheme ? Colors.white : theme.primaryColor,
-              tabBackgroundColor: theme.primaryColor.withOpacity(0.15),
+              tabBackgroundColor: theme.primaryColor.withValues(alpha: 0.15),
               tabBorderRadius: 24,
               curve: Curves.easeOutExpo,
               duration: const Duration(milliseconds: 300),
@@ -103,8 +103,8 @@ class _MainPageState extends State<MainPage> {
                 ),
               ],
               selectedIndex: _currIndex,
-              rippleColor: theme.primaryColor.withOpacity(0.2),
-              hoverColor: theme.primaryColor.withOpacity(0.1),
+              rippleColor: theme.primaryColor.withValues(alpha: 0.2),
+              hoverColor: theme.primaryColor.withValues(alpha: 0.1),
             ),
           ),
         ),

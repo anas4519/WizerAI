@@ -130,7 +130,7 @@ class _CareerExplorationState extends State<CareerExploration> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -159,7 +159,7 @@ class _CareerExplorationState extends State<CareerExploration> {
               },
               child: CircleAvatar(
                 backgroundColor:
-                    Theme.of(context).primaryColor.withOpacity(0.1),
+                    Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 child: Icon(
                   Icons.person,
                   color: Theme.of(context).primaryColor,
@@ -175,7 +175,7 @@ class _CareerExplorationState extends State<CareerExploration> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
+              Theme.of(context).primaryColor.withValues(alpha: 0.1),
               Theme.of(context).scaffoldBackgroundColor,
               Theme.of(context).scaffoldBackgroundColor,
             ],
@@ -213,7 +213,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -277,7 +277,9 @@ class _CareerExplorationState extends State<CareerExploration> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -313,7 +315,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -338,7 +340,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                                   end: Alignment.bottomCenter,
                                   colors: [
                                     Colors.transparent,
-                                    Colors.black.withOpacity(0.7),
+                                    Colors.black.withValues(alpha: 0.7),
                                   ],
                                   stops: const [0.6, 1.0],
                                 ),
@@ -388,7 +390,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Colors.black.withValues(alpha: 0.6),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: const Row(
@@ -429,7 +431,9 @@ class _CareerExplorationState extends State<CareerExploration> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        color: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -461,7 +465,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 2),
                       ),
@@ -490,7 +494,7 @@ class _CareerExplorationState extends State<CareerExploration> {
                               height: 42,
                               decoration: BoxDecoration(
                                 color: careerDetails[index]['color']
-                                    .withOpacity(0.2),
+                                    .withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(

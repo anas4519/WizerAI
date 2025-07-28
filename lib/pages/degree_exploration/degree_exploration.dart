@@ -34,8 +34,8 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.primaryColor.withOpacity(0.08),
-              theme.scaffoldBackgroundColor.withOpacity(0.95),
+              theme.primaryColor.withValues(alpha: 0.08),
+              theme.scaffoldBackgroundColor.withValues(alpha: 0.95),
               theme.scaffoldBackgroundColor,
             ],
           ),
@@ -87,19 +87,19 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: isSearchFocused
-                            ? Colors.pink.withOpacity(0.8)
+                            ? Colors.pink.withValues(alpha: 0.8)
                             : (isDarkMode
-                                ? Colors.grey[700]!.withOpacity(0.5)
+                                ? Colors.grey[700]!.withValues(alpha: 0.5)
                                 : Colors.grey[200]!),
                         width: isSearchFocused ? 2.5 : 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
                           color: isSearchFocused
-                              ? Colors.pink.withOpacity(0.15)
+                              ? Colors.pink.withValues(alpha: 0.15)
                               : (isDarkMode
-                                  ? Colors.black.withOpacity(0.2)
-                                  : Colors.grey.withOpacity(0.08)),
+                                  ? Colors.black.withValues(alpha: 0.2)
+                                  : Colors.grey.withValues(alpha: 0.08)),
                           blurRadius: isSearchFocused ? 20 : 8,
                           offset: const Offset(0, 6),
                           spreadRadius: isSearchFocused ? 2 : 0,

@@ -20,6 +20,7 @@ class ConsSection extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final themeData = Theme.of(context);
     final isDarkTheme = themeData.brightness == Brightness.dark;
+    const errorColor = AppColors.errorColor;
 
     return GestureDetector(
       onTap: () {
@@ -34,13 +35,13 @@ class ConsSection extends StatelessWidget {
       },
       child: Card(
         elevation: 4,
-        shadowColor: AppColors.errorColor.withOpacity(0.3),
+        shadowColor: errorColor.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color: isDarkTheme
-                ? AppColors.errorColor.withOpacity(0.3)
-                : AppColors.errorColor.withOpacity(0.2),
+                ? errorColor.withValues(alpha: 0.3)
+                : errorColor.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -54,17 +55,17 @@ class ConsSection extends StatelessWidget {
                 children: [
                   const Icon(
                     Icons.warning_amber_outlined,
-                    color: AppColors.errorColor,
+                    color: errorColor,
                     size: 24,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Challenges of Being a ${career}',
+                      'Challenges of Being a $career',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.errorColor,
+                        color: errorColor,
                       ),
                     ),
                   ),
@@ -81,9 +82,9 @@ class ConsSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.errorColor.withOpacity(0.1),
-                      AppColors.errorColor,
-                      AppColors.errorColor.withOpacity(0.1),
+                      errorColor.withValues(alpha: 0.1),
+                      errorColor,
+                      errorColor.withValues(alpha: 0.1),
                     ],
                   ),
                 ),
@@ -93,11 +94,11 @@ class ConsSection extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: isDarkTheme
-                          ? AppColors.errorColor.withOpacity(0.1)
-                          : AppColors.errorColor.withOpacity(0.05),
+                          ? errorColor.withValues(alpha: 0.1)
+                          : errorColor.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: AppColors.errorColor.withOpacity(0.2),
+                        color: errorColor.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -108,7 +109,7 @@ class ConsSection extends StatelessWidget {
                           margin: const EdgeInsets.only(top: 2),
                           child: const Icon(
                             CupertinoIcons.exclamationmark_triangle_fill,
-                            color: AppColors.errorColor,
+                            color: errorColor,
                             size: 20,
                           ),
                         ),
@@ -144,11 +145,11 @@ class ConsSection extends StatelessWidget {
                   icon: const Icon(
                     Icons.read_more,
                     size: 18,
-                    color: AppColors.errorColor,
+                    color: errorColor,
                   ),
                   label: const Text('See all challenges'),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.errorColor,
+                    foregroundColor: errorColor,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,

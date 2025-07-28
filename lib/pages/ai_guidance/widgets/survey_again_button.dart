@@ -22,7 +22,7 @@ class SurveyAgainButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             elevation: 5,
-            shadowColor: theme.primaryColor.withOpacity(0.3),
+            shadowColor: theme.primaryColor.withValues(alpha: 0.3),
           ),
           child: Ink(
             decoration: BoxDecoration(
@@ -40,24 +40,24 @@ class SurveyAgainButton extends StatelessWidget {
             child: Container(
               constraints: const BoxConstraints(minWidth: 230, minHeight: 55),
               alignment: Alignment.center,
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.refresh_rounded,
                     color: Colors.white,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Text(
                     'Take the survey again',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                 ],
               ),
             ),

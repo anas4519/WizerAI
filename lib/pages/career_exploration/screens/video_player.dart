@@ -11,7 +11,7 @@ class VideoApp extends StatefulWidget {
   final YouTubeVideo video;
 
   @override
-  _VideoAppState createState() => _VideoAppState();
+  State<VideoApp> createState() => _VideoAppState();
 }
 
 class _VideoAppState extends State<VideoApp> {
@@ -45,11 +45,17 @@ class _VideoAppState extends State<VideoApp> {
       builder: (context, player) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(widget.video.title, style: const TextStyle(fontSize: 12),),
+            title: Text(
+              widget.video.title,
+              style: const TextStyle(fontSize: 12),
+            ),
             actions: [
-              IconButton(onPressed: (){
-                Share.share(widget.video.url, subject: 'Check out this video!');
-              }, icon: const Icon(Icons.share))
+              IconButton(
+                  onPressed: () {
+                    Share.share(widget.video.url,
+                        subject: 'Check out this video!');
+                  },
+                  icon: const Icon(Icons.share))
             ],
           ),
           body: Column(

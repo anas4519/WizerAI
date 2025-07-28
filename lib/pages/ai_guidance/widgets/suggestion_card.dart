@@ -27,7 +27,7 @@ class CareerSuggestionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -55,16 +55,17 @@ class CareerSuggestionCard extends StatelessWidget {
                         imageUrl: image,
                         boxFit: BoxFit.cover,
                         errorWidget: Container(
-                          color: theme.primaryColor.withOpacity(0.1),
+                          color: theme.primaryColor.withValues(alpha: 0.1),
                           child: Icon(
                             Icons.image_not_supported_rounded,
                             color: theme.primaryColor,
                             size: 40,
                           ),
                         ),
-                        shimmerBaseColor: theme.primaryColor.withOpacity(0.1),
+                        shimmerBaseColor:
+                            theme.primaryColor.withValues(alpha: 0.1),
                         shimmerHighlightColor:
-                            theme.primaryColor.withOpacity(0.2),
+                            theme.primaryColor.withValues(alpha: 0.2),
                       ),
                     ),
                     Positioned.fill(
@@ -75,7 +76,7 @@ class CareerSuggestionCard extends StatelessWidget {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withOpacity(0.7),
+                              Colors.black.withValues(alpha: 0.7),
                             ],
                             stops: const [0.5, 1.0],
                           ),
@@ -115,7 +116,7 @@ class CareerSuggestionCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: theme.primaryColor.withOpacity(0.1),
+                          color: theme.primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text(

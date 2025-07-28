@@ -40,7 +40,7 @@ class _EmptyStateState extends State<EmptyState> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: theme.primaryColor.withOpacity(0.1),
+                    color: theme.primaryColor.withValues(alpha: 0.1),
                   ),
                   child: Image.asset(
                     'assets/graphics/student-graphic.png',
@@ -79,7 +79,7 @@ class _EmptyStateState extends State<EmptyState> {
                     color: theme.cardColor,
                     boxShadow: [
                       BoxShadow(
-                        color: theme.shadowColor.withOpacity(0.1),
+                        color: theme.shadowColor.withValues(alpha: 0.1),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -99,7 +99,8 @@ class _EmptyStateState extends State<EmptyState> {
                         'Our AI-powered survey will analyze your skills, interests, and educational background to recommend personalized career options.',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.7),
                         ),
                       ),
                       const SizedBox(height: 24),

@@ -26,7 +26,7 @@ class ToggleButton extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.pink.withOpacity(0.3),
+                    color: Colors.pink.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
