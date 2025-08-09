@@ -3,16 +3,16 @@ import 'package:career_counsellor/pages/degree_exploration/widgets/course_list.d
 import 'package:career_counsellor/pages/degree_exploration/widgets/toggle_button.dart';
 import 'package:flutter/material.dart';
 
-class DegreeDetails extends StatefulWidget {
-  const DegreeDetails({super.key, required this.title, required this.idx});
+class DegreesList extends StatefulWidget {
+  const DegreesList({super.key, required this.title, required this.idx});
   final String title;
   final int idx;
 
   @override
-  State<DegreeDetails> createState() => _DegreeDetailsState();
+  State<DegreesList> createState() => _DegreesListState();
 }
 
-class _DegreeDetailsState extends State<DegreeDetails> {
+class _DegreesListState extends State<DegreesList> {
   bool isBachelorsSelected = true;
   bool isMastersSelected = false;
 

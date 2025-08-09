@@ -1,3 +1,4 @@
+import 'package:career_counsellor/pages/degree_exploration/course_detail.dart';
 import 'package:career_counsellor/pages/degree_exploration/utils/lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +31,10 @@ class CourseList extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
-                  // Handle course selection with haptic feedback
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => CourseDetail(title: courseName)));
                   HapticFeedback.selectionClick();
                 },
                 child: Container(

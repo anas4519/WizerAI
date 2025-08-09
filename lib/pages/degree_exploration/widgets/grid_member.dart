@@ -1,4 +1,4 @@
-import 'package:career_counsellor/pages/degree_exploration/degree_details.dart';
+import 'package:career_counsellor/pages/degree_exploration/degrees_list.dart';
 import 'package:flutter/material.dart';
 
 class GridMember extends StatelessWidget {
@@ -22,7 +22,7 @@ class GridMember extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-              builder: (context) => DegreeDetails(
+              builder: (context) => DegreesList(
                     title: category["name"],
                     idx: idx,
                   )),
