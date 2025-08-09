@@ -9,11 +9,13 @@ class ProsSection extends StatelessWidget {
     required this.title,
     required this.content,
     required this.career,
+    required this.type,
   });
 
   final String title;
   final List<String> content;
   final String career;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class ProsSection extends StatelessWidget {
             builder: (ctx) => ElaborateDetail(
               title: title,
               career: career,
+              type: type,
             ),
           ),
         );
@@ -137,6 +140,7 @@ class ProsSection extends StatelessWidget {
                         builder: (ctx) => ElaborateDetail(
                           title: title,
                           career: career,
+                          type: type,
                         ),
                       ),
                     );

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class CompatibilityCheckCard extends StatelessWidget {
-  const CompatibilityCheckCard({super.key, required this.title});
+  const CompatibilityCheckCard(
+      {super.key, required this.title, required this.type});
   final String title;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,10 @@ class CompatibilityCheckCard extends StatelessWidget {
           } else {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => CompatibilityCheck(career: title),
+                builder: (ctx) => CompatibilityCheck(
+                  career: title,
+                  type: type,
+                ),
               ),
             );
           }

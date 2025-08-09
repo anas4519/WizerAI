@@ -81,7 +81,7 @@ class NetworkRepository {
     return now.difference(storedDate).inDays >= 10;
   }
 
-  Future<Map<String, List<String>>> generateContent(String title,
+  Future<Map<String, List<String>>> generateCareerContent(String title,
       {bool forceRefresh = false}) async {
     final cacheKey = 'career_${title.toLowerCase().replaceAll(' ', '_')}';
 
@@ -90,12 +90,12 @@ class NetworkRepository {
       final timestamp = cachedData[1] as DateTime;
 
       if (!_isDataExpired(timestamp)) {
-        return _parseCareerDetails(cachedData[0] as String);
+        return _parseDetails(cachedData[0] as String);
       }
     }
 
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       apiKey: GEMINI_API_KEY,
     );
 
@@ -184,10 +184,10 @@ Ensure the JSON is valid with properly escaped characters.
     response = response.trim();
 
     _aiCache.put(cacheKey, [response, DateTime.now()]);
-    return _parseCareerDetails(response);
+    return _parseDetails(response);
   }
 
-  Map<String, List<String>> _parseCareerDetails(String jsonString) {
+  Map<String, List<String>> _parseDetails(String jsonString) {
     try {
       final Map<String, dynamic> jsonData = json.decode(jsonString);
       return jsonData.map((key, value) {
@@ -259,5 +259,132 @@ Ensure the JSON is valid with properly escaped characters.
     }
 
     return parsedSections;
+  }
+
+  Future<Map<String, List<String>>> generateDegreeContent(String title,
+      {bool forceRefresh = false}) async {
+    final cacheKey = 'career_${title.toLowerCase().replaceAll(' ', '_')}';
+
+    if (!forceRefresh && _aiCache.containsKey(cacheKey)) {
+      final cachedData = _aiCache.get(cacheKey);
+      final timestamp = cachedData[1] as DateTime;
+
+      if (!_isDataExpired(timestamp)) {
+        return _parseDetails(cachedData[0] as String);
+      }
+    }
+
+    final model = google_ai.GenerativeModel(
+      model: 'gemini-2.5-flash',
+      apiKey: GEMINI_API_KEY,
+    );
+
+    String prompt = '''
+You are a professional career counselor specializing in Indian education and higher studies. 
+Generate comprehensive, accurate, and up-to-date information about the '$title' degree program in India.
+
+Focus on providing factual, well-researched information with practical insights relevant to students, parents, and academic advisors in India.
+
+Return ONLY a valid JSON object with the following structure:
+{
+  "Overview": [
+    "Detailed description of what the $title degree is about",
+    "Core focus areas and learning objectives",
+    "Relevance and importance of this degree in India",
+    "Typical academic approach and teaching methods"
+  ],
+  "Eligibility & Admission in India": [
+    "Minimum educational qualifications for admission",
+    "Entrance exams commonly required for this degree",
+    "Typical cut-off percentages or ranks",
+    "Reservation policies and category-specific relaxations",
+    "Alternative entry routes (lateral entry, distance learning, etc.)"
+  ],
+  "Course Structure & Duration": [
+    "Total duration of the program in years/semesters",
+    "Major subjects and core courses covered",
+    "Elective or specialization options available",
+    "Practical training, labs, or internships included",
+    "Industry projects or capstone requirements"
+  ],
+  "Best Colleges in India": [
+    "Top institutions offering this degree",
+    "Notable programs with high placement records",
+    "Institutions with strong industry tie-ups",
+    "Colleges offering scholarships or financial aid",
+    "Best faculty and infrastructure for this program"
+  ],
+  "Skills Developed": [
+    "Technical or subject-specific skills gained",
+    "Soft skills and transferable skills acquired",
+    "Research and analytical abilities",
+    "Creative or problem-solving skills relevant to the field",
+    "Skills that improve employability in India"
+  ],
+  "Career Opportunities in India": [
+    "Common job roles after completing the degree",
+    "Industries and sectors hiring graduates",
+    "Opportunities for self-employment or entrepreneurship",
+    "Government sector roles available",
+    "Career progression paths"
+  ],
+  "Higher Studies & Certifications": [
+    "Relevant master's or doctoral programs",
+    "Professional certifications that complement the degree",
+    "International study opportunities",
+    "Specialized diplomas or short courses after graduation",
+    "Pathways for academic research"
+  ],
+  "Salary Expectations in India": [
+    "Entry-level salary ranges in rupees",
+    "Mid-career salary potential",
+    "Salary variations by specialization",
+    "Impact of institution reputation on salaries",
+    "Comparison with related degrees"
+  ],
+  "Pros": [
+    "Key advantages of pursuing this degree",
+    "Career growth potential",
+    "Opportunities for skill development",
+    "Relevance in the current job market",
+    "Long-term benefits"
+  ],
+  "Cons": [
+    "Common challenges faced by students",
+    "Academic or workload pressures",
+    "Cost considerations",
+    "Market saturation in certain specializations",
+    "Barriers to entry in top institutions"
+  ],
+  "Industry & Academic Trends": [
+    "Emerging specializations in this field",
+    "Technological changes impacting the curriculum",
+    "Shifts in demand for this degree in India",
+    "Changes in teaching methodologies",
+    "Global trends influencing Indian education in this field"
+  ]
+}
+
+Each point should be a complete, informative sentence with specific details about the '$title' degree in India.
+Do not include any explanations, notes, or text outside the JSON structure.
+Ensure the JSON is valid with properly escaped characters.
+''';
+
+    final content = [google_ai.Content.text(prompt)];
+    var modelResult = await model.generateContent(content);
+    String response = modelResult.text?.trim() ?? '';
+
+    if (response.contains("```json")) {
+      response = response.substring(response.indexOf("```json") + 7);
+    } else if (response.startsWith("```")) {
+      response = response.substring(3);
+    }
+    if (response.contains("```")) {
+      response = response.substring(0, response.lastIndexOf("```"));
+    }
+    response = response.trim();
+
+    _aiCache.put(cacheKey, [response, DateTime.now()]);
+    return _parseDetails(response);
   }
 }

@@ -8,25 +8,33 @@ class DefaultSection extends StatelessWidget {
     required this.title,
     required this.content,
     required this.career,
+    required this.type,
   });
 
   final String title;
   final List<String> content;
   final String career;
+  final String type;
 
   Color _getSectionColor() {
     switch (title) {
       case 'Overview':
         return Colors.pink;
-      case 'Education Required in India':
+      case 'Education Required in India' ||
+            'Eligibility & Admission in India' ||
+            'Higher Studies & Certifications':
         return AppColors.educationColor;
-      case 'Best Schools in India':
+      case 'Best Schools in India' ||
+            'Course Structure & Duration' ||
+            'Salary Expectations in India':
         return Colors.blue;
-      case 'Work Environment':
+      case 'Work Environment' ||
+            'Best Colleges in India' ||
+            'Industry & Academic Trends':
         return Colors.orange;
-      case 'Salaries in India':
+      case 'Salaries in India' || 'Skills Developed':
         return AppColors.salaryColor;
-      case 'Industry Trends':
+      case 'Industry Trends' || 'Career Opportunities in India':
         return AppColors.trendColor;
       default:
         return AppColors.primaryColor;
@@ -69,6 +77,7 @@ class DefaultSection extends StatelessWidget {
             builder: (ctx) => ElaborateDetail(
               title: title,
               career: career,
+              type: type,
             ),
           ),
         );
@@ -155,6 +164,7 @@ class DefaultSection extends StatelessWidget {
                         builder: (ctx) => ElaborateDetail(
                           title: title,
                           career: career,
+                          type: type,
                         ),
                       ),
                     );

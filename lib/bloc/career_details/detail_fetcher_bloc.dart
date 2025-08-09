@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:career_counsellor/bloc/bloc/detail_fetcher_state.dart';
+import 'package:career_counsellor/bloc/career_details/detail_fetcher_state.dart';
 import 'package:career_counsellor/models/youtube.dart';
 import 'package:career_counsellor/repository/network_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -28,7 +28,8 @@ class DetailFetcherBloc extends Bloc<DetailFetcherEvent, DetailFetcherState> {
           return '';
         }),
         repository
-            .generateContent(event.title, forceRefresh: event.forceRefresh)
+            .generateCareerContent(event.title,
+                forceRefresh: event.forceRefresh)
             .catchError((e) {
           if (kDebugMode) {
             print('Error generating content: $e');
@@ -67,7 +68,7 @@ class DetailFetcherBloc extends Bloc<DetailFetcherEvent, DetailFetcherState> {
           return '';
         }),
         repository
-            .generateContent(event.title, forceRefresh: true)
+            .generateCareerContent(event.title, forceRefresh: true)
             .catchError((e) {
           if (kDebugMode) {
             print('Error generating content: $e');

@@ -40,8 +40,8 @@ class CareerSuggestionCard extends StatelessWidget {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>
-                      ElaborateDetail(title: 'Overview', career: title)));
+                  builder: (ctx) => ElaborateDetail(
+                      title: 'Overview', career: title, type: 'career')));
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

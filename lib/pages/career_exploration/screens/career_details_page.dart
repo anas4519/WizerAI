@@ -1,5 +1,5 @@
-import 'package:career_counsellor/bloc/bloc/detail_fetcher_bloc.dart';
-import 'package:career_counsellor/bloc/bloc/detail_fetcher_state.dart';
+import 'package:career_counsellor/bloc/career_details/detail_fetcher_bloc.dart';
+import 'package:career_counsellor/bloc/career_details/detail_fetcher_state.dart';
 import 'package:career_counsellor/models/youtube.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/animated_fade_in.dart';
 import 'package:career_counsellor/pages/career_exploration/widgets/career_pathway_card.dart';
@@ -57,12 +57,19 @@ class _CareerDetailsPageState extends State<CareerDetailsPage> {
     }
 
     if (title == 'Pros') {
-      return ProsSection(title: title, content: content, career: widget.title);
+      return ProsSection(
+        title: title,
+        content: content,
+        career: widget.title,
+        type: 'career',
+      );
     }
     if (title == 'Cons') {
-      return ConsSection(title: title, content: content, career: widget.title);
+      return ConsSection(
+          title: title, content: content, career: widget.title, type: 'career');
     }
-    return DefaultSection(title: title, content: content, career: widget.title);
+    return DefaultSection(
+        title: title, content: content, career: widget.title, type: 'career');
   }
 
   @override
@@ -260,7 +267,10 @@ class _CareerDetailsPageState extends State<CareerDetailsPage> {
 
                       AnimatedFadeIn(
                         delay: const Duration(milliseconds: 700),
-                        child: CompatibilityCheckCard(title: widget.title),
+                        child: CompatibilityCheckCard(
+                          title: widget.title,
+                          type: 'career',
+                        ),
                       ),
 
                       AnimatedFadeIn(

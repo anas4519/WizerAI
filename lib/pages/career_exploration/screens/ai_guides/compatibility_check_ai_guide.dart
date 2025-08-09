@@ -6,9 +6,13 @@ import 'package:google_generative_ai/google_generative_ai.dart' as genai;
 
 class CompatibilityCheckAiGuide extends StatefulWidget {
   const CompatibilityCheckAiGuide(
-      {super.key, required this.prevContext, required this.title});
+      {super.key,
+      required this.prevContext,
+      required this.title,
+      required this.type});
   final String prevContext;
   final String title;
+  final String type;
 
   @override
   State<CompatibilityCheckAiGuide> createState() =>
@@ -61,7 +65,7 @@ class _CompatibilityCheckAiGuideState extends State<CompatibilityCheckAiGuide> {
       );
 
       var initialContext =
-          '''You are a career advisor bot whose name is 'WizeBot' and you are here to clear the user's doubts and queries about their compatibility with ${widget.title} as a career. Here is your previous conversation: ${widget.prevContext}''';
+          '''You are a career advisor bot whose name is 'WizeBot' and you are here to clear the user's doubts and queries about their compatibility with ${widget.title} as a ${widget.type}. Here is your previous conversation: ${widget.prevContext}''';
 
       chat = model.startChat(history: [
         genai.Content.text(initialContext),

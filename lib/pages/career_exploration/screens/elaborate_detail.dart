@@ -12,10 +12,12 @@ class ElaborateDetail extends StatefulWidget {
     super.key,
     required this.title,
     required this.career,
+    required this.type,
   });
 
   final String title;
   final String career;
+  final String type;
 
   @override
   State<ElaborateDetail> createState() => _ElaborateDetailState();
@@ -37,12 +39,12 @@ class _ElaborateDetailState extends State<ElaborateDetail> {
       isLoading = true;
     });
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       apiKey: GEMINI_API_KEY,
     );
 
     final prompt =
-        'Elaborate on the ${widget.title} of ${widget.career} as a career.';
+        'Elaborate on the ${widget.title} of ${widget.career} as a ${widget.type}.';
 
     final content = [google_ai.Content.text(prompt)];
     try {

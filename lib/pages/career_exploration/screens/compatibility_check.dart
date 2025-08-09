@@ -10,8 +10,10 @@ import 'package:lottie/lottie.dart';
 import 'package:google_generative_ai/google_generative_ai.dart' as google_ai;
 
 class CompatibilityCheck extends StatefulWidget {
-  const CompatibilityCheck({super.key, required this.career});
+  const CompatibilityCheck(
+      {super.key, required this.career, required this.type});
   final String career;
+  final String type;
 
   @override
   State<CompatibilityCheck> createState() => _CompatibilityCheckState();
@@ -31,12 +33,12 @@ class _CompatibilityCheckState extends State<CompatibilityCheck> {
 
   Future<void> checkCompatibility() async {
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       apiKey: GEMINI_API_KEY,
     );
 
     final prompt = '''
-    You are a career advisor bot. Given below are the details of a student. Check the compatibility of the student with the career ${widget.career} and suggest the student if the career is suitable for them. Respond in first person.
+    You are a career advisor bot. Given below are the details of a student. Check the compatibility of the student with the ${widget.type} ${widget.career} and suggest the student if the ${widget.type} is suitable for them. Respond in first person.
     Qualifications: ${userBox.get('qualifications') ?? ' '}
     Interests: ${userBox.get('interests') ?? ' '}
     Hobbies: ${userBox.get('hobbies') ?? ' '}
@@ -88,6 +90,7 @@ class _CompatibilityCheckState extends State<CompatibilityCheck> {
                   builder: (context) => CompatibilityCheckAiGuide(
                         title: widget.career,
                         prevContext: body,
+                        type: widget.type,
                       )));
             },
             child: const Icon(CupertinoIcons.chat_bubble_2_fill)),
