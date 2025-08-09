@@ -52,7 +52,7 @@ class _CareerDetailAiGuideState extends State<CareerDetailAiGuide> {
     });
     try {
       model = genai.GenerativeModel(
-        model: 'gemini-2.0-flash',
+        model: GEMINI_MODEL,
         apiKey: GEMINI_API_KEY,
       );
 

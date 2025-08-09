@@ -33,7 +33,7 @@ class _CompatibilityCheckState extends State<CompatibilityCheck> {
 
   Future<void> checkCompatibility() async {
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.5-flash',
+      model: GEMINI_MODEL,
       apiKey: GEMINI_API_KEY,
     );
 

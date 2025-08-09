@@ -95,7 +95,7 @@ class NetworkRepository {
     }
 
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.5-flash',
+      model: GEMINI_MODEL,
       apiKey: GEMINI_API_KEY,
     );
 
@@ -275,7 +275,7 @@ Ensure the JSON is valid with properly escaped characters.
     }
 
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.5-flash',
+      model: GEMINI_MODEL,
       apiKey: GEMINI_API_KEY,
     );
 

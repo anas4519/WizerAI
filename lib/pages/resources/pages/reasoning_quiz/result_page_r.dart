@@ -30,7 +30,7 @@ class _ResultPageRState extends State<ResultPageR> {
 
   Future<void> _analyseAnswers() async {
     final model = google_ai.GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: GEMINI_MODEL,
       apiKey: GEMINI_API_KEY,
     );
     final prompt =

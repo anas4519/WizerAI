@@ -150,7 +150,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       isLoading = true;
     });
     final model = google_ai.GenerativeModel(
-      model: 'gemini-2.0-flash',
+      model: GEMINI_MODEL,
       apiKey: GEMINI_API_KEY,
     );
 
