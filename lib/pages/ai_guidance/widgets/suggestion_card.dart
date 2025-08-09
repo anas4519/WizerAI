@@ -1,4 +1,4 @@
-import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/career_details_page.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/elaborate_detail.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +131,8 @@ class CareerSuggestionCard extends StatelessWidget {
                       TextButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (ctx) => CareerDetails(title: title)));
+                              builder: (ctx) =>
+                                  CareerDetailsPage(title: title)));
                         },
                         icon: const Icon(Icons.search, size: 18),
                         label: const Text('Explore Details'),

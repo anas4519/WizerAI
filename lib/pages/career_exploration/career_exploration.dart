@@ -1,5 +1,5 @@
 import 'package:career_counsellor/pages/ai_guidance/screens/select_education.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/career_details_page.dart';
 import 'package:career_counsellor/pages/career_exploration/screens/search_screen.dart';
 import 'package:career_counsellor/pages/profile/profile_screen.dart';
 import 'package:career_counsellor/utils/utils.dart';
@@ -100,7 +100,7 @@ class _CareerExplorationState extends State<CareerExploration> {
   void _handleImageTap(int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) =>
-            CareerDetails(title: careerDetails[index]['title']!)));
+            CareerDetailsPage(title: careerDetails[index]['title']!)));
   }
 
   final userBox = Hive.box('user_box');
@@ -477,8 +477,8 @@ class _CareerExplorationState extends State<CareerExploration> {
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) =>
-                              CareerDetails(title: daimonSuggestions[index]),
+                          builder: (ctx) => CareerDetailsPage(
+                              title: daimonSuggestions[index]),
                         ));
                       },
                       child: Padding(

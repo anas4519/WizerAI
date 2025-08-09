@@ -1,5 +1,5 @@
 import 'package:career_counsellor/constants/constants.dart';
-import 'package:career_counsellor/pages/career_exploration/screens/career_details.dart';
+import 'package:career_counsellor/pages/career_exploration/screens/career_details_page.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -220,7 +220,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (ctx) => CareerDetails(
+                                    builder: (ctx) => CareerDetailsPage(
                                         title: _searchController.text),
                                   ));
                                 },
@@ -284,7 +284,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 ),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (ctx) => CareerDetails(
+                                    builder: (ctx) => CareerDetailsPage(
                                         title: displayList[index]),
                                   ));
                                 },

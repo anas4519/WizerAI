@@ -4,8 +4,9 @@ import 'package:career_counsellor/pages/career_exploration/screens/video_player.
 import 'package:flutter/material.dart';
 
 class YoutubeSection extends StatelessWidget {
-  const YoutubeSection({super.key, required this.youtubeVideos});
-  final List<YouTubeVideo> youtubeVideos;
+  const YoutubeSection({super.key, this.youtubeVideos, this.errMsg});
+  final List<YouTubeVideo>? youtubeVideos;
+  final String? errMsg;
 
   @override
   Widget build(BuildContext context) {
@@ -28,65 +29,69 @@ class YoutubeSection extends StatelessWidget {
               ),
             ),
             SizedBox(height: screenHeight * 0.01),
-            ...youtubeVideos.map((video) => Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => VideoApp(video: video)));
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(screenWidth * 0.02),
-                          child: CachedNetworkImage(
-                            width: screenWidth * 0.3,
-                            height: screenHeight * 0.08,
-                            fit: BoxFit.cover,
-                            imageUrl: video.thumbnailUrl,
-                            placeholder: (context, url) =>
-                                const Icon(Icons.play_arrow_rounded),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.play_arrow_rounded),
+            if (errMsg != null)
+              Text(errMsg!)
+            else
+              ...youtubeVideos!.map((video) => Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => VideoApp(video: video)));
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.02),
+                            child: CachedNetworkImage(
+                              width: screenWidth * 0.3,
+                              height: screenHeight * 0.08,
+                              fit: BoxFit.cover,
+                              imageUrl: video.thumbnailUrl,
+                              placeholder: (context, url) =>
+                                  const Icon(Icons.play_arrow_rounded),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.play_arrow_rounded),
+                            ),
+                            // child: Image.network(
+                            //   video.thumbnailUrl,
+                            //   width: 120,
+                            //   height: 68,
+                            //   fit: BoxFit.cover,
+                            // ),
                           ),
-                          // child: Image.network(
-                          //   video.thumbnailUrl,
-                          //   width: 120,
-                          //   height: 68,
-                          //   fit: BoxFit.cover,
-                          // ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                video.title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  video.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                video.channelTitle,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
+                                const SizedBox(height: 4),
+                                Text(
+                                  video.channelTitle,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ))
+                  ))
           ],
         ),
       ),

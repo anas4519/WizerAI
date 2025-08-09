@@ -52,8 +52,8 @@ class _VideoAppState extends State<VideoApp> {
             actions: [
               IconButton(
                   onPressed: () {
-                    Share.share(widget.video.url,
-                        subject: 'Check out this video!');
+                    SharePlus.instance
+                        .share(ShareParams(text: 'Check out this video!'));
                   },
                   icon: const Icon(Icons.share))
             ],
