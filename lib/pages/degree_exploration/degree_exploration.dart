@@ -17,15 +17,29 @@ class DegreeExplorationPage extends StatefulWidget {
 }
 
 class _DegreeExplorationPageState extends State<DegreeExplorationPage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final TextEditingController _searchController = TextEditingController();
   bool isSearchFocused = false;
   Timer? _debounceTimer;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void dispose() {
+    _debounceTimer?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<DegreeExplorationBloc>().add(LoadDegrees());
+      }
+    });
   }
 
   void _onSearchChanged(String query) {
@@ -39,188 +53,185 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return BlocProvider(
-      create: (context) => DegreeExplorationBloc()..add(LoadDegrees()),
-      child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                theme.primaryColor.withValues(alpha: 0.08),
-                theme.scaffoldBackgroundColor.withValues(alpha: 0.95),
-                theme.scaffoldBackgroundColor,
-              ],
-            ),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.primaryColor.withValues(alpha: 0.08),
+              theme.scaffoldBackgroundColor.withValues(alpha: 0.95),
+              theme.scaffoldBackgroundColor,
+            ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05,
-                vertical: screenHeight * 0.02,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenHeight * 0.02),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.02,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: screenHeight * 0.02),
 
-                  // Title Section
-                  Text(
-                    'Explore Degrees',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w700,
-                      color: isDarkMode ? Colors.white : Colors.black87,
-                      letterSpacing: -0.5,
-                    ),
+                // Title Section
+                Text(
+                  'Explore Degrees',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                    letterSpacing: -0.5,
                   ),
-                  SizedBox(height: screenHeight * 0.008),
-                  Text(
-                    'Discover your perfect academic path',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      fontWeight: FontWeight.w400,
-                    ),
+                ),
+                SizedBox(height: screenHeight * 0.008),
+                Text(
+                  'Discover your perfect academic path',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    fontWeight: FontWeight.w400,
                   ),
+                ),
 
-                  SizedBox(height: screenHeight * 0.04),
+                SizedBox(height: screenHeight * 0.04),
 
-                  // Enhanced Search Bar
-                  Focus(
-                    onFocusChange: (focused) {
-                      setState(() => isSearchFocused = focused);
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOutCubic,
-                      height: screenHeight * 0.065,
-                      decoration: BoxDecoration(
-                        color: isDarkMode ? Colors.grey[850] : Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
+                // Enhanced Search Bar
+                Focus(
+                  onFocusChange: (focused) {
+                    setState(() => isSearchFocused = focused);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutCubic,
+                    height: screenHeight * 0.065,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.grey[850] : Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: isSearchFocused
+                            ? Colors.pink.withValues(alpha: 0.8)
+                            : (isDarkMode
+                                ? Colors.grey[700]!.withValues(alpha: 0.5)
+                                : Colors.grey[200]!),
+                        width: isSearchFocused ? 2.5 : 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
                           color: isSearchFocused
-                              ? Colors.pink.withValues(alpha: 0.8)
+                              ? Colors.pink.withValues(alpha: 0.15)
                               : (isDarkMode
-                                  ? Colors.grey[700]!.withValues(alpha: 0.5)
-                                  : Colors.grey[200]!),
-                          width: isSearchFocused ? 2.5 : 1.5,
+                                  ? Colors.black.withValues(alpha: 0.2)
+                                  : Colors.grey.withValues(alpha: 0.08)),
+                          blurRadius: isSearchFocused ? 20 : 8,
+                          offset: const Offset(0, 6),
+                          spreadRadius: isSearchFocused ? 2 : 0,
                         ),
-                        boxShadow: [
-                          BoxShadow(
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        AnimatedScale(
+                          scale: isSearchFocused ? 1.1 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.search_rounded,
+                            size: 22,
                             color: isSearchFocused
-                                ? Colors.pink.withValues(alpha: 0.15)
+                                ? Colors.pink
                                 : (isDarkMode
-                                    ? Colors.black.withValues(alpha: 0.2)
-                                    : Colors.grey.withValues(alpha: 0.08)),
-                            blurRadius: isSearchFocused ? 20 : 8,
-                            offset: const Offset(0, 6),
-                            spreadRadius: isSearchFocused ? 2 : 0,
+                                    ? Colors.grey[400]
+                                    : Colors.grey[500]),
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 20),
-                          AnimatedScale(
-                            scale: isSearchFocused ? 1.1 : 1.0,
-                            duration: const Duration(milliseconds: 200),
-                            child: Icon(
-                              Icons.search_rounded,
-                              size: 22,
-                              color: isSearchFocused
-                                  ? Colors.pink
-                                  : (isDarkMode
-                                      ? Colors.grey[400]
-                                      : Colors.grey[500]),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            onChanged: _onSearchChanged,
+                            style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black87,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: TextField(
-                              controller: _searchController,
-                              keyboardType: TextInputType.text,
-                              textCapitalization: TextCapitalization.sentences,
-                              onChanged: _onSearchChanged,
-                              style: TextStyle(
-                                color:
-                                    isDarkMode ? Colors.white : Colors.black87,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Search degrees and programs...',
+                              hintStyle: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey[500]
+                                    : Colors.grey[400],
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Search degrees and programs...',
-                                hintStyle: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.grey[500]
-                                      : Colors.grey[400],
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
-                          BlocBuilder<DegreeExplorationBloc,
-                              DegreeExplorationState>(
-                            builder: (context, state) {
-                              if (state is DegreeExplorationLoaded &&
-                                  state.isSearching) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    _searchController.clear();
-                                    if (mounted) {
-                                      context
-                                          .read<DegreeExplorationBloc>()
-                                          .add(ClearSearch());
-                                    }
-                                  },
-                                  child: Icon(
-                                    Icons.clear,
-                                    size: 20,
-                                    color: isDarkMode
-                                        ? Colors.grey[400]
-                                        : Colors.grey[500],
-                                  ),
-                                );
-                              }
-                              return const SizedBox(width: 12);
-                            },
-                          ),
-                          const SizedBox(width: 12),
-                        ],
-                      ),
+                        ),
+                        BlocBuilder<DegreeExplorationBloc,
+                            DegreeExplorationState>(
+                          builder: (context, state) {
+                            if (state is DegreeExplorationLoaded &&
+                                state.isSearching) {
+                              return GestureDetector(
+                                onTap: () {
+                                  _searchController.clear();
+                                  if (mounted) {
+                                    context
+                                        .read<DegreeExplorationBloc>()
+                                        .add(ClearSearch());
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.clear,
+                                  size: 20,
+                                  color: isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey[500],
+                                ),
+                              );
+                            }
+                            return const SizedBox(width: 12);
+                          },
+                        ),
+                        const SizedBox(width: 12),
+                      ],
                     ),
                   ),
+                ),
 
-                  SizedBox(height: screenHeight * 0.035),
+                SizedBox(height: screenHeight * 0.035),
 
-                  // Content Section
-                  Expanded(
-                    child: BlocBuilder<DegreeExplorationBloc,
-                        DegreeExplorationState>(
-                      builder: (context, state) {
-                        if (state is DegreeExplorationLoaded) {
-                          if (state.isSearching) {
-                            // Show search results
-                            return _buildSearchResults(state, isDarkMode);
-                          } else {
-                            // Show grid
-                            return _buildGrid(screenWidth);
-                          }
+                // Content Section
+                Expanded(
+                  child: BlocBuilder<DegreeExplorationBloc,
+                      DegreeExplorationState>(
+                    builder: (context, state) {
+                      if (state is DegreeExplorationLoaded) {
+                        if (state.isSearching) {
+                          // Show search results
+                          return _buildSearchResults(state, isDarkMode);
+                        } else {
+                          // Show grid
+                          return _buildGrid(screenWidth);
                         }
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                    ),
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
