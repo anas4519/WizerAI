@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:career_counsellor/bloc/degree_exploration/degree_exploration_bloc.dart';
 import 'package:career_counsellor/bloc/degree_exploration/degree_exploration_event.dart';
 import 'package:career_counsellor/bloc/degree_exploration/degree_exploration_state.dart';
@@ -18,29 +20,21 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
     with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   bool isSearchFocused = false;
-  late DegreeExplorationBloc _bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _bloc = DegreeExplorationBloc();
-    _bloc.add(LoadDegrees());
-  }
+  Timer? _debounceTimer;
 
   @override
   void dispose() {
     _searchController.dispose();
-    _bloc.close();
     super.dispose();
   }
 
   void _onSearchChanged(String query) {
-    _bloc.add(SearchDegrees(query));
-  }
-
-  void _clearSearch() {
-    _searchController.clear();
-    _bloc.add(ClearSearch());
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        context.read<DegreeExplorationBloc>().add(SearchDegrees(query));
+      }
+    });
   }
 
   @override
@@ -51,7 +45,7 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
     final screenWidth = MediaQuery.of(context).size.width;
 
     return BlocProvider(
-      create: (context) => _bloc,
+      create: (context) => DegreeExplorationBloc()..add(LoadDegrees()),
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -179,7 +173,14 @@ class _DegreeExplorationPageState extends State<DegreeExplorationPage>
                               if (state is DegreeExplorationLoaded &&
                                   state.isSearching) {
                                 return GestureDetector(
-                                  onTap: _clearSearch,
+                                  onTap: () {
+                                    _searchController.clear();
+                                    if (mounted) {
+                                      context
+                                          .read<DegreeExplorationBloc>()
+                                          .add(ClearSearch());
+                                    }
+                                  },
                                   child: Icon(
                                     Icons.clear,
                                     size: 20,
